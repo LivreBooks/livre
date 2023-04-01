@@ -1,0 +1,27 @@
+{
+  "scripts": {
+    "start": "expo start --dev-client",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "expo": "^48.0.7",
+    "expo-dev-client": "~2.1.5",
+    "expo-splash-screen": "~0.18.1",
+    "expo-status-bar": "~1.4.2",
+    "fbjs": "^3.0.2",
+    "react": "18.2.0",
+    "react-native": "0.71.3",
+    "react-native-blob-util": "^0.13.18",
+    "react-native-pdf": "^6.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.19.3",
+    "@config-plugins/react-native-blob-util": "^0.0.0",
+    "@config-plugins/react-native-pdf": "^0.0.0"
+  },
+  "version": "1.0.0",
+  "private": true,
+  "name": "pdfviewer"
+}
