@@ -1,8 +1,28 @@
 {
   "expo": {
+    "scheme": "livre",
+    "web": {
+      "bundler": "metro"
+    },
+    "name": "Livre",
+    "slug": "livre",
     "plugins": [
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf"
-    ]
+    ],
+    "android": {
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ],
+      "package": "com.pntx.livre"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c73b5d63-8046-4ea9-b732-c6d9419fa7be"
+      }
+    }
   }
 }
