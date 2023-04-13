@@ -49,13 +49,13 @@ export default function Search() {
           width: "100%",
           alignItems: "center",
           justifyContent: "center",
-          marginBottom: 10,
+          marginBottom: 5,
         }}
       >
         <Animatable.View
           animation={"fadeInUp"}
           style={{
-            marginBottom: searchResults.length > 0 || loading ? 0 : 40,
+            marginBottom: searchResults.length > 0 || loading ? 0 : 20,
             marginRight: searchResults.length > 0 || loading ? 5 : 0,
             alignItems: "center",
           }}
@@ -69,20 +69,19 @@ export default function Search() {
             }}
             resizeMode="contain"
           />
-          {searchResults.length === 0 ||
-            (loading && (
-              <Text
-                variant={"displaySmall"}
-                style={{ color: theme.colors.primary, fontWeight: "900" }}
-              >
-                Livre
-              </Text>
-            ))}
+          {searchResults.length === 0 && loading == false && (
+            <Text
+              variant={"displaySmall"}
+              style={{ color: theme.colors.primary, fontWeight: "900" }}
+            >
+              Livre
+            </Text>
+          )}
         </Animatable.View>
         <Animatable.View
           animation={"fadeInUp"}
           delay={500}
-          style={{ width: "85%", alignItems: "center" }}
+          style={{ width: "90%", alignItems: "center" }}
         >
           <Searchbar
             placeholder="Search"

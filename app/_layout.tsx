@@ -34,7 +34,7 @@ function AppLayout() {
               headerShown: false,
               tabBarStyle: {
                 backgroundColor: theme.colors.surface,
-                height: 50,
+                paddingBottom: 5,
               },
               tabBarActiveTintColor: theme.colors.text,
             })}
@@ -63,7 +63,7 @@ function AppLayout() {
                 tabBarIcon: ({ color, size }) => {
                   return (
                     <MaterialCommunityIcons
-                      name="star-shooting-outline"
+                      name="star-outline"
                       size={size}
                       color={color}
                     />

@@ -27,8 +27,13 @@ import { theme } from "../../constants";
 import { DownloadsStore } from "../../store/store";
 import { DownloadType } from "../../types";
 import BottomSheet, { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
-import { Feather, Foundation } from "@expo/vector-icons";
+import {
+  Feather,
+  Foundation,
+  MaterialCommunityIcons,
+} from "@expo/vector-icons";
 import { trimText } from "../../utils";
+import BasePage from "../../components/BasePage";
 
 const { width: sWidth, height: sHeight } = Dimensions.get("screen");
 const coverWidth = sWidth / 2 - 25;
@@ -51,31 +56,46 @@ export default function Search() {
   }, []);
 
   return (
-    <>
+    <BasePage>
       <View
         style={{
           height: "100%",
           justifyContent: "flex-start",
-          paddingTop: 10,
-          backgroundColor: theme.colors.background,
         }}
       >
-        {downloads.length > 4 && (
-          <Searchbar
-            placeholder="Filter"
-            icon={"filter-outline"}
-            onChangeText={onChangeFilter}
-            value={filterQuery}
-            style={{
-              borderRadius: 10,
-              marginBottom: 5,
-              marginHorizontal: 10,
-            }}
-            inputStyle={{
-              fontSize: 16,
-              marginLeft: -10,
-            }}
+        <Animatable.View
+          animation={"fadeInUp"}
+          style={{ marginTop: 10, marginBottom: 20, flexDirection: "row" }}
+        >
+          <MaterialCommunityIcons
+            name="bookshelf"
+            size={35}
+            color={theme.colors.text}
           />
+          <Text
+            variant="headlineLarge"
+            style={{ marginLeft: 5, fontWeight: "bold" }}
+          >
+            Library
+          </Text>
+        </Animatable.View>
+
+        {downloads.length > 0 && (
+          <Animatable.View animation={"fadeInUp"} delay={100}>
+            <Searchbar
+              placeholder="Filter"
+              icon={"filter-outline"}
+              onChangeText={onChangeFilter}
+              value={filterQuery}
+              style={{
+                borderRadius: 40,
+                marginVertical: 5,
+              }}
+              inputStyle={{
+                fontSize: 16,
+              }}
+            />
+          </Animatable.View>
         )}
 
         {downloads && (
@@ -86,7 +106,8 @@ export default function Search() {
               justifyContent: "space-between",
               alignItems: "flex-start",
               paddingVertical: 10,
-              paddingHorizontal: 15,
+              paddingHorizontal: 5,
+              width: "100%",
             }}
             data={downloads
               .filter((download) => download !== null)
@@ -100,8 +121,8 @@ export default function Search() {
               index: number;
             }) => (
               <Animatable.View
-                animation={"bounceIn"}
-                delay={Math.min(10 * index, 500)}
+                animation={"fadeInUp"}
+                delay={Math.min(10 * index + 1, 500)}
               >
                 <TouchableOpacity
                   disabled={item.filepath === null}
@@ -157,7 +178,7 @@ export default function Search() {
           setSelectedDownload={setSelectedDownload}
         />
       )}
-    </>
+    </BasePage>
   );
 }
 
@@ -225,98 +246,134 @@ const DownloadViewerBottomSheet = ({
           backgroundColor: theme.colors.background,
         }}
       >
-        <ScrollView contentContainerStyle={{ paddingBottom: 10 }}>
-          <View>
+        <View>
+          <View
+            style={{
+              width: "100%",
+              height: 210,
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 10,
+            }}
+          >
+            <BaseImage
+              source={{ uri: download.book.base64Cover }}
+              style={{
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                opacity: 0.5,
+              }}
+              blurRadius={5}
+              placeholderStyles={{ height: "100%", width: "100%" }}
+            />
             <View
               style={{
+                flex: 1,
                 width: "100%",
-                height: 210,
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: 10,
               }}
             >
               <BaseImage
                 source={{ uri: download.book.base64Cover }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  opacity: 0.5,
-                }}
-                blurRadius={5}
-                placeholderStyles={{ height: "100%", width: "100%" }}
+                style={{ height: "95%", width: "40%", borderRadius: 10 }}
+                placeholderStyles={{ height: "95%", width: "40%" }}
               />
+            </View>
+          </View>
+          <View style={{ marginHorizontal: 10, marginBottom: 5 }}>
+            <Text variant="titleMedium">{download.book.title}</Text>
+            <Text variant="titleSmall" style={{ opacity: 0.9 }}>
+              {download.book.author}
+            </Text>
+            <Button
+              mode="contained"
+              style={{ marginVertical: 10, marginBottom: 15 }}
+              onPress={openBook}
+            >
+              Read
+            </Button>
+            <Button
+              mode="contained"
+              buttonColor={theme.colors.tertiaryContainer}
+              textColor={theme.colors.onErrorContainer}
+              onPress={deleteDownload}
+              style={{ marginBottom: 5 }}
+            >
+              Delete
+            </Button>
+            <ScrollView style={{ opacity: 0.9, height: "37%" }}>
               <View
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  borderRadius: 10,
+                  paddingVertical: 5,
+                  paddingHorizontal: 8,
+                  marginVertical: 5,
                 }}
               >
-                <BaseImage
-                  source={{ uri: download.book.base64Cover }}
-                  style={{ height: "95%", width: "40%", borderRadius: 10 }}
-                  placeholderStyles={{ height: "95%", width: "40%" }}
-                />
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Feather
+                    name="user"
+                    size={18}
+                    color="white"
+                    style={{ marginRight: 5 }}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      marginRight: 5,
+                    }}
+                  >
+                    Publisher
+                  </Text>
+                </View>
+                {download.book.publisher ? (
+                  <Text>{trimText(download.book.publisher, 40)}</Text>
+                ) : (
+                  <Text style={{ textDecorationLine: "line-through" }}>
+                    missing
+                  </Text>
+                )}
               </View>
-            </View>
-            <View style={{ marginHorizontal: 10, marginBottom: 5 }}>
-              <Text variant="titleMedium">{download.book.title}</Text>
-              <Text variant="titleSmall" style={{ opacity: 0.9 }}>
-                {download.book.author}
-              </Text>
-              <Button
-                mode="contained"
-                style={{ marginVertical: 10 }}
-                onPress={openBook}
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
               >
-                Read
-              </Button>
-              <Button
-                mode="contained-tonal"
-                buttonColor={theme.colors.errorContainer}
-                textColor={theme.colors.onErrorContainer}
-                onPress={deleteDownload}
-              >
-                Delete
-              </Button>
-              <View style={{ opacity: 0.9 }}>
                 <View
                   style={{
                     backgroundColor: "rgba(255,255,255,0.05)",
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
-                    marginVertical: 10,
+                    flex: 1,
+                    marginRight: 5,
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Feather
-                      name="user"
-                      size={18}
-                      color="white"
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Foundation
+                      name="page-multiple"
+                      size={16}
+                      color={theme.colors.text}
                       style={{ marginRight: 5 }}
                     />
-                    <Text
-                      style={{
-                        fontWeight: "bold",
-                        marginRight: 10,
-                      }}
-                    >
-                      Publisher
+
+                    <Text style={{ marginRight: 5, fontWeight: "bold" }}>
+                      Pages
                     </Text>
                   </View>
-                  {download.book.publisher ? (
-                    <Text>{trimText(download.book.publisher, 40)}</Text>
+                  {download.book.pages ? (
+                    <Text>{download.book.pages}</Text>
                   ) : (
                     <Text style={{ textDecorationLine: "line-through" }}>
                       missing
@@ -325,165 +382,114 @@ const DownloadViewerBottomSheet = ({
                 </View>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    borderRadius: 10,
+                    paddingVertical: 5,
+                    paddingHorizontal: 8,
+                    flex: 1,
+                    marginRight: 5,
                   }}
                 >
-                  <View
-                    style={{
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                      marginRight: 10,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Foundation
-                        name="page-multiple"
-                        size={16}
-                        color={theme.colors.text}
-                        style={{ marginRight: 5 }}
-                      />
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Feather
+                      name="calendar"
+                      size={18}
+                      color="white"
+                      style={{ marginRight: 5 }}
+                    />
 
-                      <Text style={{ marginRight: 10, fontWeight: "bold" }}>
-                        Pages
-                      </Text>
-                    </View>
-                    {download.book.pages ? (
-                      <Text>{download.book.pages}</Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      Year
+                    </Text>
                   </View>
-                  <View
-                    style={{
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                      marginRight: 10,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Feather
-                        name="calendar"
-                        size={18}
-                        color="white"
-                        style={{ marginRight: 5 }}
-                      />
+                  {download.book.year ? (
+                    <Text>{download.book.year}</Text>
+                  ) : (
+                    <Text style={{ textDecorationLine: "line-through" }}>
+                      missing
+                    </Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    borderRadius: 10,
+                    paddingVertical: 5,
+                    paddingHorizontal: 8,
+                    flex: 1,
+                    marginRight: 5,
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Feather
+                      name="box"
+                      size={18}
+                      color="white"
+                      style={{ marginRight: 5 }}
+                    />
 
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                        Year
-                      </Text>
-                    </View>
-                    {download.book.year ? (
-                      <Text>{download.book.year}</Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      Size
+                    </Text>
                   </View>
-                  <View
-                    style={{
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                      marginRight: 10,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Feather
-                        name="box"
-                        size={18}
-                        color="white"
-                        style={{ marginRight: 5 }}
-                      />
+                  {download.book.filesize ? (
+                    <Text>
+                      {(parseInt(download.book.filesize) / 1e6).toFixed(2)}mb
+                    </Text>
+                  ) : (
+                    <Text style={{ textDecorationLine: "line-through" }}>
+                      missing
+                    </Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.05)",
+                    borderRadius: 10,
+                    paddingVertical: 5,
+                    paddingHorizontal: 8,
+                    flex: 1,
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Feather
+                      name="file-text"
+                      size={18}
+                      color="white"
+                      style={{ marginRight: 5 }}
+                    />
 
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                        Size
-                      </Text>
-                    </View>
-                    {download.book.filesize ? (
-                      <Text>
-                        {(parseInt(download.book.filesize) / 1e6).toFixed(2)}mb
-                      </Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      Type
+                    </Text>
                   </View>
-                  <View
-                    style={{
-                      backgroundColor: "rgba(255,255,255,0.05)",
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Feather
-                        name="file-text"
-                        size={18}
-                        color="white"
-                        style={{ marginRight: 5 }}
-                      />
-
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                        Type
-                      </Text>
-                    </View>
-                    {download.book.extension ? (
-                      <Text>.{download.book.extension}</Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
-                  </View>
+                  {download.book.extension ? (
+                    <Text>.{download.book.extension}</Text>
+                  ) : (
+                    <Text style={{ textDecorationLine: "line-through" }}>
+                      missing
+                    </Text>
+                  )}
                 </View>
               </View>
-            </View>
+              <View
+                style={{
+                  padding: 10,
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                  borderRadius: 10,
+                  marginVertical: 5,
+                }}
+              >
+                <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
+                  Description
+                </Text>
+                {download.book.descr && (
+                  <Text>{download.book.descr.replace(/<[^>]*>/g, "")}</Text>
+                )}
+              </View>
+            </ScrollView>
           </View>
-          <View
-            style={{
-              marginHorizontal: 10,
-            }}
-          >
-            <View
-              style={{
-                padding: 10,
-                backgroundColor: "rgba(255,255,255,0.05)",
-                borderRadius: 10,
-                marginVertical: 5,
-              }}
-            >
-              <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
-                Description
-              </Text>
-              {download.book.descr && (
-                <Text>{download.book.descr.replace(/<[^>]*>/g, "")}</Text>
-              )}
-            </View>
-          </View>
-        </ScrollView>
+        </View>
       </View>
     </BottomSheet>
   );

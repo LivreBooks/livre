@@ -4,6 +4,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
+    "build-app": "eas build -p android --profile preview",
+    "build-app-local": "eas build -p android --profile preview --local",
     "build-devclient": "eas build --profile development --platform android",
     "build-devclient-local": "eas build --profile development --platform android --output devClient.apk --local"
   },

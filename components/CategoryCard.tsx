@@ -1,18 +1,9 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Image,
-  TouchableOpacity,
-  Dimensions,
-  TouchableHighlight,
-  TouchableNativeFeedback,
-} from "react-native";
-import { Card, Text } from "react-native-paper";
-import { LinearGradient } from "expo-linear-gradient";
-import SkeletonLoader from "expo-skeleton-loader";
+import React from "react";
+import { View, Dimensions, TouchableNativeFeedback } from "react-native";
+import { Text } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import { CategoryType, SubCategoryType } from "../types";
-import { bgColors, cardColors, theme } from "../constants";
+import { bgColors } from "../constants";
 
 const { width: screenWidth } = Dimensions.get("screen");
 

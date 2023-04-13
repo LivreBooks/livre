@@ -375,15 +375,18 @@ const BookPage = () => {
                 Download
               </Button>
             ) : (
-              <ProgressBar
-                progress={downloadProgress}
-                style={{
-                  height: 35,
-                  marginHorizontal: 5,
-                  marginVertical: 5,
-                  borderRadius: 20,
-                }}
-              />
+              <>
+                <Text>Downloading</Text>
+                <ProgressBar
+                  progress={downloadProgress}
+                  style={{
+                    height: 35,
+                    marginHorizontal: 5,
+                    marginVertical: 5,
+                    borderRadius: 20,
+                  }}
+                />
+              </>
             )}
             <View
               style={{

@@ -1,17 +1,12 @@
 import React from "react";
-import { Card, Text } from "react-native-paper";
-import {
-  Pressable,
-  TouchableNativeFeedback,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Text } from "react-native-paper";
+import { TouchableNativeFeedback, View } from "react-native";
+import * as Animatable from "react-native-animatable";
 import { BookType } from "../types";
-import { Feather, Foundation } from "@expo/vector-icons";
 import { theme } from "../constants";
 import { trimText } from "../utils";
 import BaseImage from "./BaseImage";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { LiveAppState } from "../store/store";
 
 function BookCard({ book }: { book: BookType }) {
@@ -24,7 +19,8 @@ function BookCard({ book }: { book: BookType }) {
   // }
 
   return (
-    <View
+    <Animatable.View
+      animation={"fadeInUp"}
       style={{
         marginHorizontal: 10,
         marginVertical: 5,
@@ -179,7 +175,7 @@ function BookCard({ book }: { book: BookType }) {
           </View>
         </TouchableNativeFeedback>
       </Link>
-    </View>
+    </Animatable.View>
   );
 }
 
