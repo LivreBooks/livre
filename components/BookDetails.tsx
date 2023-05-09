@@ -44,8 +44,8 @@ const BookDetails = ({
   const [fetchinDownloadLinks, setFetchinDownloadLinks] = useState(false);
   const [downloadedFilepath, setDownloadedFilepath] = useState(null);
   const [downloadProgress, setDownloadProgress] = useState(null);
-
-  const [book] = useState(bookPreview || fullBook);
+  const [fullbook, setFullBook] = useState(fullBook);
+  const [book] = useState(bookPreview || fullbook);
 
   DownloadsStore.downloads.onChange((downloads) => {
     const found = downloads
@@ -61,7 +61,7 @@ const BookDetails = ({
   function checkIfDownloaded() {
     try {
       const found = DownloadsStore.downloads.find(
-        (download) => download.book.id === fullBook.id
+        (download) => download.book.id === fullbook.id
       );
       if (found) {
         setDownloadedFilepath(found.filepath);
@@ -69,27 +69,27 @@ const BookDetails = ({
     } catch (error) {}
   }
 
-  //   function fetchFullBook() {
-  //     console.log("Fetching:" + bookPreview.id);
-  //     setLoading(true);
-  //     getBook(bookPreview.id)
-  //       .then((data) => {
-  //         data.coverurl = bookPreview.cover;
-  //         setFullBook(data);
-  //       })
-  //       .catch((err) => {
-  //         console.log(err);
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //         checkIfDownloaded();
-  //       });
-  //   }
+  function fetchFullBook() {
+    console.log("Fetching:" + bookPreview.id);
+    setLoading(true);
+    getBook(bookPreview.id)
+      .then((data) => {
+        data.coverurl = bookPreview.cover;
+        setFullBook(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+        checkIfDownloaded();
+      });
+  }
 
   function fetchDownloadLinks() {
     setFetchinDownloadLinks(true);
-    // getDownloadLinks(fullBook.md5)
-    fetch(`https://livre.deno.dev/download/${fullBook.md5}`)
+    // getDownloadLinks(fullbook.md5)
+    fetch(`https://livre.deno.dev/download/${fullbook.md5}`)
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
@@ -105,7 +105,7 @@ const BookDetails = ({
 
   function openReader() {
     const downloadId = DownloadsStore.get().downloads.find(
-      (download) => download.book.id === fullBook.id
+      (download) => download.book.id === fullbook.id
     ).downloadId;
     if (downloadId) {
       router.push(`/library/reader?downloadId=${downloadId}`);
@@ -113,12 +113,12 @@ const BookDetails = ({
       ToastAndroid.show("Book Not Found", ToastAndroid.SHORT);
     }
   }
-  //   useLayoutEffect(() => {
-  //     console.log("Loaded book");
-  //     if (!fullBook) {
-  //       fetchFullBook();
-  //     }
-  //   }, []);
+  useLayoutEffect(() => {
+    console.log("Loaded book");
+    if (!fullBook) {
+      fetchFullBook();
+    }
+  }, []);
 
   return (
     <BasePage styles={{ paddingHorizontal: 0, paddingTop: 0 }}>
@@ -141,7 +141,7 @@ const BookDetails = ({
             >
               <BaseImage
                 source={{
-                  uri: bookPreview?.cover || fullBook.coverurl,
+                  uri: bookPreview?.cover || fullbook.coverurl,
                 }}
                 style={{
                   height: "100%",
@@ -164,7 +164,7 @@ const BookDetails = ({
               >
                 <BaseImage
                   source={{
-                    uri: bookPreview?.cover || fullBook.coverurl,
+                    uri: bookPreview?.cover || fullbook.coverurl,
                   }}
                   style={{ height: "95%", width: "40%", borderRadius: 10 }}
                   placeholderStyles={{ height: "95%", width: "40%" }}
@@ -173,10 +173,10 @@ const BookDetails = ({
             </View>
             <View style={{ marginHorizontal: 10, marginBottom: 5 }}>
               <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                {bookPreview?.title || fullBook.title}
+                {bookPreview?.title || fullbook.title}
               </Text>
               <Text variant="titleMedium" style={{ opacity: 0.9 }}>
-                {bookPreview?.authors[0].name || fullBook.author}
+                {bookPreview?.authors[0].name || fullbook.author}
               </Text>
               <View style={{ opacity: 0.9 }}>
                 <View
@@ -213,10 +213,10 @@ const BookDetails = ({
                       Publisher
                     </Text>
                   </View>
-                  {bookPreview?.publisher || fullBook.publisher ? (
+                  {bookPreview?.publisher || fullbook.publisher ? (
                     <Text>
                       {trimText(
-                        bookPreview?.publisher || fullBook.publisher,
+                        bookPreview?.publisher || fullbook.publisher,
                         40
                       )}
                     </Text>
@@ -260,8 +260,8 @@ const BookDetails = ({
                         Pages
                       </Text>
                     </View>
-                    {bookPreview?.pages || fullBook.pages ? (
-                      <Text>{bookPreview?.pages || fullBook.pages}</Text>
+                    {bookPreview?.pages || fullbook.pages ? (
+                      <Text>{bookPreview?.pages || fullbook.pages}</Text>
                     ) : (
                       <Text style={{ textDecorationLine: "line-through" }}>
                         missing
@@ -296,8 +296,8 @@ const BookDetails = ({
                         Year
                       </Text>
                     </View>
-                    {bookPreview?.year || fullBook.year ? (
-                      <Text>{bookPreview?.year || fullBook.year}</Text>
+                    {bookPreview?.year || fullbook.year ? (
+                      <Text>{bookPreview?.year || fullbook.year}</Text>
                     ) : (
                       <Text style={{ textDecorationLine: "line-through" }}>
                         missing
@@ -332,10 +332,10 @@ const BookDetails = ({
                         Size
                       </Text>
                     </View>
-                    {bookPreview?.size || fullBook.filesize ? (
+                    {bookPreview?.size || fullbook.filesize ? (
                       <Text>
                         {bookPreview?.size ||
-                          (parseInt(fullBook.filesize) / 1e6).toFixed(2)}
+                          (parseInt(fullbook.filesize) / 1e6).toFixed(2)}
                       </Text>
                     ) : (
                       <Text style={{ textDecorationLine: "line-through" }}>
@@ -370,9 +370,9 @@ const BookDetails = ({
                         Type
                       </Text>
                     </View>
-                    {bookPreview?.extension || fullBook.extension ? (
+                    {bookPreview?.extension || fullbook.extension ? (
                       <Text>
-                        .{bookPreview?.extension || fullBook.extension}
+                        .{bookPreview?.extension || fullbook.extension}
                       </Text>
                     ) : (
                       <Text style={{ textDecorationLine: "line-through" }}>
@@ -447,8 +447,8 @@ const BookDetails = ({
                 <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
                   Description
                 </Text>
-                {fullBook.descr && (
-                  <Text>{fullBook.descr.replace(/<[^>]*>/g, "")}</Text>
+                {fullbook.descr && (
+                  <Text>{fullbook.descr.replace(/<[^>]*>/g, "")}</Text>
                 )}
               </View>
             </View>

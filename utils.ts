@@ -151,9 +151,9 @@ export async function dowloadBook(
   };
 
   console.log(fullBook.coverurl);
+  console.log(download);
   DownloadsStore.downloads.set([download, ...DownloadsStore.downloads.get()]);
   console.log("Startig cover");
-  return;
   const base64Cover = await downloadFileAsBase64(fullBook.coverurl);
   DownloadsStore.downloads[0].book.base64Cover.set(
     `data:image/jpeg;base64,${base64Cover}`

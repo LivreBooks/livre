@@ -113,78 +113,85 @@ export default function Search() {
             position: "relative",
           }}
         >
-          {searchResults.length === 0 && searching == false && (
-            <Animatable.View
-              animation={"fadeInUp"}
+          <Animatable.View
+            animation={"fadeInUp"}
+            style={{
+              overflow: "hidden",
+              marginBottom: 20,
+              alignItems: "center",
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: headerScrollHeight,
+              zIndex: 10,
+            }}
+          >
+            <Animated.Image
+              source={require("../assets/logo.png")}
               style={{
-                overflow: "hidden",
-                marginBottom: 20,
-                alignItems: "center",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: headerScrollHeight,
-                zIndex: 10,
-                backgroundColor:
-                  LiveAppState.themeValue.get().colors.background,
+                width: logoSize,
+                height: logoSize,
+              }}
+            />
+            <Animated.Text
+              style={{
+                color: LiveAppState.themeValue.get().colors.primary,
+                fontWeight: "bold",
+                fontSize: headingSize,
               }}
             >
-              <Animated.Image
-                source={require("../assets/logo.png")}
-                style={{
-                  width: logoSize,
-                  height: logoSize,
-                }}
-              />
-              <Animated.Text
-                style={{
-                  color: LiveAppState.themeValue.get().colors.primary,
-                  fontWeight: "bold",
-                  fontSize: headingSize,
-                }}
-              >
-                Livre
-              </Animated.Text>
-              <Searchbar
-                placeholder="Search"
-                onChangeText={onChangeSearch}
-                value={searchQuery}
-                style={{
-                  borderRadius: 20,
-                  width: "95%",
-                }}
-                inputStyle={{
-                  fontSize: 16,
-                }}
-                onSubmitEditing={search}
-                blurOnSubmit
-                clearIcon={({ size, color }) => (
-                  <Pressable
-                    onPress={() => {
-                      layoutAnimate();
-                      setSearchResults([]);
-                      setSearchQuery("");
-                    }}
-                  >
-                    <MaterialCommunityIcons
-                      name="close"
-                      size={size - 5}
-                      color={color}
-                    />
-                  </Pressable>
-                )}
-              />
-            </Animatable.View>
-          )}
-          {searching ? (
+              Livre
+            </Animated.Text>
+            <Searchbar
+              placeholder="Search"
+              onChangeText={onChangeSearch}
+              value={searchQuery}
+              style={{
+                borderRadius: 20,
+                width: "95%",
+              }}
+              inputStyle={{
+                fontSize: 16,
+              }}
+              onSubmitEditing={search}
+              blurOnSubmit
+              clearIcon={({ size, color }) => (
+                <Pressable
+                  onPress={() => {
+                    layoutAnimate();
+                    setSearchResults([]);
+                    setSearchQuery("");
+                  }}
+                >
+                  <MaterialCommunityIcons
+                    name="close"
+                    size={size - 5}
+                    color={color}
+                  />
+                </Pressable>
+              )}
+            />
+          </Animatable.View>
+          {searching && (
             <FlatList
               data={[1, 2, 3]}
               keyExtractor={(item) => item.toString()}
               renderItem={() => <BookCardSkeleton />}
+              contentContainerStyle={{
+                paddingTop: H_MAX_HEIGHT - 10,
+              }}
             />
-          ) : (
+          )}
+          {!searching && searchResults.length > 0 && (
             <FlatList
+              onScroll={Animated.event(
+                [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+                { useNativeDriver: false }
+              )}
+              contentContainerStyle={{
+                paddingTop: H_MAX_HEIGHT - 10,
+              }}
               data={searchResults}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
@@ -300,6 +307,9 @@ function Recommendations({
                 autoPlayInterval={isFast ? 100 : 2000}
                 data={category.books}
                 pagingEnabled={isPagingEnabled}
+                panGestureHandlerProps={{
+                  activeOffsetX: [-10, 10],
+                }}
                 renderItem={({ index, item: book }) => (
                   <View
                     key={book.id}
