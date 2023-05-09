@@ -27,3 +27,4 @@ npx create-react-native-app -t with-pdf
 - [Expo Config Plugin: PDF](https://github.com/expo/config-plugins/tree/master/packages/react-native-pdf)
 - [Expo Development Client docs](https://docs.expo.dev/clients/introduction/)
 - [Building with EAS](https://docs.expo.dev/eas/)
+# livre
