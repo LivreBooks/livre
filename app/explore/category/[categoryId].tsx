@@ -8,7 +8,7 @@ import CategoryCard from "../../../components/CategoryCard";
 import { useRouter, useLocalSearchParams, useSearchParams } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
 import { cardColors, theme } from "../../../constants";
-import { ExploreStore } from "../../../store/store";
+import { ExploreStore, LiveAppState } from "../../../store/store";
 import BaseImage from "../../../components/BaseImage";
 
 const { width: screenWidth } = Dimensions.get("screen");
@@ -49,9 +49,6 @@ export default function Category() {
 
   useEffect(() => {
     getCategory();
-    // const categories = Store.exploreData.get();
-    // const found = categories.find((category) => category.id === categoryId);
-    // setCategory(found);
   }, []);
 
   return (
@@ -59,7 +56,7 @@ export default function Category() {
       style={{
         height: "100%",
         width: "100%",
-        backgroundColor: theme.colors.background,
+        backgroundColor: LiveAppState.themeValue.get().colors.background,
       }}
     >
       <View style={{ marginBottom: 10 }}>
@@ -71,7 +68,6 @@ export default function Category() {
           }}
           resizeMode="cover"
           style={{ width: "100%", height: 200 }}
-          defaultImage={require("../../../assets/defaultPageImage.png")}
           placeholderStyles={{ width: "100%", height: 200 }}
         />
         <LinearGradient
@@ -100,15 +96,15 @@ export default function Category() {
           onChangeText={onChangeFilter}
           value={filterQuery}
           style={{
-            borderRadius: 10,
+            borderRadius: 20,
             marginBottom: 5,
             marginHorizontal: 10,
-            backgroundColor: "rgba(255,255,255,0.05)",
           }}
           inputStyle={{
             fontSize: 16,
             marginLeft: -10,
           }}
+          theme={LiveAppState.themeValue.get()}
         />
       )}
       <FlatList

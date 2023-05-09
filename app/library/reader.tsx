@@ -1,13 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
+import { BackHandler, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import BaseViewer from "../../components/viewer/BaseViewer";
 import { DownloadsStore } from "../../store/store";
-import { useSearchParams } from "expo-router";
+import { useRouter, useSearchParams } from "expo-router";
 
 interface SearchParams {
   downloadId: string;
 }
 const reader = () => {
+  const router = useRouter();
   const { downloadId } = useSearchParams();
   console.log(downloadId);
   const [download, setDowload] = useState(
@@ -17,7 +18,10 @@ const reader = () => {
   );
 
   useEffect(() => {
-    // console.log(download);
+    BackHandler.addEventListener("hardwareBackPress", () => {
+      router.back();
+      return true;
+    });
   }, []);
   return <View>{download && <BaseViewer download={download} />}</View>;
 };

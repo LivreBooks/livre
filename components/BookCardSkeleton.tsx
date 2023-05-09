@@ -2,13 +2,14 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import SkeletonLoader from "expo-skeleton-loader";
 import { Card } from "react-native-paper";
+import { LiveAppState } from "../store/store";
 
 const BookCardSkeleton = () => {
   return (
     <View style={styles.container}>
       <SkeletonLoader
-        boneColor="#272727"
-        highlightColor="#413652"
+        boneColor={LiveAppState.themeValue.get().colors.secondary}
+        highlightColor={LiveAppState.themeValue.get().colors.primary}
         style={{ flexDirection: "row" }}
       >
         <SkeletonLoader.Item style={styles.thumbnail} />

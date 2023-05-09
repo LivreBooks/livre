@@ -1,13 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
-import {
-  View,
-  Image,
-  Dimensions,
-  TouchableHighlight,
-  TouchableOpacity,
-  BackHandler,
-} from "react-native";
+import { View, Dimensions, TouchableOpacity, BackHandler } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import {
   ActivityIndicator,
@@ -24,7 +17,7 @@ import Animated, {
 import * as Animatable from "react-native-animatable";
 import BaseImage from "../../components/BaseImage";
 import { theme } from "../../constants";
-import { DownloadsStore } from "../../store/store";
+import { DownloadsStore, LiveAppState } from "../../store/store";
 import { DownloadType } from "../../types";
 import BottomSheet, { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
 import {
@@ -44,141 +37,153 @@ export default function Search() {
 
   const onChangeFilter = (query: string) => setFilterQuery(query);
 
-  const [downloads, setDownloads] = useState<DownloadType[]>([]);
+  const [downloads, setDownloads] = useState<DownloadType[]>(
+    DownloadsStore.downloads.get()
+  );
   const [selectedDownload, setSelectedDownload] = useState<DownloadType>(null);
 
   DownloadsStore.downloads.onChange((downloads) => {
     setDownloads(downloads);
   });
 
-  useEffect(() => {
-    setDownloads(DownloadsStore.downloads.get());
-  }, []);
+  // useEffect(() => {
+  //   setDownloads(DownloadsStore.downloads.get());
+  // }, []);
 
   return (
-    <BasePage>
-      <View
-        style={{
-          height: "100%",
-          justifyContent: "flex-start",
-        }}
-      >
-        <Animatable.View
-          animation={"fadeInUp"}
-          style={{ marginTop: 10, marginBottom: 20, flexDirection: "row" }}
+    <>
+      <BasePage>
+        <View
+          style={{
+            height: "100%",
+            width: "100%",
+            justifyContent: "flex-start",
+          }}
         >
-          <MaterialCommunityIcons
-            name="bookshelf"
-            size={35}
-            color={theme.colors.text}
-          />
-          <Text
-            variant="headlineLarge"
-            style={{ marginLeft: 5, fontWeight: "bold" }}
+          <Animatable.View
+            animation={"fadeInUp"}
+            style={{ marginTop: 10, marginBottom: 20, flexDirection: "row" }}
           >
-            Library
-          </Text>
-        </Animatable.View>
-
-        {downloads.length > 0 && (
-          <Animatable.View animation={"fadeInUp"} delay={100}>
-            <Searchbar
-              placeholder="Filter"
-              icon={"filter-outline"}
-              onChangeText={onChangeFilter}
-              value={filterQuery}
-              style={{
-                borderRadius: 40,
-                marginVertical: 5,
-              }}
-              inputStyle={{
-                fontSize: 16,
-              }}
+            <MaterialCommunityIcons
+              name="book"
+              size={35}
+              color={LiveAppState.themeValue.get().colors.primary}
             />
+            <Text
+              variant="headlineLarge"
+              style={{
+                marginLeft: 5,
+                fontWeight: "bold",
+                color: LiveAppState.themeValue.get().colors.primary,
+              }}
+            >
+              Library
+            </Text>
           </Animatable.View>
-        )}
 
-        {downloads && (
-          <FlatList
-            numColumns={2}
-            columnWrapperStyle={{
-              flex: 1,
-              justifyContent: "space-between",
-              alignItems: "flex-start",
-              paddingVertical: 10,
-              paddingHorizontal: 5,
-              width: "100%",
-            }}
-            data={downloads
-              .filter((download) => download !== null)
-              .filter((download) => download.book.title.includes(filterQuery))}
-            keyExtractor={(item) => item.downloadId.toString()}
-            renderItem={({
-              item,
-              index,
-            }: {
-              item: DownloadType;
-              index: number;
-            }) => (
-              <Animatable.View
-                animation={"fadeInUp"}
-                delay={Math.min(10 * index + 1, 500)}
-              >
-                <TouchableOpacity
-                  disabled={item.filepath === null}
-                  onPress={() => setSelectedDownload(item)}
+          {downloads.length > 0 && (
+            <Animatable.View animation={"fadeInUp"} delay={10}>
+              <Searchbar
+                placeholder="Filter"
+                icon={"filter-outline"}
+                onChangeText={onChangeFilter}
+                value={filterQuery}
+                style={{
+                  borderRadius: 20,
+                  marginBottom: 5,
+                }}
+                inputStyle={{
+                  fontSize: 16,
+                }}
+              />
+            </Animatable.View>
+          )}
+
+          {downloads && (
+            <FlatList
+              numColumns={2}
+              columnWrapperStyle={{
+                flex: 1,
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                paddingVertical: 10,
+                paddingHorizontal: 5,
+                width: "100%",
+              }}
+              data={downloads
+                .filter((download) => download !== null)
+                .filter((download) =>
+                  download.book.title.includes(filterQuery)
+                )}
+              keyExtractor={(item) => item.downloadId.toString()}
+              renderItem={({
+                item,
+                index,
+              }: {
+                item: DownloadType;
+                index: number;
+              }) => (
+                <Animatable.View
+                  animation={"fadeInUp"}
+                  delay={Math.min(10 * index + 1, 500)}
                 >
-                  <>
-                    {item.filepath === null && (
-                      <View
+                  <TouchableOpacity onPress={() => setSelectedDownload(item)}>
+                    <>
+                      {item.filepath === null && (
+                        <View
+                          style={{
+                            position: "absolute",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "rgba(0,0,0,0.5)",
+                            top: 0,
+                            left: 0,
+                            width: coverWidth,
+                            height: coverHeight,
+                            zIndex: 2,
+                          }}
+                        >
+                          <ActivityIndicator
+                            color={
+                              LiveAppState.themeValue.get().colors.onBackground
+                            }
+                          />
+                          <Text>Downloading...</Text>
+                          <Text style={{ fontWeight: "bold" }}>
+                            {Math.floor(item.progress * 100)}%
+                          </Text>
+                        </View>
+                      )}
+                      <BaseImage
                         style={{
-                          position: "absolute",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          backgroundColor: "rgba(0,0,0,0.5)",
-                          top: 0,
-                          left: 0,
-                          width: coverWidth,
                           height: coverHeight,
-                          zIndex: 2,
+                          width: coverWidth,
+                          borderRadius: 10,
                         }}
-                      >
-                        <ActivityIndicator color={theme.colors.onBackground} />
-                        <Text>Downloading...</Text>
-                        <Text style={{ fontWeight: "bold" }}>
-                          {Math.floor(item.progress * 100)}%
-                        </Text>
-                      </View>
-                    )}
-                    <BaseImage
-                      style={{
-                        height: coverHeight,
-                        width: coverWidth,
-                        borderRadius: 10,
-                      }}
-                      source={{
-                        uri: item.book.base64Cover || item.book.coverurl,
-                      }}
-                      placeholderStyles={{
-                        height: coverHeight,
-                        width: coverWidth,
-                        borderRadius: 10,
-                      }}
-                    />
-                  </>
-                </TouchableOpacity>
-              </Animatable.View>
-            )}
-          />
-        )}
-      </View>
+                        source={{
+                          uri: item.book.base64Cover || item.book.coverurl,
+                        }}
+                        placeholderStyles={{
+                          height: coverHeight,
+                          width: coverWidth,
+                          borderRadius: 10,
+                        }}
+                      />
+                    </>
+                  </TouchableOpacity>
+                </Animatable.View>
+              )}
+            />
+          )}
+        </View>
+      </BasePage>
       {selectedDownload && (
         <DownloadViewerBottomSheet
           download={selectedDownload}
           setSelectedDownload={setSelectedDownload}
         />
       )}
-    </BasePage>
+    </>
   );
 }
 
@@ -224,14 +229,17 @@ const DownloadViewerBottomSheet = ({
       snapPoints={snapPoints}
       style={{ marginBottom: 20 }}
       backgroundStyle={{
-        backgroundColor: theme.colors.surface,
+        backgroundColor: LiveAppState.themeValue.get().colors.surface,
         borderRadius: 0,
       }}
       handleIndicatorStyle={{
         width: "12%",
-        backgroundColor: theme.colors.background,
+        backgroundColor: LiveAppState.themeValue.get().colors.background,
         height: 6,
         borderRadius: 10,
+      }}
+      handleStyle={{
+        position: "absolute",
       }}
       enablePanDownToClose
       backdropComponent={CustomBackdrop}
@@ -243,7 +251,7 @@ const DownloadViewerBottomSheet = ({
         style={{
           flex: 1,
           width: "100%",
-          backgroundColor: theme.colors.background,
+          backgroundColor: LiveAppState.themeValue.get().colors.background,
         }}
       >
         <View>
@@ -289,26 +297,31 @@ const DownloadViewerBottomSheet = ({
             <Text variant="titleSmall" style={{ opacity: 0.9 }}>
               {download.book.author}
             </Text>
+            {download.filepath !== null && (
+              <Button
+                mode="contained"
+                style={{ marginVertical: 10 }}
+                onPress={openBook}
+              >
+                Read
+              </Button>
+            )}
             <Button
               mode="contained"
-              style={{ marginVertical: 10, marginBottom: 15 }}
-              onPress={openBook}
-            >
-              Read
-            </Button>
-            <Button
-              mode="contained"
-              buttonColor={theme.colors.tertiaryContainer}
-              textColor={theme.colors.onErrorContainer}
+              buttonColor={
+                LiveAppState.themeValue.get().colors.tertiaryContainer
+              }
+              textColor={LiveAppState.themeValue.get().colors.onErrorContainer}
               onPress={deleteDownload}
-              style={{ marginBottom: 5 }}
+              style={{ marginVertical: 5 }}
             >
               Delete
             </Button>
             <ScrollView style={{ opacity: 0.9, height: "37%" }}>
               <View
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.05)",
+                  backgroundColor:
+                    LiveAppState.themeValue.get().colors.inverseOnSurface,
                   borderRadius: 10,
                   paddingVertical: 5,
                   paddingHorizontal: 8,
@@ -325,7 +338,10 @@ const DownloadViewerBottomSheet = ({
                     name="user"
                     size={18}
                     color="white"
-                    style={{ marginRight: 5 }}
+                    style={{
+                      marginRight: 5,
+                      color: LiveAppState.themeValue.get().colors.text,
+                    }}
                   />
                   <Text
                     style={{
@@ -352,7 +368,8 @@ const DownloadViewerBottomSheet = ({
               >
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -362,10 +379,13 @@ const DownloadViewerBottomSheet = ({
                 >
                   <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Foundation
-                      name="page-multiple"
+                      name="page"
                       size={16}
-                      color={theme.colors.text}
-                      style={{ marginRight: 5 }}
+                      color={LiveAppState.themeValue.get().colors.text}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ marginRight: 5, fontWeight: "bold" }}>
@@ -382,7 +402,8 @@ const DownloadViewerBottomSheet = ({
                 </View>
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -395,7 +416,10 @@ const DownloadViewerBottomSheet = ({
                       name="calendar"
                       size={18}
                       color="white"
-                      style={{ marginRight: 5 }}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ fontWeight: "bold", marginRight: 10 }}>
@@ -412,7 +436,8 @@ const DownloadViewerBottomSheet = ({
                 </View>
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -425,7 +450,10 @@ const DownloadViewerBottomSheet = ({
                       name="box"
                       size={18}
                       color="white"
-                      style={{ marginRight: 5 }}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ fontWeight: "bold", marginRight: 10 }}>
@@ -444,7 +472,8 @@ const DownloadViewerBottomSheet = ({
                 </View>
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -456,7 +485,10 @@ const DownloadViewerBottomSheet = ({
                       name="file-text"
                       size={18}
                       color="white"
-                      style={{ marginRight: 5 }}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ fontWeight: "bold", marginRight: 10 }}>
@@ -475,7 +507,8 @@ const DownloadViewerBottomSheet = ({
               <View
                 style={{
                   padding: 10,
-                  backgroundColor: "rgba(255,255,255,0.05)",
+                  backgroundColor:
+                    LiveAppState.themeValue.get().colors.inverseOnSurface,
                   borderRadius: 10,
                   marginVertical: 5,
                 }}

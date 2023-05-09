@@ -23,7 +23,7 @@ const BaseImage = ({
     <>
       {isLoading && (
         <Image
-          source={defaultImage || require("../assets/defaultPageImage.png")}
+          source={defaultImage || require("../assets/defaultPageImage.jpg")}
           style={{
             position: "absolute",
             height: 200,
@@ -32,6 +32,7 @@ const BaseImage = ({
             left: 0,
             ...placeholderStyles,
           }}
+          blurRadius={40}
           resizeMode="cover"
         />
       )}

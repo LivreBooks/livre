@@ -135,7 +135,10 @@ async function requestExternalStoragePermission() {
   return true;
 }
 
-export async function dowloadBook(fullBook: FullBookType, links: DownloadLink) {
+export async function dowloadBook(
+  fullBook: FullBookType,
+  links: DownloadLink[]
+) {
   const downloadId = Math.floor(Math.random() * 1000);
 
   const download: DownloadType = {

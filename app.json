@@ -11,13 +11,19 @@
       "@config-plugins/react-native-pdf"
     ],
     "android": {
+      "icon": "./assets/logo.png",
+      "splash": {
+        "image": "./assets/splash.png",
+        "backgroundColor": "#060011",
+        "resizeMode": "contain"
+      },
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
         "android.permission.ACCESS_NETWORK_STATE"
       ],
-      "package": "com.pntx.livre"
+      "package": "com.justpatrick.livre"
     },
     "extra": {
       "eas": {

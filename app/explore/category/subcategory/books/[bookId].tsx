@@ -13,6 +13,7 @@ import { theme } from "../../../../../constants";
 import {
   ActivityIndicator,
   Button,
+  Card,
   ProgressBar,
   Text,
 } from "react-native-paper";
@@ -23,6 +24,7 @@ import { DownloadType, FullBookType } from "../../../../../types";
 import { useRouter, useSegments } from "expo-router";
 import BaseImage from "../../../../../components/BaseImage";
 import { useObservable } from "@legendapp/state/react";
+import { getBook, getDownloadLinks } from "../../../../../services/services";
 
 const { width: sWidth, height: sHeight } = Dimensions.get("screen");
 
@@ -63,8 +65,7 @@ const BookPage = () => {
   function fetchFullBook() {
     console.log("Fetching:" + bookPreview.id);
     setLoading(true);
-    fetch(`https://livre.deno.dev/book/${bookPreview.id}`)
-      .then((res) => res.json())
+    getBook(bookPreview.id)
       .then((data) => {
         data.coverurl = bookPreview.cover;
         setFullBook(data);
@@ -80,6 +81,7 @@ const BookPage = () => {
 
   function fetchDownloadLinks() {
     setFetchinDownloadLinks(true);
+    // getDownloadLinks(fullBook.md5)
     fetch(`https://livre.deno.dev/download/${fullBook.md5}`)
       .then((res) => res.json())
       .then((data) => {
@@ -110,12 +112,7 @@ const BookPage = () => {
 
   useEffect(() => {
     const handler = BackHandler.addEventListener("hardwareBackPress", () => {
-      console.log(segments);
-      console.log("=========");
-      console.log(segments[2]);
-      if (segments[2] === "subcategory") {
-        router.replace("/explore/categories");
-      }
+      router.back();
       return true;
     });
     return () => {
@@ -180,7 +177,8 @@ const BookPage = () => {
             <View style={{ opacity: 0.9 }}>
               <View
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.05)",
+                  backgroundColor:
+                    LiveAppState.themeValue.get().colors.inverseOnSurface,
                   borderRadius: 10,
                   paddingVertical: 5,
                   paddingHorizontal: 8,
@@ -197,7 +195,10 @@ const BookPage = () => {
                     name="user"
                     size={18}
                     color="white"
-                    style={{ marginRight: 5 }}
+                    style={{
+                      marginRight: 5,
+                      color: LiveAppState.themeValue.get().colors.text,
+                    }}
                   />
                   <Text
                     style={{
@@ -224,7 +225,8 @@ const BookPage = () => {
               >
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -237,7 +239,10 @@ const BookPage = () => {
                       name="page-multiple"
                       size={16}
                       color={theme.colors.text}
-                      style={{ marginRight: 5 }}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ marginRight: 10, fontWeight: "bold" }}>
@@ -254,7 +259,8 @@ const BookPage = () => {
                 </View>
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -267,7 +273,10 @@ const BookPage = () => {
                       name="calendar"
                       size={18}
                       color="white"
-                      style={{ marginRight: 5 }}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ fontWeight: "bold", marginRight: 10 }}>
@@ -284,7 +293,8 @@ const BookPage = () => {
                 </View>
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -297,7 +307,10 @@ const BookPage = () => {
                       name="box"
                       size={18}
                       color="white"
-                      style={{ marginRight: 5 }}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ fontWeight: "bold", marginRight: 10 }}>
@@ -314,7 +327,8 @@ const BookPage = () => {
                 </View>
                 <View
                   style={{
-                    backgroundColor: "rgba(255,255,255,0.05)",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
@@ -326,7 +340,10 @@ const BookPage = () => {
                       name="file-text"
                       size={18}
                       color="white"
-                      style={{ marginRight: 5 }}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
                     />
 
                     <Text style={{ fontWeight: "bold", marginRight: 10 }}>
@@ -375,8 +392,16 @@ const BookPage = () => {
                 Download
               </Button>
             ) : (
-              <>
-                <Text>Downloading</Text>
+              <Card style={{ padding: 5 }}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    width: "100%",
+                  }}
+                >
+                  Downloading
+                </Text>
                 <ProgressBar
                   progress={downloadProgress}
                   style={{
@@ -386,12 +411,13 @@ const BookPage = () => {
                     borderRadius: 20,
                   }}
                 />
-              </>
+              </Card>
             )}
             <View
               style={{
                 padding: 10,
-                backgroundColor: "rgba(255,255,255,0.05)",
+                backgroundColor:
+                  LiveAppState.themeValue.get().colors.inverseOnSurface,
                 borderRadius: 10,
                 marginVertical: 5,
               }}

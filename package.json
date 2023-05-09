@@ -10,19 +10,27 @@
     "build-devclient-local": "eas build --profile development --platform android --output devClient.apk --local"
   },
   "dependencies": {
+    "@epubjs-react-native/core": "^1.1.0",
+    "@epubjs-react-native/expo-file-system": "^1.0.0",
     "@expo/vector-icons": "^13.0.0",
     "@gorhom/bottom-sheet": "^4.4.5",
     "@legendapp/state": "^0.23.4",
     "@miblanchard/react-native-slider": "^2.3.1",
+    "@react-navigation/material-bottom-tabs": "^6.2.15",
     "@shopify/flash-list": "1.4.0",
+    "css-select": "^5.1.0",
+    "epubjs": "^0.3.93",
     "expo": "~48.0.9",
     "expo-dev-client": "~2.1.5",
+    "expo-linear-gradient": "~12.1.2",
     "expo-linking": "~4.0.1",
     "expo-router": "^1.4.3",
     "expo-skeleton-loader": "^1.1.3",
     "expo-splash-screen": "~0.18.1",
     "expo-status-bar": "~1.4.4",
     "fbjs": "^3.0.2",
+    "htmlparser2": "^8.0.2",
+    "jsdom": "^21.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.71.4",
@@ -38,15 +46,16 @@
     "react-native-safe-area-context": "4.5.0",
     "react-native-screens": "~3.20.0",
     "react-native-web": "~0.18.10",
+    "react-native-webview": "11.26.0",
     "rn-fetch-blob": "^0.12.0",
     "typescript": "^4.9.4"
   },
   "devDependencies": {
-    "@types/react": "~18.0.27",
     "@babel/core": "^7.19.3",
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
     "@config-plugins/react-native-blob-util": "^0.0.0",
-    "@config-plugins/react-native-pdf": "^0.0.0"
+    "@config-plugins/react-native-pdf": "^0.0.0",
+    "@types/react": "~18.0.27"
   },
   "resolutions": {
     "metro": "^0.73.7",

@@ -5,11 +5,11 @@ import {
   Searchbar,
 } from "react-native-paper";
 
-const darkMode = {
+export const darkMode = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: "#A389D4",
+    primary: "#9258FF",
     accent: "#FFD506",
     background: "#1E1E1E",
     surface: "#121212",
@@ -19,11 +19,11 @@ const darkMode = {
     backdrop: "rgba(0, 0, 0, 0.5)",
   },
 };
-const lightMode = {
+export const lightMode = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: "#845EC2",
+    primary: "#9258FF",
     accent: "#FFA600",
     background: "#FFFFFF",
     surface: "#F2F2F2",
@@ -31,10 +31,11 @@ const lightMode = {
     disabled: "#9B9B9B",
     placeholder: "#B3B3B3",
     backdrop: "rgba(30, 30, 30, 0.5)",
+    onBackground: "#000",
   },
 };
 
-export const theme = darkMode;
+export const theme = lightMode;
 
 export const cardColors = [
   { start: "#D7DDE8", end: "#757F9A" },

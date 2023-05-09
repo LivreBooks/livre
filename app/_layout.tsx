@@ -1,54 +1,114 @@
-import React from "react";
-import { Tabs } from "expo-router";
-// import {BottomNavigationAction} from "react-native-paper"
+import React, { useEffect, useState } from "react";
 import { ThemeProvider, DarkTheme } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Provider as PaperProvider } from "react-native-paper";
-import { Platform, UIManager, View, Text } from "react-native";
-import { theme } from "../constants";
+import {
+  Platform,
+  UIManager,
+  View,
+  Text,
+  Settings,
+  useColorScheme,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
-import * as Animatable from "react-native-animatable";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useObservable } from "@legendapp/state/react";
-import { DownloadsStore } from "../store/store";
+import { LiveAppState, SettingsStore } from "../store/store";
+import {
+  MaterialBottomTabNavigationOptions,
+  createMaterialBottomTabNavigator,
+} from "@react-navigation/material-bottom-tabs";
+import { Tabs, withLayoutContext } from "expo-router";
+import { darkMode, lightMode } from "../constants";
+
 if (Platform.OS === "android") {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
     UIManager.setLayoutAnimationEnabledExperimental(true);
   }
 }
 
+const { Navigator } = createMaterialBottomTabNavigator();
+
+// export const Tabs = withLayoutContext<
+//   MaterialBottomTabNavigationOptions,
+//   typeof Navigator
+// >(Navigator);
+
+// console.log(Tabs);
+
 function AppLayout() {
-  // const downloads = useObservable(DownloadsStore.downloads.get());
-  // DownloadsStore.downloads.onChange((_downloads) => {
-  //   downloads.set(_downloads);
-  // });
+  const [theme, setTheme] = useState(SettingsStore.theme.get());
+  const preferredTheme = useColorScheme();
+  console.log(preferredTheme);
+
+  SettingsStore.theme.onChange((newTheme) => {
+    console.log("Something happened");
+    if (newTheme === "dark") {
+      LiveAppState.themeValue.set(darkMode);
+    }
+
+    if (newTheme === "light") {
+      LiveAppState.themeValue.set(lightMode);
+    }
+
+    if (newTheme === "auto") {
+      console.log(preferredTheme);
+      if (preferredTheme === "dark") {
+        LiveAppState.themeValue.set(darkMode);
+      }
+
+      if (preferredTheme === "light") {
+        LiveAppState.themeValue.set(lightMode);
+      }
+    }
+    setTheme(newTheme);
+  });
+
+  useEffect(() => {
+    if (theme === "auto") {
+      console.log(preferredTheme);
+      if (preferredTheme === "dark") {
+        LiveAppState.themeValue.set(darkMode);
+      }
+
+      if (preferredTheme === "light") {
+        LiveAppState.themeValue.set(lightMode);
+      }
+    }
+  }, []);
 
   return (
-    <ThemeProvider value={DarkTheme}>
-      <PaperProvider theme={theme}>
-        <StatusBar style="light" backgroundColor={theme.colors.background} />
+    <ThemeProvider value={LiveAppState.themeValue.get()}>
+      <PaperProvider theme={LiveAppState.themeValue.get()}>
+        <StatusBar
+          style={SettingsStore.theme.get()}
+          backgroundColor={LiveAppState.themeValue.get().colors.text}
+        />
         <SafeAreaView style={{ flex: 1 }}>
           <Tabs
+            safeAreaInsets={{ bottom: 0 }}
             initialRouteName="search"
             screenOptions={({ route }) => ({
               headerShown: false,
               tabBarStyle: {
-                backgroundColor: theme.colors.surface,
+                backgroundColor:
+                  LiveAppState.themeValue.get().colors.background,
                 paddingBottom: 5,
+                borderTopWidth: 0,
+                borderTopColor: LiveAppState.themeValue.get().colors.secondary,
               },
-              tabBarActiveTintColor: theme.colors.text,
+              tabBarActiveTintColor:
+                LiveAppState.themeValue.get().colors.primary,
             })}
           >
             <Tabs.Screen
               name="index"
               options={{
-                title: "Search",
-                href: "/",
-                tabBarIcon: ({ color, size }) => {
+                title: `Search`,
+                tabBarIcon: ({ color, focused }) => {
                   return (
                     <MaterialCommunityIcons
-                      name="book-search-outline"
-                      size={size}
+                      name={focused ? "book-search" : "book-search-outline"}
+                      size={24}
                       color={color}
                     />
                   );
@@ -58,13 +118,12 @@ function AppLayout() {
             <Tabs.Screen
               name="explore"
               options={{
-                title: "Explore",
-                href: "/explore",
-                tabBarIcon: ({ color, size }) => {
+                title: `Explore`,
+                tabBarIcon: ({ color, focused }) => {
                   return (
                     <MaterialCommunityIcons
-                      name="star-outline"
-                      size={size}
+                      name={focused ? "star" : "star-outline"}
+                      size={24}
                       color={color}
                     />
                   );
@@ -75,16 +134,47 @@ function AppLayout() {
               name="library"
               options={{
                 title: "Library",
-                href: "/library",
-                tabBarIcon: ({ color, size }) => {
+                tabBarIcon: ({ color, focused }) => {
                   return (
                     <View>
                       <MaterialCommunityIcons
-                        name="bookshelf"
-                        size={size}
+                        name={focused ? "book" : "book-outline"}
+                        size={24}
                         color={color}
                       />
-                      {/* {downloads.filter(
+                    </View>
+                  );
+                },
+              }}
+            />
+            <Tabs.Screen
+              name="account"
+              options={{
+                title: "Account",
+                tabBarIcon: ({ color, focused }) => {
+                  return (
+                    <View>
+                      <MaterialCommunityIcons
+                        name={focused ? "account" : "account-outline"}
+                        size={24}
+                        color={color}
+                      />
+                    </View>
+                  );
+                },
+              }}
+            />
+          </Tabs>
+        </SafeAreaView>
+      </PaperProvider>
+    </ThemeProvider>
+  );
+}
+
+export default AppLayout;
+
+{
+  /* {downloads.filter(
                         (download) => download?.filepath === null
                       ).length > 0 && (
                         <Animatable.View
@@ -117,17 +207,5 @@ function AppLayout() {
                             }
                           </Text>
                         </Animatable.View>
-                      )} */}
-                    </View>
-                  );
-                },
-              }}
-            />
-          </Tabs>
-        </SafeAreaView>
-      </PaperProvider>
-    </ThemeProvider>
-  );
+                      )} */
 }
-
-export default AppLayout;

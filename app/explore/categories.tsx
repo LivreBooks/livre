@@ -6,7 +6,7 @@ import { Searchbar, Text } from "react-native-paper";
 import CategoryCard from "../../components/CategoryCard";
 import CategoryCardSkeleton from "../../components/CategoryCardSkeleton";
 import { theme } from "../../constants";
-import { ExploreStore } from "../../store/store";
+import { ExploreStore, LiveAppState } from "../../store/store";
 import { CategoryType } from "../../types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
@@ -69,28 +69,35 @@ export default function Categories() {
           style={{ marginTop: 10, marginBottom: 20, flexDirection: "row" }}
         >
           <MaterialCommunityIcons
-            name="star-outline"
+            name="star"
             size={35}
-            color={theme.colors.text}
+            color={LiveAppState.themeValue.get().colors.primary}
           />
           <Text
             variant="headlineLarge"
-            style={{ marginLeft: 5, fontWeight: "bold" }}
+            style={{
+              marginLeft: 5,
+              fontWeight: "bold",
+              color: LiveAppState.themeValue.get().colors.primary,
+            }}
           >
             Explore
           </Text>
         </Animatable.View>
-        <Searchbar
-          placeholder="Filter"
-          icon={"filter-outline"}
-          onChangeText={onChangeFilter}
-          value={filterQuery}
-          style={{
-            borderRadius: 40,
-            marginBottom: 10,
-          }}
-          theme={theme}
-        />
+        <Animatable.View animation={"fadeInUp"} delay={10}>
+          <Searchbar
+            placeholder="Filter"
+            icon={"filter-outline"}
+            onChangeText={onChangeFilter}
+            value={filterQuery}
+            style={{
+              borderRadius: 20,
+              marginBottom: 10,
+            }}
+            theme={LiveAppState.themeValue.get()}
+          />
+        </Animatable.View>
+
         {loading ? (
           <FlatList
             numColumns={2}

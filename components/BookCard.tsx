@@ -19,10 +19,8 @@ function BookCard({ book }: { book: BookType }) {
   // }
 
   return (
-    <Animatable.View
-      animation={"fadeInUp"}
+    <View
       style={{
-        marginHorizontal: 10,
         marginVertical: 5,
         borderRadius: 15,
         overflow: "hidden",
@@ -34,7 +32,7 @@ function BookCard({ book }: { book: BookType }) {
             LiveAppState.selectedBookPreInfo.set(book);
           }}
           background={TouchableNativeFeedback.Ripple(
-            theme.colors.primaryContainer,
+            LiveAppState.themeValue.get().colors.primaryContainer,
             false
           )}
         >
@@ -42,35 +40,47 @@ function BookCard({ book }: { book: BookType }) {
             style={{
               flexDirection: "row",
               width: "100%",
-              padding: 10,
               overflow: "hidden",
+              justifyContent: "space-between",
+              padding: 10,
             }}
           >
             <BaseImage
-              style={{ height: 200, width: 135, borderRadius: 10 }}
+              style={{ height: 200, width: 140, borderRadius: 5 }}
               source={{ uri: book.cover }}
               placeholderStyles={{
                 height: 200,
-                width: 135,
-                borderRadius: 10,
+                width: 140,
+                borderRadius: 5,
                 top: 10,
                 left: 10,
               }}
             />
             <View
               style={{
-                paddingHorizontal: 10,
+                paddingLeft: 10,
                 flex: 1,
               }}
             >
               <View>
                 <Text
                   variant="titleMedium"
-                  style={{ lineHeight: 18, marginBottom: 5 }}
+                  style={{
+                    lineHeight: 18,
+                    marginBottom: 5,
+                    fontSize: 14,
+                    color: LiveAppState.themeValue.get().colors.onBackground,
+                  }}
                 >
-                  {trimText(book.title, 60)}
+                  {trimText(book.title, 70)}
                 </Text>
-                <Text style={{}}>{book.authors[0].name}</Text>
+                <Text
+                  style={{
+                    color: LiveAppState.themeValue.get().colors.onBackground,
+                  }}
+                >
+                  {book.authors[0].name}
+                </Text>
               </View>
               <View style={{ marginTop: 10 }}>
                 <View
@@ -89,15 +99,30 @@ function BookCard({ book }: { book: BookType }) {
                       style={{
                         fontWeight: "bold",
                         marginRight: 10,
+                        color:
+                          LiveAppState.themeValue.get().colors.onBackground,
                       }}
                     >
                       Publisher
                     </Text>
                   </View>
                   {book.publisher ? (
-                    <Text>{trimText(book.publisher, 40)}</Text>
+                    <Text
+                      style={{
+                        color:
+                          LiveAppState.themeValue.get().colors.onBackground,
+                      }}
+                    >
+                      {trimText(book.publisher, 40)}
+                    </Text>
                   ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
+                    <Text
+                      style={{
+                        textDecorationLine: "line-through",
+                        color:
+                          LiveAppState.themeValue.get().colors.onBackground,
+                      }}
+                    >
                       missing
                     </Text>
                   )}
@@ -116,14 +141,34 @@ function BookCard({ book }: { book: BookType }) {
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <Text style={{ marginRight: 10, fontWeight: "bold" }}>
+                      <Text
+                        style={{
+                          marginRight: 10,
+                          fontWeight: "bold",
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
                         Pages
                       </Text>
                     </View>
                     {book.pages ? (
-                      <Text>{book.pages}</Text>
+                      <Text
+                        style={{
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
+                        {book.pages}
+                      </Text>
                     ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
+                      <Text
+                        style={{
+                          textDecorationLine: "line-through",
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
                         missing
                       </Text>
                     )}
@@ -137,14 +182,34 @@ function BookCard({ book }: { book: BookType }) {
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                          marginRight: 10,
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
                         Year
                       </Text>
                     </View>
                     {book.year ? (
-                      <Text>{book.year}</Text>
+                      <Text
+                        style={{
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
+                        {book.year}
+                      </Text>
                     ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
+                      <Text
+                        style={{
+                          textDecorationLine: "line-through",
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
                         missing
                       </Text>
                     )}
@@ -157,14 +222,34 @@ function BookCard({ book }: { book: BookType }) {
                     <View
                       style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      <Text
+                        style={{
+                          fontWeight: "bold",
+                          marginRight: 10,
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
                         Type
                       </Text>
                     </View>
                     {book.extension ? (
-                      <Text>{book.extension}</Text>
+                      <Text
+                        style={{
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
+                        {book.extension}
+                      </Text>
                     ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
+                      <Text
+                        style={{
+                          textDecorationLine: "line-through",
+                          color:
+                            LiveAppState.themeValue.get().colors.onBackground,
+                        }}
+                      >
                         missing
                       </Text>
                     )}
@@ -175,7 +260,7 @@ function BookCard({ book }: { book: BookType }) {
           </View>
         </TouchableNativeFeedback>
       </Link>
-    </Animatable.View>
+    </View>
   );
 }
 

@@ -22,6 +22,7 @@ export interface BookType {
   extension: string;
   size: string;
   language: string;
+  isbn: string;
 }
 
 export interface FullBookType {

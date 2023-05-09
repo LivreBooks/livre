@@ -18,7 +18,7 @@ function CategoryCard({
 }) {
   return (
     <Animatable.View
-      animation={"bounceIn"}
+      animation={"slideInUp"}
       delay={Math.min(10 * index, 500)}
       style={{ flex: 1, overflow: "hidden", borderRadius: 20, margin: 5 }}
     >
