@@ -116,6 +116,7 @@ const DownloadsBottomSheet = () => {
         backgroundStyle={{
           backgroundColor: theme.colors.surface,
           borderRadius: 20,
+          overflow: "hidden",
         }}
         handleIndicatorStyle={{
           width: "12%",

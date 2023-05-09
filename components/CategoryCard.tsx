@@ -19,7 +19,7 @@ function CategoryCard({
   return (
     <Animatable.View
       animation={"slideInUp"}
-      delay={Math.min(10 * index, 500)}
+      delay={Math.min(15 * index, 500)}
       style={{ flex: 1, overflow: "hidden", borderRadius: 20, margin: 5 }}
     >
       <TouchableNativeFeedback

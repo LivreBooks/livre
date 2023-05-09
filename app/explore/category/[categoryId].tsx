@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
-import { View, Image, FlatList, Dimensions } from "react-native";
+import { View, Image, FlatList, Dimensions, BackHandler } from "react-native";
 import { CategoryType, SubCategoryType } from "../../../types";
 import { Card, Searchbar, Text } from "react-native-paper";
 import CategoryCardSkeleton from "../../../components/CategoryCardSkeleton";
@@ -49,6 +49,10 @@ export default function Category() {
 
   useEffect(() => {
     getCategory();
+    BackHandler.addEventListener("hardwareBackPress", () => {
+      router.back();
+      return true;
+    });
   }, []);
 
   return (

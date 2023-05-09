@@ -94,7 +94,6 @@ export default function Categories() {
               borderRadius: 20,
               marginBottom: 10,
             }}
-            theme={LiveAppState.themeValue.get()}
           />
         </Animatable.View>
 

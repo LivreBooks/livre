@@ -104,3 +104,8 @@ export interface ReaderTheme {
   backgroundColor: string;
   textColor: string;
 }
+
+export interface RecommendationCategory {
+  category: string;
+  books: FullBookType[];
+}

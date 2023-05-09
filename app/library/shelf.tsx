@@ -230,7 +230,6 @@ const DownloadViewerBottomSheet = ({
       style={{ marginBottom: 20 }}
       backgroundStyle={{
         backgroundColor: LiveAppState.themeValue.get().colors.surface,
-        borderRadius: 0,
       }}
       handleIndicatorStyle={{
         width: "12%",
@@ -317,7 +316,7 @@ const DownloadViewerBottomSheet = ({
             >
               Delete
             </Button>
-            <ScrollView style={{ opacity: 0.9, height: "37%" }}>
+            <View style={{ opacity: 0.9, height: "37%" }}>
               <View
                 style={{
                   backgroundColor:
@@ -517,10 +516,12 @@ const DownloadViewerBottomSheet = ({
                   Description
                 </Text>
                 {download.book.descr && (
-                  <Text>{download.book.descr.replace(/<[^>]*>/g, "")}</Text>
+                  <ScrollView>
+                    <Text>{download.book.descr.replace(/<[^>]*>/g, "")}</Text>
+                  </ScrollView>
                 )}
               </View>
-            </ScrollView>
+            </View>
           </View>
         </View>
       </View>

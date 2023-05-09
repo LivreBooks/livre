@@ -9,7 +9,7 @@ import {
   ToastAndroid,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { theme } from "../../../../../constants";
+import { theme } from "../constants";
 import {
   ActivityIndicator,
   Button,
@@ -17,31 +17,31 @@ import {
   ProgressBar,
   Text,
 } from "react-native-paper";
-import { DownloadsStore, LiveAppState } from "../../../../../store/store";
+import { DownloadsStore, LiveAppState } from "../store/store";
 import { Feather, Foundation } from "@expo/vector-icons";
-import { dowloadBook, trimText } from "../../../../../utils";
-import { DownloadType, FullBookType } from "../../../../../types";
+import { dowloadBook, trimText } from "../utils";
+import { BookType, DownloadType, FullBookType } from "../types";
 import { useRouter, useSegments } from "expo-router";
-import BaseImage from "../../../../../components/BaseImage";
+import BaseImage from "./BaseImage";
 import { useObservable } from "@legendapp/state/react";
-import { getBook, getDownloadLinks } from "../../../../../services/services";
-import BasePage from "../../../../../components/BasePage";
+import { getBook, getDownloadLinks } from "../services/services";
+import BasePage from "./BasePage";
 
 const { width: sWidth, height: sHeight } = Dimensions.get("screen");
 
-const BookPage = () => {
+const BookDetails = ({
+  bookPreview = null,
+  fullBook = null,
+}: {
+  bookPreview?: BookType;
+  fullBook?: FullBookType;
+}) => {
   const router = useRouter();
-  const segments = useSegments();
-
-  const bookPreview = LiveAppState.selectedBookPreInfo.get();
 
   console.log(LiveAppState.selectedBookPreInfo.get());
 
   const [loading, setLoading] = useState(false);
   const [fetchinDownloadLinks, setFetchinDownloadLinks] = useState(false);
-  const [fullBook, setFullBook] = useState<FullBookType>(
-    LiveAppState.selectedBookRecommendation.get()
-  );
   const [downloadedFilepath, setDownloadedFilepath] = useState(null);
   const [downloadProgress, setDownloadProgress] = useState(null);
 
@@ -67,22 +67,22 @@ const BookPage = () => {
     } catch (error) {}
   }
 
-  function fetchFullBook() {
-    console.log("Fetching:" + bookPreview.id);
-    setLoading(true);
-    getBook(bookPreview.id)
-      .then((data) => {
-        data.coverurl = bookPreview.cover;
-        setFullBook(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
-        checkIfDownloaded();
-      });
-  }
+  //   function fetchFullBook() {
+  //     console.log("Fetching:" + bookPreview.id);
+  //     setLoading(true);
+  //     getBook(bookPreview.id)
+  //       .then((data) => {
+  //         data.coverurl = bookPreview.cover;
+  //         setFullBook(data);
+  //       })
+  //       .catch((err) => {
+  //         console.log(err);
+  //       })
+  //       .finally(() => {
+  //         setLoading(false);
+  //         checkIfDownloaded();
+  //       });
+  //   }
 
   function fetchDownloadLinks() {
     setFetchinDownloadLinks(true);
@@ -110,23 +110,12 @@ const BookPage = () => {
       ToastAndroid.show("Book Not Found", ToastAndroid.SHORT);
     }
   }
-  useLayoutEffect(() => {
-    console.log("Loaded book");
-    if (!fullBook) {
-      fetchFullBook();
-    }
-  }, []);
-
-  useEffect(() => {
-    const handler = BackHandler.addEventListener("hardwareBackPress", () => {
-      console.log(segments);
-      router.back();
-      return true;
-    });
-    return () => {
-      handler.remove();
-    };
-  }, []);
+  //   useLayoutEffect(() => {
+  //     console.log("Loaded book");
+  //     if (!fullBook) {
+  //       fetchFullBook();
+  //     }
+  //   }, []);
 
   return (
     <BasePage styles={{ paddingHorizontal: 0, paddingTop: 0 }}>
@@ -472,4 +461,4 @@ const BookPage = () => {
   );
 };
 
-export default BookPage;
+export default BookDetails;
