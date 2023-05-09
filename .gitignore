@@ -62,3 +62,7 @@ buck-out/
 # Expo
 .expo/*
 web-build/
+
+
+#apks
+*.apk
