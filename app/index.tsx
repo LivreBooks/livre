@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   View,
   FlatList,
   Pressable,
   Image,
-  ScrollView,
   TouchableNativeFeedback,
   Dimensions,
   BackHandler,
+  Animated,
 } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -24,24 +24,49 @@ import { Link, useRouter } from "expo-router";
 import BaseImage from "../components/BaseImage";
 import BookDetails from "../components/BookDetails";
 import BottomSheet from "@gorhom/bottom-sheet";
+import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
   const [recommendations, setRecommendations] = useState<
     RecommendationCategory[]
   >([]);
-  const [loading, setLoading] = useState(false);
+  const [searching, setSearching] = useState(false);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [selectedBook, setSelectedBook] = useState<FullBookType>(null);
   const [selectedBook2, setSelectedBook2] = useState<BookType>(null);
 
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+  const H_MAX_HEIGHT = 190;
+  const H_MIN_HEIGHT = 70;
+  const H_SCROLL_DISTANCE = H_MAX_HEIGHT - H_MIN_HEIGHT;
+
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
+
+  const headerScrollHeight = scrollOffsetY.interpolate({
+    inputRange: [0, H_SCROLL_DISTANCE],
+    outputRange: [H_MAX_HEIGHT, H_MIN_HEIGHT],
+    extrapolate: "clamp",
+  });
+
+  const logoSize = scrollOffsetY.interpolate({
+    inputRange: [0, H_SCROLL_DISTANCE],
+    outputRange: [80, 0],
+    extrapolate: "clamp",
+  });
+
+  const headingSize = scrollOffsetY.interpolate({
+    inputRange: [0, H_SCROLL_DISTANCE],
+    outputRange: [32, 0],
+    extrapolate: "clamp",
+  });
 
   const [searchResults, setSearchResults] = useState<BookType[]>([]);
+  const onChangeSearch = (query: string) => setSearchQuery(query);
 
   function search() {
     layoutAnimate();
-    setLoading(true);
+    setSearching(true);
     setSearchResults([]);
     fetch(`https://livre.deno.dev/search/${searchQuery}`)
       .then((res) => res.json())
@@ -52,7 +77,7 @@ export default function Search() {
         console.log(err);
       })
       .finally(() => {
-        setLoading(false);
+        setSearching(false);
       });
   }
 
@@ -85,52 +110,50 @@ export default function Search() {
             height: "100%",
             width: "100%",
             justifyContent: "flex-start",
+            position: "relative",
           }}
         >
-          <View
-            style={{
-              flexDirection:
-                searchResults.length > 0 || loading ? "row" : "column",
-              width: "100%",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 5,
-            }}
-          >
-            {searchResults.length === 0 && loading == false && (
-              <Animatable.View
-                animation={"fadeInUp"}
-                style={{
-                  overflow: "hidden",
-                  marginBottom: 20,
-                  alignItems: "center",
-                }}
-              >
-                <Image
-                  source={require("../assets/logo.png")}
-                  style={{ width: 80, height: 80 }}
-                />
-                <Text
-                  variant={"displaySmall"}
-                  style={{
-                    color: LiveAppState.themeValue.get().colors.primary,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Livre
-                </Text>
-              </Animatable.View>
-            )}
+          {searchResults.length === 0 && searching == false && (
             <Animatable.View
               animation={"fadeInUp"}
-              delay={100}
-              style={{ width: "100%", alignItems: "center" }}
+              style={{
+                overflow: "hidden",
+                marginBottom: 20,
+                alignItems: "center",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: headerScrollHeight,
+                zIndex: 10,
+                backgroundColor:
+                  LiveAppState.themeValue.get().colors.background,
+              }}
             >
+              <Animated.Image
+                source={require("../assets/logo.png")}
+                style={{
+                  width: logoSize,
+                  height: logoSize,
+                }}
+              />
+              <Animated.Text
+                style={{
+                  color: LiveAppState.themeValue.get().colors.primary,
+                  fontWeight: "bold",
+                  fontSize: headingSize,
+                }}
+              >
+                Livre
+              </Animated.Text>
               <Searchbar
                 placeholder="Search"
                 onChangeText={onChangeSearch}
                 value={searchQuery}
-                style={{ borderRadius: 20, width: "95%" }}
+                style={{
+                  borderRadius: 20,
+                  width: "95%",
+                }}
                 inputStyle={{
                   fontSize: 16,
                 }}
@@ -153,8 +176,8 @@ export default function Search() {
                 )}
               />
             </Animatable.View>
-          </View>
-          {loading ? (
+          )}
+          {searching ? (
             <FlatList
               data={[1, 2, 3]}
               keyExtractor={(item) => item.toString()}
@@ -176,11 +199,20 @@ export default function Search() {
           )}
           {recommendations.length > 0 &&
             searchResults.length === 0 &&
-            loading === false && (
-              <Recommendations
-                categories={recommendations}
-                selectBook={(book) => setSelectedBook(book)}
-              />
+            searching === false && (
+              <ScrollView
+                onScroll={Animated.event(
+                  [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+                  { useNativeDriver: false }
+                )}
+              >
+                <View style={{ paddingTop: H_MAX_HEIGHT }}>
+                  <Recommendations
+                    categories={recommendations}
+                    selectBook={(book) => setSelectedBook(book)}
+                  />
+                </View>
+              </ScrollView>
             )}
         </View>
       </BasePage>
@@ -206,17 +238,43 @@ function Recommendations({
   selectBook: (value: FullBookType) => void;
 }) {
   const router = useRouter();
+  const [isVertical, setIsVertical] = React.useState(false);
+  const [isFast, setIsFast] = React.useState(false);
+  const [isAutoPlay, setIsAutoPlay] = React.useState(false);
+  const [isPagingEnabled, setIsPagingEnabled] = React.useState(true);
+  const ref = React.useRef<ICarouselInstance>(null);
 
+  const { width: PAGE_WIDTH } = Dimensions.get("window");
+
+  const card = {
+    width: PAGE_WIDTH / 2 - 40,
+    height: PAGE_WIDTH / 2 + 30,
+  };
+
+  const baseOptions = isVertical
+    ? ({
+        vertical: true,
+        width: card.width + 10,
+        height: card.height + 10,
+      } as const)
+    : ({
+        vertical: false,
+        width: card.width + 10,
+        height: card.height + 10,
+      } as const);
   return (
-    <ScrollView style={{ width: "100%" }}>
+    <View style={{ width: "100%" }}>
       {categories.map((category) => {
         return (
-          <View style={{ width: "100%" }} key={category.category}>
+          <View
+            style={{ width: "100%", marginBottom: 20 }}
+            key={category.category}
+          >
             <Text
               style={{
-                fontSize: 24,
+                fontSize: 20,
                 color: LiveAppState.themeValue.get().colors.text,
-                fontWeight: "bold",
+                fontWeight: "700",
                 marginBottom: 10,
                 paddingLeft: 10,
               }}
@@ -229,56 +287,70 @@ function Recommendations({
                 flexDirection: "row",
                 flexWrap: "wrap",
                 justifyContent: "center",
+                paddingLeft: 10,
               }}
             >
-              {category.books.map((book) => (
-                <View
-                  key={book.id}
-                  style={{
-                    marginHorizontal: 0,
-                    marginBottom: 20,
-                    borderRadius: 15,
-                    width: "50%",
-                    overflow: "hidden",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <TouchableNativeFeedback
-                    onPress={() => {
-                      console.log("Clicked");
-                      selectBook(book);
+              <Carousel
+                {...baseOptions}
+                loop
+                ref={ref}
+                testID={"xxx"}
+                style={{ width: "100%" }}
+                autoPlay={isAutoPlay}
+                autoPlayInterval={isFast ? 100 : 2000}
+                data={category.books}
+                pagingEnabled={isPagingEnabled}
+                renderItem={({ index, item: book }) => (
+                  <View
+                    key={book.id}
+                    style={{
+                      marginHorizontal: 0,
+                      marginBottom: 20,
+                      borderRadius: 15,
+                      overflow: "hidden",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: card.height,
+                      width: card.width,
                     }}
-                    background={TouchableNativeFeedback.Ripple(
-                      LiveAppState.themeValue.get().colors.primaryContainer,
-                      false
-                    )}
                   >
-                    <BaseImage
-                      style={{
-                        height: Dimensions.get("screen").width / 2 + 40,
-                        width: Dimensions.get("screen").width / 2 - 30,
-                        borderRadius: 10,
+                    <TouchableNativeFeedback
+                      onPress={() => {
+                        console.log("Clicked");
+                        console.log(book);
+                        selectBook(book);
                       }}
-                      source={{
-                        uri: `https://libgen.rs/covers/${book.coverurl}`,
-                      }}
-                      placeholderStyles={{
-                        height: Dimensions.get("screen").width / 2 + 50,
-                        width: Dimensions.get("screen").width / 2 - 20,
-                        borderRadius: 10,
-                        top: 10,
-                        left: 10,
-                      }}
-                    />
-                  </TouchableNativeFeedback>
-                </View>
-              ))}
+                      background={TouchableNativeFeedback.Ripple(
+                        LiveAppState.themeValue.get().colors.primaryContainer,
+                        false
+                      )}
+                    >
+                      <BaseImage
+                        style={{
+                          height: "100%",
+                          width: "100%",
+                          borderRadius: 10,
+                        }}
+                        source={{
+                          uri: book.coverurl,
+                        }}
+                        placeholderStyles={{
+                          height: "100%",
+                          width: "100%",
+                          borderRadius: 10,
+                          top: 10,
+                          left: 10,
+                        }}
+                      />
+                    </TouchableNativeFeedback>
+                  </View>
+                )}
+              />
             </View>
           </View>
         );
       })}
-    </ScrollView>
+    </View>
   );
 }
 

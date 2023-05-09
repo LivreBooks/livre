@@ -139,6 +139,7 @@ export async function dowloadBook(
   fullBook: FullBookType,
   links: DownloadLink[]
 ) {
+  console.log("Beginning");
   const downloadId = Math.floor(Math.random() * 1000);
 
   const download: DownloadType = {
@@ -149,8 +150,10 @@ export async function dowloadBook(
     filepath: null,
   };
 
+  console.log(fullBook.coverurl);
   DownloadsStore.downloads.set([download, ...DownloadsStore.downloads.get()]);
-
+  console.log("Startig cover");
+  return;
   const base64Cover = await downloadFileAsBase64(fullBook.coverurl);
   DownloadsStore.downloads[0].book.base64Cover.set(
     `data:image/jpeg;base64,${base64Cover}`

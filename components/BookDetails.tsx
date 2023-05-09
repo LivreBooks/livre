@@ -45,10 +45,12 @@ const BookDetails = ({
   const [downloadedFilepath, setDownloadedFilepath] = useState(null);
   const [downloadProgress, setDownloadProgress] = useState(null);
 
+  const [book] = useState(bookPreview || fullBook);
+
   DownloadsStore.downloads.onChange((downloads) => {
     const found = downloads
       .filter((download) => (download ? true : false))
-      .find((download) => download.book.id === bookPreview.id);
+      .find((download) => download.book.id === book.id);
     if (found) {
       setDownloadedFilepath(found.filepath);
       setDownloadProgress(found.progress);
@@ -90,6 +92,7 @@ const BookDetails = ({
     fetch(`https://livre.deno.dev/download/${fullBook.md5}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         dowloadBook(fullBook, data);
       })
       .catch((err) => {
@@ -138,9 +141,7 @@ const BookDetails = ({
             >
               <BaseImage
                 source={{
-                  uri:
-                    bookPreview?.cover ||
-                    `https://libgen.rs/covers/${fullBook.coverurl}`,
+                  uri: bookPreview?.cover || fullBook.coverurl,
                 }}
                 style={{
                   height: "100%",
@@ -163,9 +164,7 @@ const BookDetails = ({
               >
                 <BaseImage
                   source={{
-                    uri:
-                      bookPreview?.cover ||
-                      `https://libgen.rs/covers/${fullBook.coverurl}`,
+                    uri: bookPreview?.cover || fullBook.coverurl,
                   }}
                   style={{ height: "95%", width: "40%", borderRadius: 10 }}
                   placeholderStyles={{ height: "95%", width: "40%" }}
@@ -334,7 +333,10 @@ const BookDetails = ({
                       </Text>
                     </View>
                     {bookPreview?.size || fullBook.filesize ? (
-                      <Text>{bookPreview?.size || fullBook.filesize}</Text>
+                      <Text>
+                        {bookPreview?.size ||
+                          (parseInt(fullBook.filesize) / 1e6).toFixed(2)}
+                      </Text>
                     ) : (
                       <Text style={{ textDecorationLine: "line-through" }}>
                         missing

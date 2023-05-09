@@ -17,8 +17,17 @@ function SubCategory() {
   const [books, setBooks] = useState<BookType[]>([]);
   const skeletons = Array.from({ length: 3 }, (_, i) => i);
 
-  const headerHeight = useRef(new Animated.Value(200)).current;
-  const scrollY = useRef(new Animated.Value(0)).current;
+  const H_MAX_HEIGHT = 190;
+  const H_MIN_HEIGHT = 50;
+  const H_SCROLL_DISTANCE = H_MAX_HEIGHT - H_MIN_HEIGHT;
+
+  const scrollOffsetY = useRef(new Animated.Value(0)).current;
+
+  const headerScrollHeight = scrollOffsetY.interpolate({
+    inputRange: [0, H_SCROLL_DISTANCE],
+    outputRange: [H_MAX_HEIGHT, H_MIN_HEIGHT],
+    extrapolate: "clamp",
+  });
 
   const [subcategory, setSubcategory] = useState(useSearchParams());
 
@@ -51,9 +60,19 @@ function SubCategory() {
         style={{
           height: "100%",
           width: "100%",
+          position: "relative",
         }}
       >
-        <View style={{ marginBottom: 10, height: 200 }}>
+        <Animated.View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: headerScrollHeight,
+            zIndex: 999,
+          }}
+        >
           <BaseImage
             source={{
               uri: `https://source.unsplash.com/random/400x200/?${encodeURI(
@@ -81,25 +100,26 @@ function SubCategory() {
               {subcategory.name}
             </Text>
           </LinearGradient>
-        </View>
+        </Animated.View>
         {loading ? (
           <FlatList
             data={skeletons}
             keyExtractor={(item) => item.toString()}
             renderItem={() => <BookCardSkeleton />}
+            contentContainerStyle={{ paddingTop: H_MAX_HEIGHT }}
           />
         ) : (
           <FlashList
             onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-              {
-                useNativeDriver: false,
-              }
+              [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
+              { useNativeDriver: false }
             )}
+            scrollEventThrottle={16}
             data={books}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <BookCard book={item} />}
             estimatedItemSize={250}
+            contentContainerStyle={{ paddingTop: H_MAX_HEIGHT }}
           />
         )}
       </View>
