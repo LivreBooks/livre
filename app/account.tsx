@@ -19,15 +19,16 @@ const account = () => {
   const [userInfo, setUserInfo] = useState(null);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
-    androidClientId: "GOOGLE_GUID.apps.googleusercontent.com",
-    iosClientId: "GOOGLE_GUID.apps.googleusercontent.com",
-
+    androidClientId: "119960243223-vvjr9qm1qt7ekcennt9mb6q0vnnhva85.apps.googleusercontent.com",
   });
 
   useEffect(() => {
     if (response?.type === "success") {
       setToken(response.authentication.accessToken);
+      console.log({ token: response.authentication.accessToken })
       getUserInfo();
+    } else {
+      console.log("Error")
     }
   }, [response, token]);
 
@@ -41,6 +42,7 @@ const account = () => {
       );
 
       const user = await response.json();
+      console.log(user)
       setUserInfo(user);
     } catch (error) {
       // Add your own error handler here
@@ -108,8 +110,8 @@ const account = () => {
             />
           </View>
         </View>
-        <View>
-          <Button icon={"google"} buttonColor={'white'}> Sign In With Google </Button>
+        <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: 20 }}>
+          <Button icon={"google"} buttonColor={'white'} onPress={() => promptAsync()}> Sign In With Google </Button>
         </View>
       </View>
     </BasePage>

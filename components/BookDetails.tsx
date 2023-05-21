@@ -23,7 +23,7 @@ import { BookType, DownloadType, FullBookType } from "../types";
 import { useRouter, useSegments } from "expo-router";
 import BaseImage from "./BaseImage";
 import { useObservable } from "@legendapp/state/react";
-import { getBook, getDownloadLinks } from "../services/services";
+import { getBook } from "../services/services";
 import BasePage from "./BasePage";
 import { ScrollView } from "react-native-gesture-handler";
 

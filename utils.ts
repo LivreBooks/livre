@@ -1,59 +1,10 @@
 import * as FileSystem from "expo-file-system";
-import { LayoutAnimation, PermissionsAndroid, Platform } from "react-native";
-import RNFetchBlob from "rn-fetch-blob";
-import * as Permissions from "expo-permissions";
+import { LayoutAnimation, PermissionsAndroid } from "react-native";
 import RNFS from "react-native-fs";
 
 import { DownloadsStore } from "./store/store";
-
 import { BookType, DownloadLink, DownloadType, FullBookType } from "./types";
 
-// export async function downloadFile(
-//   id: number,
-//   url: string,
-//   fileName: string,
-//   fileType: string,
-//   onProgress: (id: number, progress: number) => void
-// ) {
-//   const customDirectoryName = "livre";
-
-//   let documentDirectoryPath = FileSystem.documentDirectory;
-//   if (Platform.OS === "android") {
-//     documentDirectoryPath = documentDirectoryPath.replace("file://", "");
-//   }
-
-//   const fileInfo = await FileSystem.getInfoAsync(
-//     `${documentDirectoryPath}${customDirectoryName}`
-//   );
-//   if (!fileInfo.exists) {
-//     await FileSystem.makeDirectoryAsync(
-//       `${documentDirectoryPath}${customDirectoryName}`,
-//       { intermediates: true }
-//     );
-//   }
-
-//   const fileUri = `${documentDirectoryPath}${customDirectoryName}/${fileName}.${fileType}`;
-
-//   const downloadResumable = FileSystem.createDownloadResumable(
-//     url,
-//     fileUri,
-//     {},
-//     (downloadProgress) => {
-//       const progress =
-//         downloadProgress.totalBytesWritten /
-//         downloadProgress.totalBytesExpectedToWrite;
-//       onProgress(id, progress);
-//     }
-//   );
-
-//   try {
-//     const { uri } = await downloadResumable.downloadAsync();
-//     console.log("Uri: " + uri);
-//     return { uri, id };
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
 
 export async function downloadFile(
   id: number,
@@ -122,9 +73,9 @@ async function requestExternalStoragePermission() {
 
     if (
       granted["android.permission.READ_EXTERNAL_STORAGE"] !==
-        PermissionsAndroid.RESULTS.GRANTED ||
+      PermissionsAndroid.RESULTS.GRANTED ||
       granted["android.permission.WRITE_EXTERNAL_STORAGE"] !==
-        PermissionsAndroid.RESULTS.GRANTED
+      PermissionsAndroid.RESULTS.GRANTED
     ) {
       // If the user denied one or both permissions, exit the function
       return false;
