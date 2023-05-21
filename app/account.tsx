@@ -4,11 +4,49 @@ import BasePage from "../components/BasePage";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import { LiveAppState, SettingsStore } from "../store/store";
-import { Card, SegmentedButtons, Switch, Text } from "react-native-paper";
+import { Button, Card, SegmentedButtons, Switch, Text } from "react-native-paper";
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
 import { theme } from "../constants";
+
+
+WebBrowser.maybeCompleteAuthSession();
 
 const account = () => {
   const [theme, setTheme] = useState(SettingsStore.theme.get());
+
+  const [token, setToken] = useState("");
+  const [userInfo, setUserInfo] = useState(null);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    androidClientId: "GOOGLE_GUID.apps.googleusercontent.com",
+    iosClientId: "GOOGLE_GUID.apps.googleusercontent.com",
+
+  });
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      setToken(response.authentication.accessToken);
+      getUserInfo();
+    }
+  }, [response, token]);
+
+  const getUserInfo = async () => {
+    try {
+      const response = await fetch(
+        "https://www.googleapis.com/userinfo/v2/me",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const user = await response.json();
+      setUserInfo(user);
+    } catch (error) {
+      // Add your own error handler here
+      console.log(error)
+    }
+  };
 
   return (
     <BasePage>
@@ -69,6 +107,9 @@ const account = () => {
               ]}
             />
           </View>
+        </View>
+        <View>
+          <Button icon={"google"} buttonColor={'white'}> Sign In With Google </Button>
         </View>
       </View>
     </BasePage>

@@ -9,7 +9,6 @@
     "plugins": [
       "@config-plugins/react-native-blob-util",
       "@config-plugins/react-native-pdf",
-      "@react-native-google-signin/google-signin"
     ],
     "android": {
       "icon": "./assets/logo.png",
