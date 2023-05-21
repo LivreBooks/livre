@@ -173,6 +173,12 @@ function AppLayout() {
                 },
               }}
             />
+            <Tabs.Screen
+              name="[...unmatched]"
+              options={{
+                title: "404",
+              }}
+            />
           </Tabs>
         </SafeAreaView>
       </PaperProvider>
