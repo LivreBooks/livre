@@ -24,7 +24,6 @@
         "android.permission.ACCESS_NETWORK_STATE"
       ],
       "package": "com.justpatrick.livre",
-      "googleServicesFile": "./google-services.json"
     },
     "extra": {
       "eas": {
