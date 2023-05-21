@@ -88,6 +88,7 @@ export default function Search() {
                 icon={"filter-outline"}
                 onChangeText={onChangeFilter}
                 value={filterQuery}
+                theme={LiveAppState.themeValue.get()}
                 style={{
                   borderRadius: 20,
                   marginBottom: 5,

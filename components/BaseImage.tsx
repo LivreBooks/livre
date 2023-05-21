@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Image, ImageProps, StyleSheet, ImageStyle } from "react-native";
+import { LiveAppState } from "../store/store";
 
 type CustomImageProps = {
   source: ImageProps["source"];
@@ -22,8 +23,7 @@ const BaseImage = ({
   return (
     <>
       {isLoading && (
-        <Image
-          source={defaultImage || require("../assets/defaultPageImage.jpg")}
+        <View
           style={{
             position: "absolute",
             height: 200,
@@ -31,14 +31,29 @@ const BaseImage = ({
             top: 0,
             left: 0,
             ...placeholderStyles,
+            backgroundColor: LiveAppState.themeValue.get().colors.surfaceVariant
           }}
-          blurRadius={40}
-          resizeMode="cover"
-        />
+        >
+        </View>
       )}
       <Image source={source} onLoad={handleLoad} {...rest} />
     </>
   );
 };
+
+
+// {/* <Image */}
+// {/*   source={defaultImage || require("../assets/defaultPageImage.jpg")} */}
+// {/*   style={{ */}
+// {/*     position: "absolute", */}
+// {/*     height: 200, */}
+// {/*     width: 130, */}
+// {/*     top: 0, */}
+// {/*     left: 0, */}
+// {/*     ...placeholderStyles, */}
+// {/*   }} */}
+// {/*   blurRadius={40} */}
+// {/*   resizeMode="cover" */}
+// {/* /> */}
 
 export default BaseImage;

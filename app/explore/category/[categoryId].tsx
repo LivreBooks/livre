@@ -18,6 +18,7 @@ import { cardColors, theme } from "../../../constants";
 import { ExploreStore, LiveAppState } from "../../../store/store";
 import BaseImage from "../../../components/BaseImage";
 import BasePage from "../../../components/BasePage";
+import CollapsiblePageHeader from "../../../components/CollapsiblePageHeader";
 
 const { width: screenWidth } = Dimensions.get("screen");
 
@@ -36,8 +37,8 @@ export default function Category() {
     subCategories: [],
   });
 
-  const H_MAX_HEIGHT = 250;
-  const H_MIN_HEIGHT = 100;
+  const H_MAX_HEIGHT = 180;
+  const H_MIN_HEIGHT = 50;
   const H_SCROLL_DISTANCE = H_MAX_HEIGHT - H_MIN_HEIGHT;
 
   const scrollOffsetY = useRef(new Animated.Value(0)).current;
@@ -84,58 +85,14 @@ export default function Category() {
           position: "relative",
         }}
       >
-        <Animated.View
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: headerScrollHeight,
-            zIndex: 999,
-          }}
-        >
-          <View
-            style={{
-              width: "100%",
-              height: "75%",
-              marginBottom: 10,
-            }}
-          >
-            <BaseImage
-              source={{
-                uri: `https://source.unsplash.com/random/${screenWidth + 100}x${
-                  screenWidth + 100
-                }/?${encodeURI(category.name.toLowerCase())}`,
-              }}
-              resizeMode="cover"
-              style={{ flex: 1 }}
-              placeholderStyles={{ width: "100%", height: 200 }}
-            />
-            <LinearGradient
-              colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.7)"]}
-              style={{
-                position: "absolute",
-                left: 0,
-                bottom: 0,
-                padding: 10,
-                width: "100%",
-                display: isLoading ? "none" : "flex",
-              }}
-            >
-              <Text
-                variant="headlineMedium"
-                style={{ fontWeight: "900", color: "white" }}
-              >
-                {category.name}
-              </Text>
-            </LinearGradient>
-          </View>
+        <CollapsiblePageHeader title={category.name} scrollOffsetY={scrollOffsetY}>
           {category.subCategories.length > 10 && (
             <Searchbar
               placeholder="Filter"
               icon={"filter-outline"}
               onChangeText={onChangeFilter}
               value={filterQuery}
+              theme={LiveAppState.themeValue.get()}
               style={{
                 borderRadius: 20,
                 marginHorizontal: 10,
@@ -144,10 +101,9 @@ export default function Category() {
                 fontSize: 16,
                 marginLeft: -10,
               }}
-              theme={LiveAppState.themeValue.get()}
             />
           )}
-        </Animated.View>
+        </CollapsiblePageHeader>
         <View style={{ flex: 1, width: "100%" }}>
           <ScrollView
             onScroll={Animated.event(
@@ -159,7 +115,7 @@ export default function Category() {
           >
             <View
               style={{
-                paddingTop: H_MAX_HEIGHT + 10,
+                paddingTop: H_MAX_HEIGHT + 75,
                 width: Dimensions.get("screen").width,
                 paddingHorizontal: 10,
               }}

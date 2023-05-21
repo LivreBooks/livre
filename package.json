@@ -16,6 +16,7 @@
     "@gorhom/bottom-sheet": "^4.4.5",
     "@legendapp/state": "^0.23.4",
     "@miblanchard/react-native-slider": "^2.3.1",
+    "@react-native-google-signin/google-signin": "^9.0.2",
     "@react-navigation/material-bottom-tabs": "^6.2.15",
     "@shopify/flash-list": "1.4.0",
     "css-select": "^5.1.0",

@@ -64,17 +64,26 @@ function AppLayout() {
   });
 
   useEffect(() => {
-    if (theme === "auto") {
-      console.log(preferredTheme);
-      if (preferredTheme === "dark") {
+    setTheme(SettingsStore.theme.get())
+    console.log(SettingsStore.theme.get());
+    if (SettingsStore.theme.get() === "auto") {
+      if (SettingsStore.theme.get() === "dark") {
         LiveAppState.themeValue.set(darkMode);
       }
 
-      if (preferredTheme === "light") {
+      if (SettingsStore.theme.get() === "light") {
+        LiveAppState.themeValue.set(lightMode);
+      }
+    } else {
+      if (SettingsStore.theme.get() === "dark") {
+        LiveAppState.themeValue.set(darkMode);
+      }
+
+      if (SettingsStore.theme.get() === "light") {
         LiveAppState.themeValue.set(lightMode);
       }
     }
-  }, []);
+  }, [theme]);
 
   return (
     <ThemeProvider value={LiveAppState.themeValue.get()}>

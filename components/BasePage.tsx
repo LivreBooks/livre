@@ -8,9 +8,9 @@ import { LiveAppState, SettingsStore } from "../store/store";
 function BasePage(props: {
   styles?: ViewStyle;
   children:
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | React.ReactFragment
-    | React.ReactPortal;
+  | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+  | React.ReactFragment
+  | React.ReactPortal;
 }) {
   const [theme, setTheme] = useState(SettingsStore.theme.get());
 
@@ -19,8 +19,8 @@ function BasePage(props: {
   });
 
   useEffect(() => {
-    console.log("Rerender");
-  }, []);
+    console.log("Base Page Rerender");
+  }, [theme]);
   return (
     <SafeAreaProvider>
       <View

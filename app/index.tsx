@@ -3,29 +3,29 @@ import {
   View,
   FlatList,
   Pressable,
-  Image,
+  StyleSheet,
   TouchableNativeFeedback,
   Dimensions,
   BackHandler,
   Animated,
 } from "react-native";
 import { Searchbar, Text } from "react-native-paper";
-import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import BookCard from "../components/BookCard";
 import BookCardSkeleton from "../components/BookCardSkeleton";
-import { theme } from "../constants";
 import { BookType, FullBookType, RecommendationCategory } from "../types";
 import { layoutAnimate, sortBooksByCompleteness, trimText } from "../utils";
 import BasePage from "../components/BasePage";
 import { LiveAppState } from "../store/store";
 import book from "epubjs/types/book";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import BaseImage from "../components/BaseImage";
 import BookDetails from "../components/BookDetails";
 import BottomSheet from "@gorhom/bottom-sheet";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { ScrollView } from "react-native-gesture-handler";
+import SkeletonLoader from "expo-skeleton-loader";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -65,13 +65,18 @@ export default function Search() {
   const onChangeSearch = (query: string) => setSearchQuery(query);
 
   function search() {
+    scrollOffsetY.setValue(0)
     layoutAnimate();
     setSearching(true);
     setSearchResults([]);
     fetch(`https://livre.deno.dev/search/${searchQuery}`)
       .then((res) => res.json())
       .then((data) => {
-        setSearchResults(sortBooksByCompleteness(data));
+        const books = data.filter(
+          (book) => book.extension === "pdf" || book.extension === "epub"
+        );
+
+        setSearchResults(sortBooksByCompleteness(books));
       })
       .catch((err) => {
         console.log(err);
@@ -117,7 +122,7 @@ export default function Search() {
             animation={"fadeInUp"}
             style={{
               overflow: "hidden",
-              marginBottom: 20,
+              marginBottom: 40,
               alignItems: "center",
               position: "absolute",
               top: 0,
@@ -147,9 +152,11 @@ export default function Search() {
               placeholder="Search"
               onChangeText={onChangeSearch}
               value={searchQuery}
+              theme={LiveAppState.themeValue.get()}
               style={{
                 borderRadius: 20,
                 width: "95%",
+                marginTop: 10,
               }}
               inputStyle={{
                 fontSize: 16,
@@ -162,6 +169,7 @@ export default function Search() {
                     layoutAnimate();
                     setSearchResults([]);
                     setSearchQuery("");
+                    scrollOffsetY.setValue(0);
                   }}
                 >
                   <MaterialCommunityIcons
@@ -179,7 +187,7 @@ export default function Search() {
               keyExtractor={(item) => item.toString()}
               renderItem={() => <BookCardSkeleton />}
               contentContainerStyle={{
-                paddingTop: H_MAX_HEIGHT - 10,
+                paddingTop: H_MAX_HEIGHT,
               }}
             />
           )}
@@ -190,7 +198,7 @@ export default function Search() {
                 { useNativeDriver: false }
               )}
               contentContainerStyle={{
-                paddingTop: H_MAX_HEIGHT - 10,
+                paddingTop: H_MAX_HEIGHT,
               }}
               data={searchResults}
               keyExtractor={(item) => item.id}
@@ -198,7 +206,7 @@ export default function Search() {
                 <BookCard
                   book={item}
                   onPress={(book) => {
-                    setSelectedBook(book);
+                    setSelectedBook2(book);
                   }}
                 />
               )}
@@ -206,14 +214,14 @@ export default function Search() {
           )}
           {recommendations.length > 0 &&
             searchResults.length === 0 &&
-            searching === false && (
+            searching === false && loadingRecommendations == false && (
               <ScrollView
                 onScroll={Animated.event(
                   [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
                   { useNativeDriver: false }
                 )}
               >
-                <View style={{ paddingTop: H_MAX_HEIGHT }}>
+                <View style={{ paddingTop: H_MAX_HEIGHT + 10 }}>
                   <Recommendations
                     categories={recommendations}
                     selectBook={(book) => setSelectedBook(book)}
@@ -221,6 +229,12 @@ export default function Search() {
                 </View>
               </ScrollView>
             )}
+          {loadingRecommendations &&
+            <View style={{ paddingTop: 190 }}>
+              <RecommendationsSkeletonLoader />
+              <RecommendationsSkeletonLoader />
+            </View>
+          }
         </View>
       </BasePage>
       {(selectedBook || selectedBook2) && (
@@ -237,6 +251,13 @@ export default function Search() {
   );
 }
 
+const { width: PAGE_WIDTH } = Dimensions.get("window");
+
+const card = {
+  width: PAGE_WIDTH / 2 - 40,
+  height: PAGE_WIDTH / 2 + 30,
+};
+
 function Recommendations({
   categories,
   selectBook,
@@ -251,24 +272,18 @@ function Recommendations({
   const [isPagingEnabled, setIsPagingEnabled] = React.useState(true);
   const ref = React.useRef<ICarouselInstance>(null);
 
-  const { width: PAGE_WIDTH } = Dimensions.get("window");
-
-  const card = {
-    width: PAGE_WIDTH / 2 - 40,
-    height: PAGE_WIDTH / 2 + 30,
-  };
 
   const baseOptions = isVertical
     ? ({
-        vertical: true,
-        width: card.width + 10,
-        height: card.height + 10,
-      } as const)
+      vertical: true,
+      width: card.width + 10,
+      height: card.height + 10,
+    } as const)
     : ({
-        vertical: false,
-        width: card.width + 10,
-        height: card.height + 10,
-      } as const);
+      vertical: false,
+      width: card.width + 10,
+      height: card.height + 10,
+    } as const);
   return (
     <View style={{ width: "100%" }}>
       {categories.map((category) => {
@@ -374,7 +389,7 @@ function BookBottomSheet({
   onClose: () => void;
 }) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["100%"], []);
+  const snapPoints = useMemo(() => ["97%"], []);
 
   useEffect(() => {
     console.log("Visible");
@@ -404,7 +419,7 @@ function BookBottomSheet({
         borderRadius: 10,
       }}
       handleStyle={{
-        position: "absolute",
+        // position: "absolute",
       }}
       enablePanDownToClose
       onClose={() => {
@@ -415,3 +430,44 @@ function BookBottomSheet({
     </BottomSheet>
   );
 }
+
+
+function RecommendationsSkeletonLoader() {
+  return (
+    <View style={styles.container}>
+      <SkeletonLoader
+        boneColor={LiveAppState.themeValue.get().colors.surfaceVariant}
+        highlightColor={LiveAppState.themeValue.get().colors.surfaceVariant}
+        duration={1500}
+      >
+        <SkeletonLoader.Item style={styles.title} />
+        <SkeletonLoader.Container style={{ flexDirection: "row", width: "100%", }}>
+          <SkeletonLoader.Item style={styles.thumbnail} />
+          <SkeletonLoader.Item style={styles.thumbnail} />
+          <SkeletonLoader.Item style={styles.thumbnail} />
+        </SkeletonLoader.Container>
+      </SkeletonLoader>
+    </View>
+  )
+}
+
+
+const styles = {
+  container: {
+    padding: 5,
+    margin: 10,
+  },
+  thumbnail: {
+    width: card.width,
+    height: card.height,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  title: {
+    height: 30,
+    width: 200,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
+};
+

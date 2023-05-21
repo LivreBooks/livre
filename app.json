@@ -8,7 +8,8 @@
     "slug": "livre",
     "plugins": [
       "@config-plugins/react-native-blob-util",
-      "@config-plugins/react-native-pdf"
+      "@config-plugins/react-native-pdf",
+      "@react-native-google-signin/google-signin"
     ],
     "android": {
       "icon": "./assets/logo.png",
@@ -23,7 +24,8 @@
         "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
         "android.permission.ACCESS_NETWORK_STATE"
       ],
-      "package": "com.justpatrick.livre"
+      "package": "com.justpatrick.livre",
+      "googleServicesFile": "./google-services.json"
     },
     "extra": {
       "eas": {

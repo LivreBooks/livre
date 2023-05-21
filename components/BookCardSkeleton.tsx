@@ -8,8 +8,8 @@ const BookCardSkeleton = () => {
   return (
     <View style={styles.container}>
       <SkeletonLoader
-        boneColor={LiveAppState.themeValue.get().colors.secondary}
-        highlightColor={LiveAppState.themeValue.get().colors.primary}
+        boneColor={LiveAppState.themeValue.get().colors.surfaceVariant}
+        highlightColor={LiveAppState.themeValue.get().colors.surfaceVariant}
         style={{ flexDirection: "row" }}
       >
         <SkeletonLoader.Item style={styles.thumbnail} />
@@ -44,29 +44,29 @@ const styles = StyleSheet.create({
   },
   textContainer: {},
   title: {
-    height: 30,
-    width: "93%",
+    height: 50,
+    width: 150,
     marginBottom: 5,
     borderRadius: 5,
   },
   author: {
     height: 20,
-    width: "93%",
+    width: 150,
     borderRadius: 5,
     marginBottom: 15,
   },
   publisher: {
     height: 30,
-    width: "93%",
+    width: 150,
     borderRadius: 5,
   },
   splits: { flexDirection: "row", justifyContent: "space-between" },
   split: {
     height: 30,
-    width: 82,
+    width: 72,
     borderRadius: 5,
     marginTop: 5,
-    marginRight: 10,
+    marginRight: 5,
     flexDirection: "row",
     justifyContent: "space-between",
   },
