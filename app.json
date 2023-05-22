@@ -1,9 +1,6 @@
 {
   "expo": {
     "scheme": "livre",
-    "web": {
-      "bundler": "metro"
-    },
     "name": "Livre",
     "slug": "livre",
     "plugins": [

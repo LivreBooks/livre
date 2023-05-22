@@ -4,7 +4,7 @@ import {
   configureObservablePersistence,
   persistObservable,
 } from "@legendapp/state/persist";
-import { BookType, CategoryType, DownloadType, FullBookType } from "../types";
+import { BookType, CategoryType, DownloadType, FullBookType, UserType } from "../types";
 import mmkv from "react-native-mmkv";
 import { darkMode, lightMode } from "../constants";
 import { useColorScheme } from "react-native";
@@ -44,10 +44,12 @@ export const DownloadsStore = observable<DonwloadsStoreType>({
 
 interface SettingsStoreType {
   theme: "auto" | "light" | "dark";
+  user: UserType
 }
 
 export const SettingsStore = observable<SettingsStoreType>({
   theme: "auto",
+  user: null,
 });
 
 const theme = SettingsStore.theme.get();

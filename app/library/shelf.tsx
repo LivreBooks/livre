@@ -101,6 +101,15 @@ export default function Search() {
           )}
 
           {downloads && (
+            <View style={{ width: "100%", height: "80%", alignItems: 'center', justifyContent: 'center' }}>
+              <MaterialCommunityIcons name="package-variant" size={120} color={LiveAppState.themeValue.get().colors.onBackground} />
+              <Text theme={LiveAppState.themeValue.get()} style={{ fontSize: 20, fontWeight: "bold",marginTop:10, textAlign: 'center' }}> Your library is empty. Go to search and fill it up. </Text>
+            </View>
+          )
+
+          }
+
+          {downloads && (
             <FlatList
               numColumns={2}
               columnWrapperStyle={{

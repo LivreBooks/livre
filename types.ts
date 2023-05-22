@@ -1,3 +1,12 @@
+export interface UserType {
+  id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  phoneNumber?: string;
+  token: string;
+}
+
 export interface SubCategoryType {
   name: string;
   id: string;

@@ -19,7 +19,6 @@ function BasePage(props: {
   });
 
   useEffect(() => {
-    console.log("Base Page Rerender");
   }, [theme]);
   return (
     <SafeAreaProvider>

@@ -38,10 +38,8 @@ const { Navigator } = createMaterialBottomTabNavigator();
 function AppLayout() {
   const [theme, setTheme] = useState(SettingsStore.theme.get());
   const preferredTheme = useColorScheme();
-  console.log(preferredTheme);
 
   SettingsStore.theme.onChange((newTheme) => {
-    console.log("Something happened");
     if (newTheme === "dark") {
       LiveAppState.themeValue.set(darkMode);
     }
@@ -51,7 +49,6 @@ function AppLayout() {
     }
 
     if (newTheme === "auto") {
-      console.log(preferredTheme);
       if (preferredTheme === "dark") {
         LiveAppState.themeValue.set(darkMode);
       }
@@ -177,6 +174,7 @@ function AppLayout() {
               name="[...unmatched]"
               options={{
                 title: "404",
+                href: null,
               }}
             />
           </Tabs>

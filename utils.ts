@@ -2,7 +2,7 @@ import * as FileSystem from "expo-file-system";
 import { LayoutAnimation, PermissionsAndroid } from "react-native";
 import RNFS from "react-native-fs";
 
-import { DownloadsStore } from "./store/store";
+import { DownloadsStore, SettingsStore } from "./store/store";
 import { BookType, DownloadLink, DownloadType, FullBookType } from "./types";
 
 
@@ -53,6 +53,44 @@ export async function downloadFile(
   } catch (error) {
     console.error(error);
   }
+}
+
+interface DownloadRecord {
+  bookId: string;
+  bookName: string;
+  bookCover: string;
+}
+
+function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
+  if (SettingsStore.user.get() === null) {
+    return
+  }
+  return new Promise((resolve, reject) => {
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json")
+    fetch(`https://livre.deno.dev/record_download`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        bookId: record.bookId,
+        bookName: record.bookName,
+        bookCover: record.bookCover,
+        userId: SettingsStore.user.id.get()
+      })
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data)
+        resolve(data.data)
+      })
+      .catch((err) => {
+        reject(err)
+        console.log(err);
+      })
+      .finally(() => {
+        console.log("Account Request Done")
+      });
+  })
 }
 
 async function requestExternalStoragePermission() {
@@ -134,6 +172,8 @@ export async function dowloadBook(
 
   DownloadsStore.downloads[targetDownloadIndex].filepath.set(uri);
   DownloadsStore.downloads.set([...DownloadsStore.downloads.get()]);
+  const resp = await recordDownload({ bookId: fullBook.id, bookName: fullBook.title, bookCover: fullBook.coverurl })
+  console.log(resp)
 }
 
 export function trimText(text: string, maxLength: number) {

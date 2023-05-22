@@ -149,7 +149,7 @@ export default function Search() {
               Livre
             </Animated.Text>
             <Searchbar
-              placeholder="Search"
+              placeholder="Search a book or author"
               onChangeText={onChangeSearch}
               value={searchQuery}
               theme={LiveAppState.themeValue.get()}
