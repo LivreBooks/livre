@@ -4,16 +4,13 @@ import BaseViewer from "../../components/viewer/BaseViewer";
 import { DownloadsStore } from "../../store/store";
 import { useRouter, useSearchParams } from "expo-router";
 
-interface SearchParams {
-  downloadId: string;
-}
 const reader = () => {
   const router = useRouter();
   const { downloadId } = useSearchParams();
   console.log(downloadId);
-  const [download, setDowload] = useState(
+  const [download] = useState(
     DownloadsStore.get().downloads.find(
-      (download) => download.downloadId === parseInt(downloadId)
+      (download) => download.downloadId === parseInt(downloadId as string)
     )
   );
 
@@ -28,4 +25,3 @@ const reader = () => {
 
 export default reader;
 
-const styles = StyleSheet.create({});

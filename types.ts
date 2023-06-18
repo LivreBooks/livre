@@ -1,10 +1,10 @@
 export interface UserType {
   id: string;
-  name: string;
+  fullname: string;
   email: string;
-  avatar: string;
+  avatar_url: string;
   phoneNumber?: string;
-  token: string;
+  token?: string;
 }
 
 export interface SubCategoryType {
@@ -117,4 +117,171 @@ export interface ReaderTheme {
 export interface RecommendationCategory {
   category: string;
   books: FullBookType[];
+}
+
+export interface Account {
+  id: string;
+  fullname: string;
+  email: string;
+  created_at: string;
+  phone_number?: any;
+  avatar_url: string;
+  tokens: number;
+}
+
+export interface Download {
+  id: string;
+  book_id: string;
+  book_name: string;
+  book_cover: string;
+  book_author: string;
+  read_on: string;
+  user_id: string;
+}
+
+export interface Purchase {
+  id: string;
+  user_id: string;
+  price: number;
+  tokens: number;
+  purchase_date: string;
+  currency: string;
+  provider: string;
+}
+
+export interface UserProfile {
+  account: Account;
+  downloads: Download[];
+  purchases: Purchase[];
+}
+
+export interface NewUser {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
+}
+
+export interface GoogleUser {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
+  // Add any additional properties from the response if needed
+}
+
+export interface WebviewRequirements {
+  user_id: string;
+  tokens: number;
+  name: string;
+  avatar: string;
+  email: string;
+}
+
+export interface WebviewReturnType {
+  order: {
+    orderID: string;
+    payerID: string;
+    paymentID?: any;
+    billingToken?: any;
+    facilitatorAccessToken: string;
+    paymentSource: string;
+  };
+  transaction: {
+    id: string;
+    status: string;
+    payment_source: {
+      paypal: {
+        email_address: string;
+        account_id: string;
+        account_status: string;
+        name: {
+          given_name: string;
+          surname: string;
+          full_name?: string;
+        };
+        address: {
+          address_line_1: string;
+          admin_area_2: string;
+          admin_area_1: string;
+          postal_code: string;
+          country_code: string;
+        };
+      };
+    };
+    purchase_units: {
+      reference_id: string;
+      shipping: {
+        name: {
+          given_name: string;
+          surname: string;
+          full_name?: string;
+        };
+        address: {
+          address_line_1: string;
+          admin_area_2: string;
+          admin_area_1: string;
+          postal_code: string;
+          country_code: string;
+        };
+      };
+      payments: {
+        captures: {
+          id: string;
+          status: string;
+          amount: {
+            currency_code: string;
+            value: string;
+          };
+          final_capture: boolean;
+          seller_protection: {
+            status: string;
+            dispute_categories: string[];
+          };
+          seller_receivable_breakdown: {
+            gross_amount: {
+              currency_code: string;
+              value: string;
+            };
+            paypal_fee: {
+              currency_code: string;
+              value: string;
+            };
+            net_amount: {
+              currency_code: string;
+              value: string;
+            };
+          };
+          links: {
+            href: string;
+            rel: string;
+            method: string;
+          }[];
+          create_time: string;
+          update_time: string;
+        }[];
+      };
+    }[];
+    payer: {
+      name: {
+        given_name: string;
+        surname: string;
+        full_name?: string;
+      };
+      email_address: string;
+      payer_id: string;
+      address: {
+        address_line_1: string;
+        admin_area_2: string;
+        admin_area_1: string;
+        postal_code: string;
+        country_code: string;
+      };
+    };
+    links: {
+      href: string;
+      rel: string;
+      method: string;
+    }[];
+  };
 }

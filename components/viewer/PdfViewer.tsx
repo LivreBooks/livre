@@ -1,42 +1,27 @@
-import { Dimensions, Pressable, StyleSheet, View, Image } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import * as FileSystem from "expo-file-system";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Slider } from "@miblanchard/react-native-slider";
+import React, { useEffect, useRef } from "react";
 import Pdf from "react-native-pdf";
 
-import {
-  ActivityIndicator,
-  Button,
-  Card,
-  Chip,
-  IconButton,
-  ProgressBar,
-  Text,
-} from "react-native-paper";
-import { Foundation, MaterialCommunityIcons } from "@expo/vector-icons";
-import { overlayColors, readerThemes, theme } from "../../constants";
-import BottomSheet from "@gorhom/bottom-sheet";
-import { useObservable } from "@legendapp/state/react";
-import { Observable } from "@legendapp/state";
-import { layoutAnimate } from "../../utils";
+import { theme } from "../../constants";
 import ViewerLoading from "./ViewerLoading";
 
 const PdfViewer = ({
   fileUri,
   bookCover,
   page = 1,
+  setPages,
+  setCurrentpage,
 }: {
   fileUri: string;
   bookCover: string;
   page?: number;
+  setPages: (value: number) => void
+  setCurrentpage: (value: number) => void
 }) => {
   const pdfViewerRef = useRef(null);
 
   useEffect(() => {
-    console.log("---------");
-    console.log(fileUri);
-    console.log("---------");
-    console.log(decodeURIComponent(fileUri));
     FileSystem.getInfoAsync(fileUri)
       .then((fileinfo) => {
         console.log(fileinfo);
@@ -54,12 +39,11 @@ const PdfViewer = ({
         source={{ uri: `${decodeURIComponent(fileUri)}` }}
         enableAnnotationRendering
         onLoadComplete={(numberOfPages, filePath) => {
-          console.log(`Number of pages: ${numberOfPages}`);
-          // setTotalPages(numberOfPages);
+          setPages(numberOfPages)
         }}
         onPageChanged={(page, numberOfPages) => {
           console.log(`Current page: ${page}`);
-          // setCurrentPage(page);
+          setCurrentpage(page)
         }}
         onError={(error) => {
           console.log(error);

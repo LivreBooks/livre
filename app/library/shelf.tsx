@@ -1,14 +1,8 @@
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { View, Dimensions, TouchableOpacity, BackHandler } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
-import {
-  ActivityIndicator,
-  Card,
-  Button,
-  Searchbar,
-  Text,
-} from "react-native-paper";
+import { ActivityIndicator, Button, Searchbar, Text } from "react-native-paper";
 import Animated, {
   Extrapolate,
   interpolate,
@@ -16,7 +10,6 @@ import Animated, {
 } from "react-native-reanimated";
 import * as Animatable from "react-native-animatable";
 import BaseImage from "../../components/BaseImage";
-import { theme } from "../../constants";
 import { DownloadsStore, LiveAppState } from "../../store/store";
 import { DownloadType } from "../../types";
 import BottomSheet, { BottomSheetBackdropProps } from "@gorhom/bottom-sheet";
@@ -25,8 +18,9 @@ import {
   Foundation,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { trimText } from "../../utils";
 import BasePage from "../../components/BasePage";
+import { trimText } from "../../utils";
+import CustomBackdrop from "../../components/CustomBackdrop";
 
 const { width: sWidth, height: sHeight } = Dimensions.get("screen");
 const coverWidth = sWidth / 2 - 25;
@@ -40,7 +34,12 @@ export default function Search() {
   const [downloads, setDownloads] = useState<DownloadType[]>(
     DownloadsStore.downloads.get()
   );
+
   const [selectedDownload, setSelectedDownload] = useState<DownloadType>(null);
+
+  const [multiSelectedDownloads, setMultiSelectedDownloads] = useState<
+    DownloadType[]
+  >([]);
 
   DownloadsStore.downloads.onChange((downloads) => {
     setDownloads(downloads);
@@ -81,7 +80,7 @@ export default function Search() {
             </Text>
           </Animatable.View>
 
-          {downloads.length > 0 && (
+          {downloads && downloads.length > 0 && (
             <Animatable.View animation={"fadeInUp"} delay={10}>
               <Searchbar
                 placeholder="Filter"
@@ -100,16 +99,37 @@ export default function Search() {
             </Animatable.View>
           )}
 
-          {downloads && (
-            <View style={{ width: "100%", height: "80%", alignItems: 'center', justifyContent: 'center' }}>
-              <MaterialCommunityIcons name="package-variant" size={120} color={LiveAppState.themeValue.get().colors.onBackground} />
-              <Text theme={LiveAppState.themeValue.get()} style={{ fontSize: 20, fontWeight: "bold",marginTop:10, textAlign: 'center' }}> Your library is empty. Go to search and fill it up. </Text>
-            </View>
-          )
+          {downloads === null ||
+            (downloads.length === 0 && (
+              <View
+                style={{
+                  width: "100%",
+                  height: "80%",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  opacity: 0.8,
+                }}
+              >
+                <MaterialCommunityIcons
+                  name="package-variant"
+                  size={120}
+                  color={LiveAppState.themeValue.get().colors.onBackground}
+                />
+                <Text
+                  style={{
+                    fontSize: 20,
+                    marginTop: 10,
+                    textAlign: "center",
+                    color: LiveAppState.themeValue.get().colors.onBackground,
+                  }}
+                >
+                  {" "}
+                  Your library is empty. Go to search and fill it up.{" "}
+                </Text>
+              </View>
+            ))}
 
-          }
-
-          {downloads && (
+          {downloads && downloads.length > 0 && (
             <FlatList
               numColumns={2}
               columnWrapperStyle={{
@@ -137,7 +157,15 @@ export default function Search() {
                   animation={"fadeInUp"}
                   delay={Math.min(10 * index + 1, 500)}
                 >
-                  <TouchableOpacity onPress={() => setSelectedDownload(item)}>
+                  <TouchableOpacity
+                    onLongPress={() =>
+                      setMultiSelectedDownloads([
+                        ...multiSelectedDownloads,
+                        item,
+                      ])
+                    }
+                    onPress={() => setSelectedDownload(item)}
+                  >
                     <>
                       {item.filepath === null && (
                         <View
@@ -187,6 +215,7 @@ export default function Search() {
           )}
         </View>
       </BasePage>
+
       {selectedDownload && (
         <DownloadViewerBottomSheet
           download={selectedDownload}
@@ -302,8 +331,14 @@ const DownloadViewerBottomSheet = ({
             </View>
           </View>
           <View style={{ marginHorizontal: 10, marginBottom: 5 }}>
-            <Text variant="titleMedium">{download.book.title}</Text>
-            <Text variant="titleSmall" style={{ opacity: 0.9 }}>
+            <Text variant="titleMedium" theme={LiveAppState.themeValue.get()}>
+              {download.book.title}
+            </Text>
+            <Text
+              variant="titleSmall"
+              theme={LiveAppState.themeValue.get()}
+              style={{ opacity: 0.9 }}
+            >
               {download.book.author}
             </Text>
             {download.filepath !== null && (
@@ -353,6 +388,7 @@ const DownloadViewerBottomSheet = ({
                     }}
                   />
                   <Text
+                    theme={LiveAppState.themeValue.get()}
                     style={{
                       fontWeight: "bold",
                       marginRight: 5,
@@ -362,9 +398,14 @@ const DownloadViewerBottomSheet = ({
                   </Text>
                 </View>
                 {download.book.publisher ? (
-                  <Text>{trimText(download.book.publisher, 40)}</Text>
+                  <Text theme={LiveAppState.themeValue.get()}>
+                    {trimText(download.book.publisher, 40)}
+                  </Text>
                 ) : (
-                  <Text style={{ textDecorationLine: "line-through" }}>
+                  <Text
+                    theme={LiveAppState.themeValue.get()}
+                    style={{ textDecorationLine: "line-through" }}
+                  >
                     missing
                   </Text>
                 )}
@@ -397,14 +438,22 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text style={{ marginRight: 5, fontWeight: "bold" }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ marginRight: 5, fontWeight: "bold" }}
+                    >
                       Pages
                     </Text>
                   </View>
                   {download.book.pages ? (
-                    <Text>{download.book.pages}</Text>
+                    <Text theme={LiveAppState.themeValue.get()}>
+                      {download.book.pages}
+                    </Text>
                   ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ textDecorationLine: "line-through" }}
+                    >
                       missing
                     </Text>
                   )}
@@ -431,14 +480,22 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ fontWeight: "bold", marginRight: 10 }}
+                    >
                       Year
                     </Text>
                   </View>
                   {download.book.year ? (
-                    <Text>{download.book.year}</Text>
+                    <Text theme={LiveAppState.themeValue.get()}>
+                      {download.book.year}
+                    </Text>
                   ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ textDecorationLine: "line-through" }}
+                    >
                       missing
                     </Text>
                   )}
@@ -465,16 +522,22 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ fontWeight: "bold", marginRight: 10 }}
+                    >
                       Size
                     </Text>
                   </View>
                   {download.book.filesize ? (
-                    <Text>
+                    <Text theme={LiveAppState.themeValue.get()}>
                       {(parseInt(download.book.filesize) / 1e6).toFixed(2)}mb
                     </Text>
                   ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ textDecorationLine: "line-through" }}
+                    >
                       missing
                     </Text>
                   )}
@@ -500,14 +563,22 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ fontWeight: "bold", marginRight: 10 }}
+                    >
                       Type
                     </Text>
                   </View>
                   {download.book.extension ? (
-                    <Text>.{download.book.extension}</Text>
+                    <Text theme={LiveAppState.themeValue.get()}>
+                      .{download.book.extension}
+                    </Text>
                   ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
+                    <Text
+                      theme={LiveAppState.themeValue.get()}
+                      style={{ textDecorationLine: "line-through" }}
+                    >
                       missing
                     </Text>
                   )}
@@ -537,30 +608,4 @@ const DownloadViewerBottomSheet = ({
       </View>
     </BottomSheet>
   );
-};
-
-const CustomBackdrop = ({ animatedIndex, style }: BottomSheetBackdropProps) => {
-  // animated variables
-  const containerAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: interpolate(
-      animatedIndex.value,
-      [0, 1],
-      [0.4, 1],
-      Extrapolate.CLAMP
-    ),
-  }));
-
-  // styles
-  const containerStyle = useMemo(
-    () => [
-      style,
-      {
-        backgroundColor: "black",
-      },
-      containerAnimatedStyle,
-    ],
-    [style, containerAnimatedStyle]
-  );
-
-  return <Animated.View style={containerStyle} />;
 };

@@ -13,10 +13,10 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LiveAppState, SettingsStore } from "../store/store";
-import {
-  MaterialBottomTabNavigationOptions,
-  createMaterialBottomTabNavigator,
-} from "@react-navigation/material-bottom-tabs";
+// import {
+//   MaterialBottomTabNavigationOptions,
+//   createMaterialBottomTabNavigator,
+// } from "@react-navigation/material-bottom-tabs";
 import { Tabs, withLayoutContext } from "expo-router";
 import { darkMode, lightMode } from "../constants";
 
@@ -26,7 +26,7 @@ if (Platform.OS === "android") {
   }
 }
 
-const { Navigator } = createMaterialBottomTabNavigator();
+// const { Navigator } = createMaterialBottomTabNavigator();
 
 // export const Tabs = withLayoutContext<
 //   MaterialBottomTabNavigationOptions,

@@ -1,22 +1,15 @@
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
-  Image,
-  FlatList,
   Dimensions,
   BackHandler,
   Animated,
 } from "react-native";
-import { CategoryType, SubCategoryType } from "../../../types";
-import { Card, Searchbar, Text } from "react-native-paper";
-import CategoryCardSkeleton from "../../../components/CategoryCardSkeleton";
+import { Searchbar } from "react-native-paper";
 import CategoryCard from "../../../components/CategoryCard";
 import { useRouter, useLocalSearchParams, useSearchParams } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
-import { cardColors, theme } from "../../../constants";
 import { ExploreStore, LiveAppState } from "../../../store/store";
-import BaseImage from "../../../components/BaseImage";
 import BasePage from "../../../components/BasePage";
 import CollapsiblePageHeader from "../../../components/CollapsiblePageHeader";
 

@@ -1,6 +1,6 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, View } from "react-native";
 import React, { useMemo, useRef, useState } from "react";
-import { darkMode, overlayColors, theme } from "../../constants";
+import { overlayColors, theme } from "../../constants";
 import PdfViewer from "./PdfViewer";
 import { DownloadType } from "../../types";
 import EpubViewer from "./EpubViewer";
@@ -9,7 +9,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { Card, ProgressBar, IconButton, Text } from "react-native-paper";
 import { layoutAnimate } from "../../utils";
 import { Slider } from "@miblanchard/react-native-slider";
-import { Reader, ReaderProvider, useReader } from "@epubjs-react-native/core";
+import { ReaderProvider } from "@epubjs-react-native/core";
 import { LiveAppState } from "../../store/store";
 
 const BaseViewer = ({ download }: { download: DownloadType }) => {
@@ -49,6 +49,8 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
             <PdfViewer
               bookCover={download.book.base64Cover}
               fileUri={download.filepath}
+              setPages={(totalPages: number) => setTotalPages(totalPages)}
+              setCurrentpage={(currentPage: number) => setCurrentPage(currentPage)}
             />
           )}
           {download.book.extension === "djvu" && (
@@ -132,7 +134,7 @@ const Controls = ({
         borderRadius: 20,
       }}
       handleHeight={30}
-      onChange={(index) => {}}
+      onChange={(index) => { }}
     >
       <View style={{ paddingHorizontal: 10 }}>
         <View
@@ -161,7 +163,7 @@ const Controls = ({
                 <Foundation
                   name="page-multiple"
                   size={16}
-                  color={theme.colors.text}
+                  color={LiveAppState.themeValue.colors.get().text}
                   style={{ marginRight: 5 }}
                 />
                 <Text>
@@ -189,7 +191,7 @@ const Controls = ({
             <IconButton
               icon={"bookmark-outline"}
               mode="contained-tonal"
-              onPress={() => {}}
+              onPress={() => { }}
               style={{ borderRadius: 8 }}
             />
           </Card>
@@ -218,8 +220,8 @@ const Controls = ({
                     }
                     style={{
                       backgroundColor: color,
-                      width: 35,
-                      height: 35,
+                      width: 30,
+                      height: 30,
                       margin: 0,
                       borderWidth: 1.5,
                       borderColor:
@@ -243,8 +245,8 @@ const Controls = ({
                           color === "transparent"
                             ? theme.colors.text
                             : "transparent",
-                        width: 35,
-                        height: 35,
+                        width: 30,
+                        height: 30,
                         borderRadius: 5,
                       }}
                     />
@@ -286,4 +288,3 @@ const Controls = ({
 
 export default BaseViewer;
 
-const styles = StyleSheet.create({});

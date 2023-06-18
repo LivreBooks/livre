@@ -14,7 +14,7 @@ function BookCard({
   onPress = null,
 }: {
   book: BookType;
-  onPress: (book: BookType) => void;
+  onPress?: (book: BookType) => void;
 }) {
   const router = useRouter();
 

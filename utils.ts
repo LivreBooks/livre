@@ -5,7 +5,6 @@ import RNFS from "react-native-fs";
 import { DownloadsStore, SettingsStore } from "./store/store";
 import { BookType, DownloadLink, DownloadType, FullBookType } from "./types";
 
-
 export async function downloadFile(
   id: number,
   url: string,
@@ -63,11 +62,11 @@ interface DownloadRecord {
 
 function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
   if (SettingsStore.user.get() === null) {
-    return
+    return;
   }
   return new Promise((resolve, reject) => {
     const headers = new Headers();
-    headers.append("Content-Type", "application/json")
+    headers.append("Content-Type", "application/json");
     fetch(`https://livre.deno.dev/record_download`, {
       method: "POST",
       headers,
@@ -75,22 +74,22 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
         bookId: record.bookId,
         bookName: record.bookName,
         bookCover: record.bookCover,
-        userId: SettingsStore.user.id.get()
-      })
+        userId: SettingsStore.user.id.get(),
+      }),
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data)
-        resolve(data.data)
+        console.log(data);
+        resolve(data.data);
       })
       .catch((err) => {
-        reject(err)
+        reject(err);
         console.log(err);
       })
       .finally(() => {
-        console.log("Account Request Done")
+        console.log("Account Request Done");
       });
-  })
+  });
 }
 
 async function requestExternalStoragePermission() {
@@ -111,9 +110,9 @@ async function requestExternalStoragePermission() {
 
     if (
       granted["android.permission.READ_EXTERNAL_STORAGE"] !==
-      PermissionsAndroid.RESULTS.GRANTED ||
+        PermissionsAndroid.RESULTS.GRANTED ||
       granted["android.permission.WRITE_EXTERNAL_STORAGE"] !==
-      PermissionsAndroid.RESULTS.GRANTED
+        PermissionsAndroid.RESULTS.GRANTED
     ) {
       // If the user denied one or both permissions, exit the function
       return false;
@@ -172,8 +171,12 @@ export async function dowloadBook(
 
   DownloadsStore.downloads[targetDownloadIndex].filepath.set(uri);
   DownloadsStore.downloads.set([...DownloadsStore.downloads.get()]);
-  const resp = await recordDownload({ bookId: fullBook.id, bookName: fullBook.title, bookCover: fullBook.coverurl })
-  console.log(resp)
+  const resp = await recordDownload({
+    bookId: fullBook.id,
+    bookName: fullBook.title,
+    bookCover: fullBook.coverurl,
+  });
+  console.log(resp);
 }
 
 export function trimText(text: string, maxLength: number) {
@@ -236,4 +239,58 @@ export async function downloadFileAsBase64(fileUrl: string) {
     console.log(error);
     return null;
   }
+}
+
+export interface FetchOptions extends RequestInit {
+  // Additional options specific to your application
+  // For example, you can define custom headers or authentication tokens
+  customHeader?: string;
+  authToken?: string;
+}
+
+export interface FetchResponse<Data> {
+  data: Data | null;
+  error: Error | null;
+  status: number | null;
+}
+
+export const fetchUtil = async <Data>(
+  url: string,
+  options?: FetchOptions
+): Promise<FetchResponse<Data>> => {
+  const requestOptions: RequestInit = {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options?.customHeader && { CustomHeader: options.customHeader }),
+      ...(options?.authToken && {
+        Authorization: `Bearer ${options.authToken}`,
+      }),
+      ...options?.headers,
+    },
+    ...options,
+  };
+
+  try {
+    const response = await fetch(url, requestOptions);
+    const responseData: Data = await response.json();
+    if (!response.ok) {
+      throw new Error(responseData);
+    }
+    return { data: responseData, error: null, status: response.status };
+  } catch (error) {
+    return { data: null, error, status: null };
+  }
+};
+
+export function objectToSearchParams(obj: Record<string, string>): string {
+  const searchParams = new URLSearchParams();
+
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      searchParams.append(key, obj[key]);
+    }
+  }
+
+  return searchParams.toString();
 }

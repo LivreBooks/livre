@@ -1,10 +1,7 @@
 import {
-  StyleSheet,
   View,
-  Image,
   ScrollView,
   Dimensions,
-  Pressable,
   BackHandler,
   ToastAndroid,
 } from "react-native";
@@ -20,29 +17,30 @@ import {
 import { DownloadsStore, LiveAppState } from "../../../../../store/store";
 import { Feather, Foundation } from "@expo/vector-icons";
 import { dowloadBook, trimText } from "../../../../../utils";
-import { DownloadType, FullBookType } from "../../../../../types";
+import { FullBookType } from "../../../../../types";
 import { useRouter, useSegments } from "expo-router";
 import BaseImage from "../../../../../components/BaseImage";
-import { useObservable } from "@legendapp/state/react";
-import { getBook, getDownloadLinks } from "../../../../../services/services";
+import { getBook, } from "../../../../../services/services";
 import BasePage from "../../../../../components/BasePage";
 
-const { width: sWidth, height: sHeight } = Dimensions.get("screen");
 
 const BookPage = () => {
   const router = useRouter();
+
   const segments = useSegments();
 
   const bookPreview = LiveAppState.selectedBookPreInfo.get();
 
-  console.log(LiveAppState.selectedBookPreInfo.get());
-
   const [loading, setLoading] = useState(false);
+
   const [fetchinDownloadLinks, setFetchinDownloadLinks] = useState(false);
+
   const [fullBook, setFullBook] = useState<FullBookType>(
     LiveAppState.selectedBookRecommendation.get()
   );
+
   const [downloadedFilepath, setDownloadedFilepath] = useState(null);
+
   const [downloadProgress, setDownloadProgress] = useState(null);
 
   DownloadsStore.downloads.onChange((downloads) => {
@@ -64,7 +62,7 @@ const BookPage = () => {
       if (found) {
         setDownloadedFilepath(found.filepath);
       }
-    } catch (error) {}
+    } catch (error) { }
   }
 
   function fetchFullBook() {

@@ -1,15 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, FlatList, Animated } from "react-native";
-import { Text } from "react-native-paper";
 import { useSearchParams } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { BookType } from "../../../../types";
-import { theme } from "../../../../constants";
 import { sortBooksByCompleteness } from "../../../../utils";
-import BaseImage from "../../../../components/BaseImage";
 import BookCard from "../../../../components/BookCard";
 import BookCardSkeleton from "../../../../components/BookCardSkeleton";
-import { LinearGradient } from "expo-linear-gradient";
 import BasePage from "../../../../components/BasePage";
 import CollapsiblePageHeader from "../../../../components/CollapsiblePageHeader";
 
@@ -58,7 +54,7 @@ function SubCategory() {
           position: "relative",
         }}
       >
-        <CollapsiblePageHeader title={subcategory.name} scrollOffsetY={scrollOffsetY} />
+        <CollapsiblePageHeader title={subcategory.name as string} scrollOffsetY={scrollOffsetY} />
         {loading ? (
           <FlatList
             data={skeletons}

@@ -9,16 +9,15 @@ import {
   BackHandler,
   Animated,
 } from "react-native";
-import { Searchbar, Text } from "react-native-paper";
+import { Banner, Card, IconButton, Searchbar, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import BookCard from "../components/BookCard";
 import BookCardSkeleton from "../components/BookCardSkeleton";
 import { BookType, FullBookType, RecommendationCategory } from "../types";
-import { layoutAnimate, sortBooksByCompleteness, trimText } from "../utils";
+import { layoutAnimate, sortBooksByCompleteness, } from "../utils";
 import BasePage from "../components/BasePage";
 import { LiveAppState } from "../store/store";
-import book from "epubjs/types/book";
 import { useRouter } from "expo-router";
 import BaseImage from "../components/BaseImage";
 import BookDetails from "../components/BookDetails";
@@ -33,6 +32,7 @@ export default function Search() {
     RecommendationCategory[]
   >([]);
   const [searching, setSearching] = useState(false);
+  const [showNoResults, setShowNoResults] = useState(false);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
   const [selectedBook, setSelectedBook] = useState<FullBookType>(null);
   const [selectedBook2, setSelectedBook2] = useState<BookType>(null);
@@ -72,14 +72,19 @@ export default function Search() {
     fetch(`https://livre.deno.dev/search/${searchQuery}`)
       .then((res) => res.json())
       .then((data) => {
+        if (!data || data.length === 0) {
+          setShowNoResults(true)
+          return
+        }
         const books = data.filter(
-          (book) => book.extension === "pdf" || book.extension === "epub"
+          (book: BookType) => book.extension === "pdf" || book.extension === "epub"
         );
 
         setSearchResults(sortBooksByCompleteness(books));
       })
       .catch((err) => {
         console.log(err);
+        setShowNoResults(true)
       })
       .finally(() => {
         setSearching(false);
@@ -121,7 +126,6 @@ export default function Search() {
           <Animatable.View
             animation={"fadeInUp"}
             style={{
-              overflow: "hidden",
               marginBottom: 40,
               alignItems: "center",
               position: "absolute",
@@ -170,6 +174,7 @@ export default function Search() {
                     setSearchResults([]);
                     setSearchQuery("");
                     scrollOffsetY.setValue(0);
+                    setShowNoResults(false)
                   }}
                 >
                   <MaterialCommunityIcons
@@ -180,6 +185,15 @@ export default function Search() {
                 </Pressable>
               )}
             />
+            {
+              showNoResults &&
+              <Card style={{ width: "95%", top: 10 }} elevation={5} contentStyle={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingLeft: 15, borderRadius: 10, zIndex: 20, backgroundColor: LiveAppState.themeValue.colors.errorContainer.get() }}>
+                <Text style={{ color: LiveAppState.themeValue.colors.text.get() }}>
+                  No Books Found
+                </Text>
+                <IconButton icon={"close"} size={20} onPress={() => setShowNoResults(false)} />
+              </Card>
+            }
           </Animatable.View>
           {searching && (
             <FlatList
