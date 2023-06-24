@@ -5,7 +5,6 @@ import { RefreshControl } from "react-native-gesture-handler";
 import { Searchbar, Text } from "react-native-paper";
 import CategoryCard from "../../components/CategoryCard";
 import CategoryCardSkeleton from "../../components/CategoryCardSkeleton";
-import { theme } from "../../constants";
 import { ExploreStore, LiveAppState } from "../../store/store";
 import { CategoryType } from "../../types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -57,47 +56,13 @@ export default function Categories() {
   }, []);
 
   return (
-    <BasePage>
+    <BasePage headerInfo={{ title: "Explore", icon: "star" }}>
       <View
         style={{
-          height: "100%",
+          height: "94%",
           width: "100%",
         }}
       >
-        <Animatable.View
-          animation={"fadeInUp"}
-          style={{ marginTop: 10, marginBottom: 20, flexDirection: "row" }}
-        >
-          <MaterialCommunityIcons
-            name="star"
-            size={35}
-            color={LiveAppState.themeValue.get().colors.primary}
-          />
-          <Text
-            variant="headlineLarge"
-            style={{
-              marginLeft: 5,
-              fontWeight: "bold",
-              color: LiveAppState.themeValue.get().colors.primary,
-            }}
-          >
-            Explore
-          </Text>
-        </Animatable.View>
-        <Animatable.View animation={"fadeInUp"} delay={10}>
-          <Searchbar
-            placeholder="Filter"
-            icon={"filter-outline"}
-            onChangeText={onChangeFilter}
-            value={filterQuery}
-            theme={LiveAppState.themeValue.get()}
-            style={{
-              borderRadius: 20,
-              marginBottom: 10,
-            }}
-          />
-        </Animatable.View>
-
         {loading ? (
           <FlatList
             numColumns={2}

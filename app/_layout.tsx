@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { LiveAppState, SettingsStore } from "../store/store";
+import { LiveAppState, SettingsStore, UserStore } from "../store/store";
 // import {
 //   MaterialBottomTabNavigationOptions,
 //   createMaterialBottomTabNavigator,
@@ -39,6 +39,13 @@ function AppLayout() {
   const [theme, setTheme] = useState(SettingsStore.theme.get());
   const preferredTheme = useColorScheme();
 
+  const [reRender, setRerender] = useState(1);
+
+  UserStore.account.onChange(() => {
+    setRerender(Math.random());
+    console.log("Rerender");
+  });
+
   SettingsStore.theme.onChange((newTheme) => {
     if (newTheme === "dark") {
       LiveAppState.themeValue.set(darkMode);
@@ -61,8 +68,7 @@ function AppLayout() {
   });
 
   useEffect(() => {
-    setTheme(SettingsStore.theme.get())
-    console.log(SettingsStore.theme.get());
+    setTheme(SettingsStore.theme.get());
     if (SettingsStore.theme.get() === "auto") {
       if (SettingsStore.theme.get() === "dark") {
         LiveAppState.themeValue.set(darkMode);

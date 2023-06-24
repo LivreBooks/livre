@@ -110,6 +110,7 @@ const DonwnloadItem = ({ download }: { download: DownloadType }) => {
                       icon={"trash-can"}
                       onPress={() => setDeleteTarget(download.downloadId)}
                       textColor={theme.colors.error}
+                      style=
                     >
                       Delete
                     </Button>

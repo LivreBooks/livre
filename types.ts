@@ -1,12 +1,3 @@
-export interface UserType {
-  id: string;
-  fullname: string;
-  email: string;
-  avatar_url: string;
-  phoneNumber?: string;
-  token?: string;
-}
-
 export interface SubCategoryType {
   name: string;
   id: string;
@@ -285,3 +276,35 @@ export interface WebviewReturnType {
     }[];
   };
 }
+
+export interface PaypalWebviewSuccessMessage {
+  isSuccesful: boolean;
+  order: {
+    orderID: string;
+    payerID: string;
+    paymentID?: any;
+    billingToken?: any;
+    facilitatorAccessToken: string;
+    paymentSource: string;
+  };
+  transaction: {
+    error: {
+      body: {
+        message: string;
+        code: string;
+      };
+      status: number;
+      name: string;
+    };
+  };
+  tokens: number;
+}
+
+export interface PaypalWebviewFailedMessage {
+  isSuccessful: boolean;
+  error: Error;
+}
+
+export type PaypalWebviewMessage =
+  | PaypalWebviewFailedMessage
+  | PaypalWebviewSuccessMessage;

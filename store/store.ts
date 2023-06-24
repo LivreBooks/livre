@@ -4,10 +4,17 @@ import {
   configureObservablePersistence,
   persistObservable,
 } from "@legendapp/state/persist";
-import { BookType, CategoryType, DownloadType, FullBookType, UserType } from "../types";
-import mmkv from "react-native-mmkv";
+import {
+  Account,
+  BookType,
+  CategoryType,
+  Download,
+  DownloadType,
+  FullBookType,
+  Purchase,
+  UserProfile,
+} from "../types";
 import { darkMode, lightMode } from "../constants";
-import { useColorScheme } from "react-native";
 
 configureObservablePersistence({
   persistLocal: ObservablePersistMMKV,
@@ -17,6 +24,12 @@ interface AppStateType {
   selectedBookPreInfo: BookType;
   selectedBookRecommendation: FullBookType;
   themeValue: typeof darkMode;
+}
+
+interface UserStore {
+  account: Account;
+  downloads: Download[];
+  purchases: Purchase[];
 }
 
 interface ExpoloreStoreType {
@@ -33,6 +46,12 @@ export const LiveAppState = observable<AppStateType>({
   themeValue: darkMode,
 });
 
+export const UserStore = observable<UserStore>({
+  account: null,
+  downloads: [],
+  purchases: [],
+});
+
 interface DonwloadsStoreType {
   downloads: DownloadType[];
   updateId: number;
@@ -44,7 +63,7 @@ export const DownloadsStore = observable<DonwloadsStoreType>({
 
 interface SettingsStoreType {
   theme: "auto" | "light" | "dark";
-  user: UserType
+  user: Account;
 }
 
 export const SettingsStore = observable<SettingsStoreType>({
@@ -72,4 +91,8 @@ persistObservable(ExploreStore, {
 
 persistObservable(SettingsStore, {
   local: "settings",
+});
+
+persistObservable(UserStore, {
+  local: "user",
 });

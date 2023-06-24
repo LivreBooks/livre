@@ -2,8 +2,15 @@ import * as FileSystem from "expo-file-system";
 import { LayoutAnimation, PermissionsAndroid } from "react-native";
 import RNFS from "react-native-fs";
 
-import { DownloadsStore, SettingsStore } from "./store/store";
-import { BookType, DownloadLink, DownloadType, FullBookType } from "./types";
+import { DownloadsStore, SettingsStore, UserStore } from "./store/store";
+import {
+  BookType,
+  Download,
+  DownloadLink,
+  DownloadType,
+  FullBookType,
+} from "./types";
+import { BASE_URL } from "./constants";
 
 export async function downloadFile(
   id: number,
@@ -58,28 +65,49 @@ interface DownloadRecord {
   bookId: string;
   bookName: string;
   bookCover: string;
+  bookAuthor: string;
 }
 
 function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
-  if (SettingsStore.user.get() === null) {
+  if (UserStore.account.get() === null) {
     return;
   }
   return new Promise((resolve, reject) => {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    fetch(`https://livre.deno.dev/record_download`, {
+    fetch(`${BASE_URL}/record_download`, {
       method: "POST",
       headers,
       body: JSON.stringify({
         bookId: record.bookId,
         bookName: record.bookName,
         bookCover: record.bookCover,
-        userId: SettingsStore.user.id.get(),
+        bookAuthor: record.bookAuthor,
+        userId: UserStore.account.id.get(),
       }),
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log("=======++++++-----");
         console.log(data);
+
+        const newDownloadRecord: Download = {
+          id: Math.random().toString(),
+          book_id: data.data.bookId,
+          book_name: data.data.bookName,
+          book_cover: data.data.bookCover,
+          book_author: data.data.bookAuthor,
+          read_on: new Date().toDateString(),
+          user_id: UserStore.account.id.get(),
+        };
+
+        UserStore.downloads.set([
+          newDownloadRecord,
+          ...UserStore.downloads.get(),
+        ]);
+
+        UserStore.account.tokens.set(UserStore.account.tokens.get() - 1);
+
         resolve(data.data);
       })
       .catch((err) => {
@@ -175,6 +203,7 @@ export async function dowloadBook(
     bookId: fullBook.id,
     bookName: fullBook.title,
     bookCover: fullBook.coverurl,
+    bookAuthor: fullBook.author,
   });
   console.log(resp);
 }

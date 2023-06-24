@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View } from "react-native-animatable";
-import { darkMode, lightMode, theme } from "../constants";
 import { ViewStyle } from "react-native/types";
 import { LiveAppState, SettingsStore } from "../store/store";
+import BasePageHeader from "./BasePageHeader";
 
 function BasePage(props: {
   styles?: ViewStyle;
+  headerInfo?: {
+    title: string;
+    icon: string;
+  };
   children:
-  | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-  | React.ReactFragment
-  | React.ReactPortal;
+    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+    | React.ReactFragment
+    | React.ReactPortal;
 }) {
   const [theme, setTheme] = useState(SettingsStore.theme.get());
 
@@ -18,14 +22,12 @@ function BasePage(props: {
     setTheme(newTheme);
   });
 
-  useEffect(() => {
-  }, [theme]);
+  useEffect(() => {}, [theme]);
+
   return (
     <SafeAreaProvider>
       <View
         style={{
-          paddingTop: 10,
-          paddingHorizontal: 10,
           flexDirection: "column",
           alignItems: "center",
           height: "100%",
@@ -34,7 +36,19 @@ function BasePage(props: {
           ...props.styles,
         }}
       >
-        <View style={{ width: "100%", height: "100%", alignItems: "center" }}>
+        {props.headerInfo && (
+          <BasePageHeader
+            title={props.headerInfo.title}
+            icon={props.headerInfo.icon}
+          />
+        )}
+
+        <View
+          style={{
+            paddingHorizontal: props.headerInfo ? 10 : 0,
+            width: "100%",
+          }}
+        >
           {props.children}
         </View>
       </View>

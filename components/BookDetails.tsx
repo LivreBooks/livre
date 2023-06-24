@@ -66,7 +66,7 @@ const BookDetails = ({
       if (found) {
         setDownloadedFilepath(found.filepath);
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   function fetchFullBook() {
@@ -75,7 +75,7 @@ const BookDetails = ({
     getBook(bookPreview.id)
       .then((data) => {
         data.coverurl = bookPreview.cover;
-        console.log("Full book found")
+        console.log("Full book found");
         setFullBook(data);
       })
       .catch((err) => {
@@ -117,72 +117,124 @@ const BookDetails = ({
   useLayoutEffect(() => {
     console.log("Loaded book");
     if (bookPreview?.id) {
-      console.log("===Book Preview===")
+      console.log("===Book Preview===");
       fetchFullBook();
     } else {
-      console.log("===Full Book===")
+      console.log("===Full Book===");
     }
   }, []);
 
   return (
-    <BasePage styles={{ paddingHorizontal: 0, paddingTop: 0 }}>
-      <View
-        style={{
-          flex: 1,
-          width: "100%",
-        }}
-      >
-        <View style={{ paddingBottom: 10 }}>
-          <View>
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
+    >
+      <View style={{ paddingBottom: 10 }}>
+        <View>
+          <View
+            style={{
+              width: "100%",
+              height: 200,
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 10,
+            }}
+          >
+            <BaseImage
+              source={{
+                uri: bookPreview?.cover || _fullbook.coverurl,
+              }}
+              style={{
+                height: "100%",
+                width: "100%",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                opacity: 0.5,
+              }}
+              blurRadius={5}
+              placeholderStyles={{ height: "100%", width: "100%" }}
+            />
             <View
               style={{
+                flex: 1,
                 width: "100%",
-                height: 200,
                 alignItems: "center",
                 justifyContent: "center",
-                marginBottom: 10,
               }}
             >
               <BaseImage
                 source={{
                   uri: bookPreview?.cover || _fullbook.coverurl,
                 }}
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  opacity: 0.5,
-                }}
-                blurRadius={5}
-                placeholderStyles={{ height: "100%", width: "100%" }}
+                style={{ height: "95%", width: "40%", borderRadius: 10 }}
+                placeholderStyles={{ height: "95%", width: "40%" }}
               />
+            </View>
+          </View>
+          <View style={{ marginHorizontal: 10, marginBottom: 5 }}>
+            <Text variant="titleMedium" style={{ fontWeight: "bold" }}>
+              {bookPreview?.title || _fullbook.title}
+            </Text>
+            <Text variant="titleSmall" style={{ opacity: 0.9 }}>
+              {bookPreview?.authors[0].name || _fullbook.author}
+            </Text>
+            <View style={{ opacity: 0.9 }}>
               <View
                 style={{
-                  flex: 1,
-                  width: "100%",
-                  alignItems: "center",
-                  justifyContent: "center",
+                  backgroundColor:
+                    LiveAppState.themeValue.get().colors.inverseOnSurface,
+                  borderRadius: 10,
+                  paddingVertical: 5,
+                  paddingHorizontal: 8,
+                  marginVertical: 10,
                 }}
               >
-                <BaseImage
-                  source={{
-                    uri: bookPreview?.cover || _fullbook.coverurl,
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
                   }}
-                  style={{ height: "95%", width: "40%", borderRadius: 10 }}
-                  placeholderStyles={{ height: "95%", width: "40%" }}
-                />
+                >
+                  <Feather
+                    name="user"
+                    size={18}
+                    color="white"
+                    style={{
+                      marginRight: 5,
+                      color: LiveAppState.themeValue.get().colors.text,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontWeight: "bold",
+                      marginRight: 10,
+                    }}
+                  >
+                    Publisher
+                  </Text>
+                </View>
+                {bookPreview?.publisher || _fullbook.publisher ? (
+                  <Text>
+                    {trimText(
+                      bookPreview?.publisher || _fullbook.publisher,
+                      40
+                    )}
+                  </Text>
+                ) : (
+                  <Text style={{ textDecorationLine: "line-through" }}>
+                    missing
+                  </Text>
+                )}
               </View>
-            </View>
-            <View style={{ marginHorizontal: 10, marginBottom: 5 }}>
-              <Text variant="titleLarge" style={{ fontWeight: "bold" }}>
-                {bookPreview?.title || _fullbook.title}
-              </Text>
-              <Text variant="titleMedium" style={{ opacity: 0.9 }}>
-                {bookPreview?.authors[0].name || _fullbook.author}
-              </Text>
-              <View style={{ opacity: 0.9 }}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
                 <View
                   style={{
                     backgroundColor:
@@ -190,17 +242,47 @@ const BookDetails = ({
                     borderRadius: 10,
                     paddingVertical: 5,
                     paddingHorizontal: 8,
-                    marginVertical: 10,
+                    flex: 1,
+                    marginRight: 10,
                   }}
                 >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                    }}
-                  >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Foundation
+                      name="page"
+                      size={16}
+                      color={theme.colors.text}
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
+                    />
+
+                    <Text style={{ marginRight: 10, fontWeight: "bold" }}>
+                      Pages
+                    </Text>
+                  </View>
+                  {bookPreview?.pages || _fullbook.pages ? (
+                    <Text>{bookPreview?.pages || _fullbook.pages}</Text>
+                  ) : (
+                    <Text style={{ textDecorationLine: "line-through" }}>
+                      missing
+                    </Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
+                    borderRadius: 10,
+                    paddingVertical: 5,
+                    paddingHorizontal: 8,
+                    flex: 1,
+                    marginRight: 10,
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
                     <Feather
-                      name="user"
+                      name="calendar"
                       size={18}
                       color="white"
                       style={{
@@ -208,21 +290,49 @@ const BookDetails = ({
                         color: LiveAppState.themeValue.get().colors.text,
                       }}
                     />
-                    <Text
-                      style={{
-                        fontWeight: "bold",
-                        marginRight: 10,
-                      }}
-                    >
-                      Publisher
+
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      Year
                     </Text>
                   </View>
-                  {bookPreview?.publisher || _fullbook.publisher ? (
+                  {bookPreview?.year || _fullbook.year ? (
+                    <Text>{bookPreview?.year || _fullbook.year}</Text>
+                  ) : (
+                    <Text style={{ textDecorationLine: "line-through" }}>
+                      missing
+                    </Text>
+                  )}
+                </View>
+                <View
+                  style={{
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
+                    borderRadius: 10,
+                    paddingVertical: 5,
+                    paddingHorizontal: 8,
+                    flex: 1,
+                    marginRight: 10,
+                  }}
+                >
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Feather
+                      name="box"
+                      size={18}
+                      color="white"
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
+                    />
+
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      Size
+                    </Text>
+                  </View>
+                  {bookPreview?.size || _fullbook.filesize ? (
                     <Text>
-                      {trimText(
-                        bookPreview?.publisher || _fullbook.publisher,
-                        40
-                      )}
+                      {bookPreview?.size ||
+                        (parseInt(_fullbook.filesize) / 1e6).toFixed(2)}
                     </Text>
                   ) : (
                     <Text style={{ textDecorationLine: "line-through" }}>
@@ -232,239 +342,121 @@ const BookDetails = ({
                 </View>
                 <View
                   style={{
-                    flexDirection: "row",
-                    justifyContent: "space-between",
+                    backgroundColor:
+                      LiveAppState.themeValue.get().colors.inverseOnSurface,
+                    borderRadius: 10,
+                    paddingVertical: 5,
+                    paddingHorizontal: 8,
+                    flex: 1,
                   }}
                 >
-                  <View
-                    style={{
-                      backgroundColor:
-                        LiveAppState.themeValue.get().colors.inverseOnSurface,
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                      marginRight: 10,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Foundation
-                        name="page"
-                        size={16}
-                        color={theme.colors.text}
-                        style={{
-                          marginRight: 5,
-                          color: LiveAppState.themeValue.get().colors.text,
-                        }}
-                      />
+                  <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    <Feather
+                      name="file-text"
+                      size={18}
+                      color="white"
+                      style={{
+                        marginRight: 5,
+                        color: LiveAppState.themeValue.get().colors.text,
+                      }}
+                    />
 
-                      <Text style={{ marginRight: 10, fontWeight: "bold" }}>
-                        Pages
-                      </Text>
-                    </View>
-                    {bookPreview?.pages || _fullbook.pages ? (
-                      <Text>{bookPreview?.pages || _fullbook.pages}</Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
+                      Type
+                    </Text>
                   </View>
-                  <View
-                    style={{
-                      backgroundColor:
-                        LiveAppState.themeValue.get().colors.inverseOnSurface,
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                      marginRight: 10,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Feather
-                        name="calendar"
-                        size={18}
-                        color="white"
-                        style={{
-                          marginRight: 5,
-                          color: LiveAppState.themeValue.get().colors.text,
-                        }}
-                      />
-
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                        Year
-                      </Text>
-                    </View>
-                    {bookPreview?.year || _fullbook.year ? (
-                      <Text>{bookPreview?.year || _fullbook.year}</Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor:
-                        LiveAppState.themeValue.get().colors.inverseOnSurface,
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                      marginRight: 10,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Feather
-                        name="box"
-                        size={18}
-                        color="white"
-                        style={{
-                          marginRight: 5,
-                          color: LiveAppState.themeValue.get().colors.text,
-                        }}
-                      />
-
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                        Size
-                      </Text>
-                    </View>
-                    {bookPreview?.size || _fullbook.filesize ? (
-                      <Text>
-                        {bookPreview?.size ||
-                          (parseInt(_fullbook.filesize) / 1e6).toFixed(2)}
-                      </Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
-                  </View>
-                  <View
-                    style={{
-                      backgroundColor:
-                        LiveAppState.themeValue.get().colors.inverseOnSurface,
-                      borderRadius: 10,
-                      paddingVertical: 5,
-                      paddingHorizontal: 8,
-                      flex: 1,
-                    }}
-                  >
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Feather
-                        name="file-text"
-                        size={18}
-                        color="white"
-                        style={{
-                          marginRight: 5,
-                          color: LiveAppState.themeValue.get().colors.text,
-                        }}
-                      />
-
-                      <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                        Type
-                      </Text>
-                    </View>
-                    {bookPreview?.extension || _fullbook.extension ? (
-                      <Text>
-                        .{bookPreview?.extension || _fullbook.extension}
-                      </Text>
-                    ) : (
-                      <Text style={{ textDecorationLine: "line-through" }}>
-                        missing
-                      </Text>
-                    )}
-                  </View>
+                  {bookPreview?.extension || _fullbook.extension ? (
+                    <Text>
+                      .{bookPreview?.extension || _fullbook.extension}
+                    </Text>
+                  ) : (
+                    <Text style={{ textDecorationLine: "line-through" }}>
+                      missing
+                    </Text>
+                  )}
                 </View>
               </View>
             </View>
           </View>
+        </View>
 
-          {_fullbook ? (
-            <View
+        {_fullbook ? (
+          <View
+            style={{
+              marginHorizontal: 10,
+            }}
+          >
+            {downloadedFilepath ? (
+              <Button
+                mode="contained-tonal"
+                icon={"book"}
+                style={{ marginVertical: 5 }}
+                onPress={openReader}
+              >
+                <Text
+                  style={{ fontWeight: "bold", color: theme.colors.primary }}
+                >
+                  OPEN
+                </Text>
+              </Button>
+            ) : downloadProgress === null ? (
+              <Button
+                mode="contained"
+                style={{ marginVertical: 5 }}
+                loading={fetchinDownloadLinks}
+                onPress={fetchDownloadLinks}
+              >
+                Download
+              </Button>
+            ) : (
+              <Card style={{ padding: 5 }}>
+                <Text
+                  style={{
+                    fontWeight: "bold",
+                    textAlign: "center",
+                    width: "100%",
+                  }}
+                >
+                  Downloading...
+                </Text>
+                <ProgressBar
+                  progress={downloadProgress}
+                  style={{
+                    height: 35,
+                    marginHorizontal: 5,
+                    marginVertical: 5,
+                    borderRadius: 20,
+                  }}
+                />
+              </Card>
+            )}
+            <ScrollView
               style={{
-                marginHorizontal: 10,
+                padding: 10,
+                backgroundColor:
+                  LiveAppState.themeValue.get().colors.inverseOnSurface,
+                borderRadius: 10,
+                marginVertical: 5,
+                height: 150,
               }}
             >
-              {downloadedFilepath ? (
-                <Button
-                  mode="contained-tonal"
-                  icon={"book"}
-                  style={{ marginVertical: 5 }}
-                  onPress={openReader}
-                >
-                  <Text
-                    style={{ fontWeight: "bold", color: theme.colors.primary }}
-                  >
-                    OPEN
-                  </Text>
-                </Button>
-              ) : downloadProgress === null ? (
-                <Button
-                  mode="contained"
-                  style={{ marginVertical: 5 }}
-                  loading={fetchinDownloadLinks}
-                  onPress={fetchDownloadLinks}
-                >
-                  Download
-                </Button>
-              ) : (
-                <Card style={{ padding: 5 }}>
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      textAlign: "center",
-                      width: "100%",
-                    }}
-                  >
-                    Downloading...
-                  </Text>
-                  <ProgressBar
-                    progress={downloadProgress}
-                    style={{
-                      height: 35,
-                      marginHorizontal: 5,
-                      marginVertical: 5,
-                      borderRadius: 20,
-                    }}
-                  />
-                </Card>
-              )}
-              <ScrollView
-                style={{
-                  padding: 10,
-                  backgroundColor:
-                    LiveAppState.themeValue.get().colors.inverseOnSurface,
-                  borderRadius: 10,
-                  marginVertical: 5,
-                  height: 150
-                }}
-              >
-                <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
-                  Description
+              <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
+                Description
+              </Text>
+              {_fullbook.descr && (
+                <Text style={{ marginBottom: 15 }}>
+                  {_fullbook.descr.replace(/<[^>]*>/g, "")}
                 </Text>
-                {_fullbook.descr && (
-                  <Text style={{ marginBottom: 15 }}>{_fullbook.descr.replace(/<[^>]*>/g, "")}</Text>
-                )}
-              </ScrollView>
-            </View>
-          ) : (
-            <View>
-              <ActivityIndicator size={"small"} />
-            </View>
-          )}
-        </View>
+              )}
+            </ScrollView>
+          </View>
+        ) : (
+          <View>
+            <ActivityIndicator size={"small"} />
+          </View>
+        )}
       </View>
-    </BasePage>
+    </View>
   );
 };
 

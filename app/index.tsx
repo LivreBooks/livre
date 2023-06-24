@@ -15,7 +15,7 @@ import * as Animatable from "react-native-animatable";
 import BookCard from "../components/BookCard";
 import BookCardSkeleton from "../components/BookCardSkeleton";
 import { BookType, FullBookType, RecommendationCategory } from "../types";
-import { layoutAnimate, sortBooksByCompleteness, } from "../utils";
+import { layoutAnimate, sortBooksByCompleteness } from "../utils";
 import BasePage from "../components/BasePage";
 import { LiveAppState } from "../store/store";
 import { useRouter } from "expo-router";
@@ -25,6 +25,10 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { ScrollView } from "react-native-gesture-handler";
 import SkeletonLoader from "expo-skeleton-loader";
+import Recommendations, {
+  RecommendationsSkeletonLoader,
+} from "../components/search/Recommendations";
+import BookBottomSheet from "../components/search/BookBottomShhet";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -65,7 +69,7 @@ export default function Search() {
   const onChangeSearch = (query: string) => setSearchQuery(query);
 
   function search() {
-    scrollOffsetY.setValue(0)
+    scrollOffsetY.setValue(0);
     layoutAnimate();
     setSearching(true);
     setSearchResults([]);
@@ -73,18 +77,19 @@ export default function Search() {
       .then((res) => res.json())
       .then((data) => {
         if (!data || data.length === 0) {
-          setShowNoResults(true)
-          return
+          setShowNoResults(true);
+          return;
         }
         const books = data.filter(
-          (book: BookType) => book.extension === "pdf" || book.extension === "epub"
+          (book: BookType) =>
+            book.extension === "pdf" || book.extension === "epub"
         );
 
         setSearchResults(sortBooksByCompleteness(books));
       })
       .catch((err) => {
         console.log(err);
-        setShowNoResults(true)
+        setShowNoResults(true);
       })
       .finally(() => {
         setSearching(false);
@@ -174,7 +179,7 @@ export default function Search() {
                     setSearchResults([]);
                     setSearchQuery("");
                     scrollOffsetY.setValue(0);
-                    setShowNoResults(false)
+                    setShowNoResults(false);
                   }}
                 >
                   <MaterialCommunityIcons
@@ -185,15 +190,33 @@ export default function Search() {
                 </Pressable>
               )}
             />
-            {
-              showNoResults &&
-              <Card style={{ width: "95%", top: 10 }} elevation={5} contentStyle={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingLeft: 15, borderRadius: 10, zIndex: 20, backgroundColor: LiveAppState.themeValue.colors.errorContainer.get() }}>
-                <Text style={{ color: LiveAppState.themeValue.colors.text.get() }}>
+            {showNoResults && (
+              <Card
+                style={{ width: "95%", top: 10 }}
+                elevation={5}
+                contentStyle={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingLeft: 15,
+                  borderRadius: 10,
+                  zIndex: 20,
+                  backgroundColor:
+                    LiveAppState.themeValue.colors.errorContainer.get(),
+                }}
+              >
+                <Text
+                  style={{ color: LiveAppState.themeValue.colors.text.get() }}
+                >
                   No Books Found
                 </Text>
-                <IconButton icon={"close"} size={20} onPress={() => setShowNoResults(false)} />
+                <IconButton
+                  icon={"close"}
+                  size={20}
+                  onPress={() => setShowNoResults(false)}
+                />
               </Card>
-            }
+            )}
           </Animatable.View>
           {searching && (
             <FlatList
@@ -228,7 +251,8 @@ export default function Search() {
           )}
           {recommendations.length > 0 &&
             searchResults.length === 0 &&
-            searching === false && loadingRecommendations == false && (
+            searching === false &&
+            loadingRecommendations == false && (
               <ScrollView
                 onScroll={Animated.event(
                   [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
@@ -243,12 +267,12 @@ export default function Search() {
                 </View>
               </ScrollView>
             )}
-          {loadingRecommendations &&
+          {loadingRecommendations && (
             <View style={{ paddingTop: 190 }}>
               <RecommendationsSkeletonLoader />
               <RecommendationsSkeletonLoader />
             </View>
-          }
+          )}
         </View>
       </BasePage>
       {(selectedBook || selectedBook2) && (
@@ -264,224 +288,3 @@ export default function Search() {
     </>
   );
 }
-
-const { width: PAGE_WIDTH } = Dimensions.get("window");
-
-const card = {
-  width: PAGE_WIDTH / 2 - 40,
-  height: PAGE_WIDTH / 2 + 30,
-};
-
-function Recommendations({
-  categories,
-  selectBook,
-}: {
-  categories: RecommendationCategory[];
-  selectBook: (value: FullBookType) => void;
-}) {
-  const router = useRouter();
-  const [isVertical, setIsVertical] = React.useState(false);
-  const [isFast, setIsFast] = React.useState(false);
-  const [isAutoPlay, setIsAutoPlay] = React.useState(false);
-  const [isPagingEnabled, setIsPagingEnabled] = React.useState(true);
-  const ref = React.useRef<ICarouselInstance>(null);
-
-
-  const baseOptions = isVertical
-    ? ({
-      vertical: true,
-      width: card.width + 10,
-      height: card.height + 10,
-    } as const)
-    : ({
-      vertical: false,
-      width: card.width + 10,
-      height: card.height + 10,
-    } as const);
-  return (
-    <View style={{ width: "100%" }}>
-      {categories.map((category) => {
-        return (
-          <View
-            style={{ width: "100%", marginBottom: 20 }}
-            key={category.category}
-          >
-            <Text
-              style={{
-                fontSize: 20,
-                color: LiveAppState.themeValue.get().colors.text,
-                fontWeight: "700",
-                marginBottom: 10,
-                paddingLeft: 10,
-              }}
-            >
-              {category.category}
-            </Text>
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                flexWrap: "wrap",
-                justifyContent: "center",
-                paddingLeft: 10,
-              }}
-            >
-              <Carousel
-                {...baseOptions}
-                loop
-                ref={ref}
-                testID={"xxx"}
-                style={{ width: "100%" }}
-                autoPlay={isAutoPlay}
-                autoPlayInterval={isFast ? 100 : 2000}
-                data={category.books}
-                pagingEnabled={isPagingEnabled}
-                panGestureHandlerProps={{
-                  activeOffsetX: [-10, 10],
-                }}
-                renderItem={({ index, item: book }) => (
-                  <View
-                    key={book.id}
-                    style={{
-                      marginHorizontal: 0,
-                      marginBottom: 20,
-                      borderRadius: 15,
-                      overflow: "hidden",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: card.height,
-                      width: card.width,
-                    }}
-                  >
-                    <TouchableNativeFeedback
-                      onPress={() => {
-                        console.log("Clicked");
-                        console.log(book);
-                        selectBook(book);
-                      }}
-                      background={TouchableNativeFeedback.Ripple(
-                        LiveAppState.themeValue.get().colors.primaryContainer,
-                        false
-                      )}
-                    >
-                      <BaseImage
-                        style={{
-                          height: "100%",
-                          width: "100%",
-                          borderRadius: 10,
-                        }}
-                        source={{
-                          uri: book.coverurl,
-                        }}
-                        placeholderStyles={{
-                          height: "100%",
-                          width: "100%",
-                          borderRadius: 10,
-                          top: 10,
-                          left: 10,
-                        }}
-                      />
-                    </TouchableNativeFeedback>
-                  </View>
-                )}
-              />
-            </View>
-          </View>
-        );
-      })}
-    </View>
-  );
-}
-
-function BookBottomSheet({
-  fullbook = null,
-  bookPreview = null,
-  onClose,
-}: {
-  fullbook?: FullBookType;
-  bookPreview?: BookType;
-  onClose: () => void;
-}) {
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["97%"], []);
-
-  useEffect(() => {
-    console.log("Visible");
-    const handler = BackHandler.addEventListener("hardwareBackPress", () => {
-      onClose();
-      return true;
-    });
-    return () => {
-      console.log("Removed");
-      handler.remove();
-    };
-  }, []);
-
-  return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={0}
-      snapPoints={snapPoints}
-      style={{ marginBottom: 20 }}
-      backgroundStyle={{
-        backgroundColor: LiveAppState.themeValue.get().colors.surface,
-      }}
-      handleIndicatorStyle={{
-        width: "12%",
-        backgroundColor: LiveAppState.themeValue.get().colors.background,
-        height: 6,
-        borderRadius: 10,
-      }}
-      handleStyle={{
-        // position: "absolute",
-      }}
-      enablePanDownToClose
-      onClose={() => {
-        onClose();
-      }}
-    >
-      <BookDetails fullBook={fullbook} bookPreview={bookPreview} />
-    </BottomSheet>
-  );
-}
-
-
-function RecommendationsSkeletonLoader() {
-  return (
-    <View style={styles.container}>
-      <SkeletonLoader
-        boneColor={LiveAppState.themeValue.get().colors.surfaceVariant}
-        highlightColor={LiveAppState.themeValue.get().colors.surfaceVariant}
-        duration={1500}
-      >
-        <SkeletonLoader.Item style={styles.title} />
-        <SkeletonLoader.Container style={{ flexDirection: "row", width: "100%", }}>
-          <SkeletonLoader.Item style={styles.thumbnail} />
-          <SkeletonLoader.Item style={styles.thumbnail} />
-          <SkeletonLoader.Item style={styles.thumbnail} />
-        </SkeletonLoader.Container>
-      </SkeletonLoader>
-    </View>
-  )
-}
-
-
-const styles = {
-  container: {
-    padding: 5,
-    margin: 10,
-  },
-  thumbnail: {
-    width: card.width,
-    height: card.height,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  title: {
-    height: 30,
-    width: 200,
-    marginBottom: 10,
-    borderRadius: 5,
-  },
-};
-
