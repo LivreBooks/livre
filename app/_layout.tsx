@@ -1,14 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Provider as PaperProvider } from "react-native-paper";
-import {
-  Platform,
-  UIManager,
-  View,
-  Text,
-  Settings,
-  useColorScheme,
-} from "react-native";
+import { Platform, UIManager, View, useColorScheme } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LiveAppState, SettingsStore, UserStore } from "../store/store";
@@ -16,8 +9,9 @@ import { LiveAppState, SettingsStore, UserStore } from "../store/store";
 //   MaterialBottomTabNavigationOptions,
 //   createMaterialBottomTabNavigator,
 // } from "@react-navigation/material-bottom-tabs";
-import { Tabs, withLayoutContext } from "expo-router";
+import { Tabs } from "expo-router";
 import { darkMode, lightMode } from "../constants";
+import { ThemeType } from "../types/types";
 
 if (Platform.OS === "android") {
   if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -35,7 +29,6 @@ if (Platform.OS === "android") {
 // console.log(Tabs);
 
 function AppLayout() {
-  const [theme, setTheme] = useState(SettingsStore.theme.get());
   const preferredTheme = useColorScheme();
 
   const [reRender, setRerender] = useState(1);
@@ -46,15 +39,11 @@ function AppLayout() {
   });
 
   SettingsStore.theme.onChange((newTheme) => {
-    if (newTheme === "dark") {
-      LiveAppState.themeValue.set(darkMode);
-    }
+    updateTheme(newTheme);
+  });
 
-    if (newTheme === "light") {
-      LiveAppState.themeValue.set(lightMode);
-    }
-
-    if (newTheme === "auto") {
+  function updateTheme(theme: ThemeType) {
+    if (theme === "auto") {
       if (preferredTheme === "dark") {
         LiveAppState.themeValue.set(darkMode);
       }
@@ -62,30 +51,22 @@ function AppLayout() {
       if (preferredTheme === "light") {
         LiveAppState.themeValue.set(lightMode);
       }
+    } else {
+      if (theme === "dark") {
+        LiveAppState.themeValue.set(darkMode);
+      }
+
+      if (theme === "light") {
+        LiveAppState.themeValue.set(lightMode);
+      }
     }
-    setTheme(newTheme);
-  });
+    setRerender(Math.random());
+  }
 
   useEffect(() => {
-    setTheme(SettingsStore.theme.get());
-    if (SettingsStore.theme.get() === "auto") {
-      if (SettingsStore.theme.get() === "dark") {
-        LiveAppState.themeValue.set(darkMode);
-      }
-
-      if (SettingsStore.theme.get() === "light") {
-        LiveAppState.themeValue.set(lightMode);
-      }
-    } else {
-      if (SettingsStore.theme.get() === "dark") {
-        LiveAppState.themeValue.set(darkMode);
-      }
-
-      if (SettingsStore.theme.get() === "light") {
-        LiveAppState.themeValue.set(lightMode);
-      }
-    }
-  }, [theme]);
+    const theme = SettingsStore.theme.get();
+    updateTheme(theme);
+  }, []);
 
   return (
     <PaperProvider theme={LiveAppState.themeValue.get()}>

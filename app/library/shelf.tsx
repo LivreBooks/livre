@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Dimensions, TouchableOpacity } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { ActivityIndicator, Searchbar, Text } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import BaseImage from "../../components/BaseImage";
 import { DownloadsStore, LiveAppState } from "../../store/store";
-import { DownloadType } from "../../types";
+import { DownloadType } from "../../types/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BasePage from "../../components/BasePage";
 import DownloadViewerBottomSheet from "../../components/library/DownloadViewerBottomSheet";
@@ -32,10 +32,6 @@ export default function Search() {
   DownloadsStore.downloads.onChange((downloads) => {
     setDownloads(downloads);
   });
-
-  // useEffect(() => {
-  //   setDownloads(DownloadsStore.downloads.get());
-  // }, []);
 
   return (
     <>

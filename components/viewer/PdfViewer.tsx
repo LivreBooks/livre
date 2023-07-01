@@ -11,7 +11,7 @@ const PdfViewer = React.forwardRef(
     {
       fileUri,
       bookCover,
-      page = 1,
+      page,
       setPages,
       setCurrentpage,
     }: {
@@ -32,6 +32,7 @@ const PdfViewer = React.forwardRef(
     }));
 
     useEffect(() => {
+      console.log({ page });
       FileSystem.getInfoAsync(fileUri)
         .then((fileinfo) => {
           console.log(fileinfo);
@@ -62,6 +63,7 @@ const PdfViewer = React.forwardRef(
           onPressLink={(uri) => {
             console.log(`Link pressed: ${uri}`);
           }}
+          page={page}
           style={{
             ...styles.pdf,
           }}

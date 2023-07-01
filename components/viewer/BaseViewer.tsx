@@ -1,29 +1,27 @@
 import { Alert, Keyboard, Pressable, View } from "react-native";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { overlayColors, theme } from "../../constants";
 import PdfViewer from "./PdfViewer";
-import { DownloadType } from "../../types";
+import { Bookmark, DownloadType } from "../../types/types";
 import EpubViewer from "./EpubViewer";
 import { Foundation } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
-import {
-  Card,
-  ProgressBar,
-  IconButton,
-  Text,
-  TextInput,
-  Button,
-} from "react-native-paper";
-import { layoutAnimate } from "../../utils";
+import { Card, ProgressBar, IconButton, TextInput } from "react-native-paper";
+import { animateLayout, layoutAnimate } from "../../utils";
 import { Slider } from "@miblanchard/react-native-slider";
 import { ReaderProvider } from "@epubjs-react-native/core";
-import { LiveAppState } from "../../store/store";
+import { DownloadsStore, LiveAppState } from "../../store/store";
 import Spacer from "../Spacer";
+import Stack from "../Stack";
+import Text from "../Text";
+import Button from "../Button";
 
 const BaseViewer = ({ download }: { download: DownloadType }) => {
   const [overlayBrightness, setOverlayBrightness] = useState(0.3);
   const [overlayColor, setOverlayColor] = useState(overlayColors[0]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(
+    download.readingInfo.currentPage
+  );
   const [totalPages, setTotalPages] = useState(1);
   const [scale, setScale] = useState(1);
 
@@ -32,10 +30,26 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
   const pdfViewerRef = useRef();
 
   function goToPage(page: number) {
-    console.log("Jumping to: ", page);
     if (download.book.extension === "pdf") {
       pdfViewerRef.current.jumpToPage(page);
     }
+  }
+
+  function updateCurrentPage(page: number) {
+    const allDownloads = DownloadsStore.downloads.get();
+    const updatedDownloads = allDownloads.map((_download) => {
+      if (_download.book.id === download.book.id) {
+        const _updatedDownload = {
+          ..._download,
+          readingInfo: {
+            ..._download.readingInfo,
+            currentPage: page,
+          },
+        };
+        return _updatedDownload;
+      }
+    });
+    DownloadsStore.downloads.set(updatedDownloads);
   }
 
   return (
@@ -67,9 +81,11 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
               bookCover={download.book.base64Cover}
               fileUri={download.filepath}
               setPages={(totalPages: number) => setTotalPages(totalPages)}
-              setCurrentpage={(currentPage: number) =>
-                setCurrentPage(currentPage)
-              }
+              setCurrentpage={(currentPage: number) => {
+                setCurrentPage(currentPage);
+                updateCurrentPage(currentPage);
+              }}
+              page={download.readingInfo.currentPage}
               ref={pdfViewerRef}
             />
           )}
@@ -89,6 +105,7 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
           )}
         </View>
         <Controls
+          download={download}
           fileType={download.book.extension}
           setScale={setScale}
           overlayColor={overlayColor}
@@ -107,18 +124,16 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
 };
 
 const Controls = ({
-  setScale,
-  fileType,
+  download,
   overlayColor,
   setOverlayColor,
   overlayBrightness,
   setOverlayBrightness,
   currentPage,
-  setCurrentPage,
   totalPages,
-  setTotalPages,
   goToPage,
 }: {
+  download: DownloadType;
   fileType: string;
   setScale: React.Dispatch<React.SetStateAction<number>>;
   overlayColor: string;
@@ -133,15 +148,26 @@ const Controls = ({
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["3.5%", "50%"], []);
-  const [selectedTheme, setSelectedTheme] = useState(0);
+
   const [jumpToPage, setJumpToPage] = useState("");
 
+  const [showBookmarks, setShowBookmarks] = useState(false);
+
   const keyboardHandler = Keyboard;
+
+  const [theme] = useState(LiveAppState.themeValue.colors.get());
+
+  const [currentPageBookmark, setCurrentPageBookmark] = useState(
+    download.readingInfo.bookmarks.find(
+      (_bookmark) => _bookmark.page === currentPage
+    )
+  );
+
+  const [bookmarks, setBookmarks] = useState(download.readingInfo.bookmarks);
 
   function triggerJumpTo() {
     const targetPage = parseInt(jumpToPage);
     if (targetPage >= 1 && targetPage <= totalPages) {
-      console.log(jumpToPage);
       goToPage(targetPage);
       setJumpToPage("");
       bottomSheetRef.current.snapToIndex(0);
@@ -150,6 +176,60 @@ const Controls = ({
     }
     keyboardHandler.dismiss();
   }
+
+  function addBookMark() {
+    const allDownloads = DownloadsStore.downloads.get();
+    const updatedDownloads = allDownloads.map((_download) => {
+      // Check if the current download matches the target book
+      if (_download.book.id === download.book.id) {
+        let updatedBookmarks;
+
+        // If a bookmark for the current page already exists, remove it
+        if (currentPageBookmark) {
+          updatedBookmarks = _download.readingInfo.bookmarks.filter(
+            (_bookmark) => _bookmark.page !== currentPageBookmark.page
+          );
+          setCurrentPageBookmark(null);
+        } else {
+          // If no bookmark exists for the current page, create a new one
+          const newBookmark: Bookmark = {
+            name: "",
+            page: currentPage,
+          };
+          updatedBookmarks = [..._download.readingInfo.bookmarks, newBookmark];
+          setCurrentPageBookmark(newBookmark);
+        }
+
+        // Update the bookmarks and return the updated download
+        setBookmarks(updatedBookmarks);
+
+        return {
+          ..._download,
+          readingInfo: {
+            ..._download.readingInfo,
+            bookmarks: updatedBookmarks,
+          },
+        };
+      }
+
+      // Return the unchanged download if it doesn't match the target book
+      return _download;
+    });
+
+    // Set the updated downloads in the store
+    DownloadsStore.downloads.set(updatedDownloads);
+  }
+
+  useEffect(() => {
+    const currentDownloadState = DownloadsStore.downloads.find(
+      (dl) => dl.downloadId === download.downloadId
+    );
+    setCurrentPageBookmark(
+      currentDownloadState.readingInfo.bookmarks.find(
+        (_bookmark) => _bookmark.page === currentPage
+      )
+    );
+  }, [currentPage]);
 
   return (
     <BottomSheet
@@ -172,7 +252,7 @@ const Controls = ({
         borderRadius: 20,
       }}
       handleHeight={30}
-      onChange={(index) => {}}
+      onChange={() => {}}
     >
       <View style={{ paddingHorizontal: 15 }}>
         <Card
@@ -253,28 +333,55 @@ const Controls = ({
           </View>
         </Card>
         <Spacer height={10} />
-        <Card
-          style={{ padding: 10, borderRadius: 40 }}
-          contentStyle={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            icon={"bookmark-outline"}
-            mode="contained-tonal"
-            onPress={() => {}}
+        <Card style={{ padding: 10, borderRadius: 40 }}>
+          <Stack
+            block
+            justify="space-between"
+            direction="row"
+            align="flex-start"
           >
-            Bookmark
-          </Button>
-          <Button
-            icon={"bookmark-multiple"}
-            mode="contained-tonal"
-            onPress={() => {}}
-          >
-            Bookmarks
-          </Button>
+            <Stack
+              gap={showBookmarks ? 10 : 0}
+              pa={showBookmarks ? 10 : 0}
+              color={theme.onPrimary}
+              radius={25}
+              align="center"
+            >
+              <Button
+                icon={"bookmark-multiple"}
+                mode={showBookmarks ? "contained" : "contained-tonal"}
+                onPress={() => {
+                  animateLayout();
+                  setShowBookmarks(!showBookmarks);
+                }}
+              >
+                Bookmarks
+              </Button>
+              {showBookmarks && (
+                <Stack
+                  direction="row"
+                  gap={5}
+                  wrap="wrap"
+                  align="center"
+                  justify="center"
+                  style={{ maxWidth: 150 }}
+                >
+                  {bookmarks.map((bookmark) => (
+                    <Button mode="contained-tonal" key={bookmark.page}>
+                      {bookmark.page}
+                    </Button>
+                  ))}
+                </Stack>
+              )}
+            </Stack>
+            <Button
+              mode={currentPageBookmark ? "contained" : "contained-tonal"}
+              icon={"bookmark"}
+              onPress={() => addBookMark()}
+            >
+              Bookmark
+            </Button>
+          </Stack>
         </Card>
         {/* <View style={{ flexDirection: "row" }}>
           <IconButton
@@ -310,9 +417,7 @@ const Controls = ({
                     icon={"check"}
                     size={15}
                     iconColor={
-                      color === "transparent"
-                        ? theme.colors.text
-                        : theme.colors.background
+                      color === "transparent" ? theme.text : theme.background
                     }
                     style={{
                       backgroundColor: color,
@@ -321,9 +426,7 @@ const Controls = ({
                       margin: 0,
                       borderWidth: 1.5,
                       borderColor:
-                        color === "transparent"
-                          ? theme.colors.text
-                          : "transparent",
+                        color === "transparent" ? theme.text : "transparent",
                     }}
                   />
                 ) : (
@@ -338,9 +441,7 @@ const Controls = ({
                         backgroundColor: color,
                         borderWidth: 1.5,
                         borderColor:
-                          color === "transparent"
-                            ? theme.colors.text
-                            : "transparent",
+                          color === "transparent" ? theme.text : "transparent",
                         width: 30,
                         height: 30,
                         borderRadius: 5,
@@ -364,21 +465,17 @@ const Controls = ({
               trackStyle={{
                 height: "100%",
                 borderRadius: 30,
-                backgroundColor: theme.colors.onSurface,
+                backgroundColor: theme.onSurface,
               }}
               thumbStyle={{
                 backgroundColor:
-                  overlayColor === "transparent"
-                    ? LiveAppState.themeValue.colors.primary.get()
-                    : overlayColor,
-                borderColor: LiveAppState.themeValue.colors.text.get(),
+                  overlayColor === "transparent" ? theme.primary : overlayColor,
+                borderColor: theme.text,
                 borderWidth: 2,
               }}
               minimumTrackStyle={{
                 backgroundColor:
-                  overlayColor === "transparent"
-                    ? LiveAppState.themeValue.colors.primary.get()
-                    : overlayColor,
+                  overlayColor === "transparent" ? theme.primary : overlayColor,
                 height: "80%",
                 marginLeft: 5,
               }}

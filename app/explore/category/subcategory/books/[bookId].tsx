@@ -17,7 +17,7 @@ import {
 import { DownloadsStore, LiveAppState } from "../../../../../store/store";
 import { Feather, Foundation } from "@expo/vector-icons";
 import { dowloadBook, trimText } from "../../../../../utils";
-import { FullBookType } from "../../../../../types";
+import { FullBookType } from "../../../../../types/types";
 import { useRouter, useSegments } from "expo-router";
 import BaseImage from "../../../../../components/BaseImage";
 import { getBook } from "../../../../../services/services";

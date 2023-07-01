@@ -3,7 +3,7 @@ import { useRef, useMemo, useState, useEffect } from "react";
 import { BackHandler } from "react-native";
 import WebView from "react-native-webview";
 import { LiveAppState } from "../../store/store";
-import { WebviewRequirements, PaypalWebviewMessage } from "../../types";
+import { WebviewRequirements, PaypalWebviewMessage } from "../../types/types";
 import { objectToSearchParams } from "../../utils";
 import CustomBackdrop from "../CustomBackdrop";
 import { BASE_URL } from "../../constants";

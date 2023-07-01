@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Button, Card, ProgressBar, Text } from "react-native-paper";
 import { trimText } from "../utils";
 import BaseImage from "./BaseImage";
-import { DownloadType, FullBookType } from "../types";
+import { DownloadType, FullBookType } from "../types/types";
 import { theme } from "../constants";
 import { Feather, Foundation } from "@expo/vector-icons";
 import { useRouter } from "expo-router";

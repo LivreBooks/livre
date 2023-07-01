@@ -2,7 +2,7 @@ import React from "react";
 import { Text } from "react-native-paper";
 import { TouchableNativeFeedback, View } from "react-native";
 import * as Animatable from "react-native-animatable";
-import { BookType } from "../types";
+import { BookType } from "../types/types";
 import { theme } from "../constants";
 import { trimText } from "../utils";
 import BaseImage from "./BaseImage";

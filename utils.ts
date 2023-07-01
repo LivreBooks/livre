@@ -9,7 +9,7 @@ import {
   DownloadLink,
   DownloadType,
   FullBookType,
-} from "./types";
+} from "./types/types";
 import { BASE_URL } from "./constants";
 
 export async function downloadFile(
@@ -160,17 +160,25 @@ export async function dowloadBook(
   console.log("Beginning");
   const downloadId = Math.floor(Math.random() * 1000);
 
-  const download: DownloadType = {
+  const newDownload: DownloadType = {
     downloadId,
     progress: 0,
     book: fullBook,
     link: links[0],
     filepath: null,
+    readingInfo: {
+      currentPage: 1,
+      bookmarks: [],
+      lastRead: "",
+    },
   };
 
   console.log(fullBook.coverurl);
-  console.log(download);
-  DownloadsStore.downloads.set([download, ...DownloadsStore.downloads.get()]);
+  console.log(newDownload);
+  DownloadsStore.downloads.set([
+    newDownload,
+    ...DownloadsStore.downloads.get(),
+  ]);
   console.log("Startig cover");
   const base64Cover = await downloadFileAsBase64(fullBook.coverurl);
   DownloadsStore.downloads[0].book.base64Cover.set(
@@ -181,7 +189,7 @@ export async function dowloadBook(
 
   const { uri, id } = await downloadFile(
     downloadId,
-    download.link.link,
+    newDownload.link.link,
     fullBook.title.replace(/\s/g, "_").replace(/[^\w\s]/g, ""),
     fullBook.extension,
     (downloadId, progress) => {
@@ -325,3 +333,22 @@ export function objectToSearchParams(obj: Record<string, string>): string {
 
   return searchParams.toString();
 }
+
+export const animateLayout = (config = {}) => {
+  LayoutAnimation.configureNext({
+    duration: 300,
+    create: {
+      type: LayoutAnimation.Types.easeInEaseOut,
+      property: LayoutAnimation.Properties.opacity,
+    },
+    update: {
+      type: LayoutAnimation.Types.easeInEaseOut,
+      springDamping: 0.7,
+    },
+    delete: {
+      type: LayoutAnimation.Types.easeOut,
+      property: LayoutAnimation.Properties.opacity,
+    },
+    ...config,
+  });
+};

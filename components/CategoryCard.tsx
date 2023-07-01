@@ -2,7 +2,7 @@ import React from "react";
 import { View, Dimensions, TouchableNativeFeedback } from "react-native";
 import { Text } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
-import { CategoryType, SubCategoryType } from "../types";
+import { CategoryType, SubCategoryType } from "../types/types";
 import { bgColors } from "../constants";
 
 const { width: screenWidth } = Dimensions.get("screen");

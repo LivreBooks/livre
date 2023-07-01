@@ -11,7 +11,7 @@ import {
   WebviewRequirements,
   PaypalWebviewSuccessMessage,
   PaypalWebviewFailedMessage,
-} from "../types";
+} from "../types/types";
 import PurchasesBottomSheet from "../components/account/PurchasesBottomSheet";
 import PaymentBottomSheet from "../components/account/PaymentBottomSheet";
 import DownloadsBottomSheet from "../components/account/DownloadsBottomSheet";

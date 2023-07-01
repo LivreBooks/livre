@@ -2,7 +2,7 @@ import { ActivityIndicator, StyleSheet, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Avatar, Button, Text } from "react-native-paper";
 import { LiveAppState, SettingsStore, UserStore } from "../../store/store";
-import { Account, GoogleUser, NewUser, UserProfile } from "../../types";
+import { Account, GoogleUser, NewUser, UserProfile } from "../../types/types";
 import * as Google from "expo-auth-session/providers/google";
 import { FetchResponse, fetchUtil } from "../../utils";
 import { BASE_URL } from "../../constants";

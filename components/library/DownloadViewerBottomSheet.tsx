@@ -5,7 +5,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
 import { IconButton, Text, Button } from "react-native-paper";
 import { DownloadsStore, LiveAppState } from "../../store/store";
-import { DownloadType } from "../../types";
+import { DownloadType } from "../../types/types";
 import { trimText } from "../../utils";
 import BaseImage from "../BaseImage";
 import CustomBackdrop from "../CustomBackdrop";

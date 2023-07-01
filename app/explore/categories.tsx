@@ -6,7 +6,7 @@ import { Searchbar, Text } from "react-native-paper";
 import CategoryCard from "../../components/CategoryCard";
 import CategoryCardSkeleton from "../../components/CategoryCardSkeleton";
 import { ExploreStore, LiveAppState } from "../../store/store";
-import { CategoryType } from "../../types";
+import { CategoryType } from "../../types/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import BasePage from "../../components/BasePage";

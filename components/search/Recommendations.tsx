@@ -4,7 +4,7 @@ import React from "react";
 import { View, TouchableNativeFeedback, Dimensions } from "react-native";
 import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { LiveAppState } from "../../store/store";
-import { RecommendationCategory, FullBookType } from "../../types";
+import { RecommendationCategory, FullBookType } from "../../types/types";
 import BaseImage from "../BaseImage";
 import { Text } from "react-native-paper";
 

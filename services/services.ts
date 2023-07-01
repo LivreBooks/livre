@@ -1,6 +1,6 @@
 import { Parser } from "htmlparser2";
 import { DomHandler } from "domhandler";
-import { DownloadLink, FullBookType } from "../types";
+import { DownloadLink, FullBookType } from "../types/types";
 
 const linkHrefRegex = /href="([^"]*)"/;
 

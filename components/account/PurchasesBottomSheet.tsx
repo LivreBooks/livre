@@ -2,7 +2,7 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import React, { useRef, useMemo, useEffect, useState } from "react";
 import { BackHandler, View, StyleSheet } from "react-native";
 import { LiveAppState, UserStore } from "../../store/store";
-import { Purchase } from "../../types";
+import { Purchase } from "../../types/types";
 import CustomBackdrop from "../CustomBackdrop";
 import { ScrollView } from "react-native-gesture-handler";
 import { Text } from "react-native-paper";

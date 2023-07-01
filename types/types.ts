@@ -87,12 +87,22 @@ export interface FullBookType {
   torrent: string;
 }
 
+export interface Bookmark {
+  name: string;
+  page: number;
+}
+
 export interface DownloadType {
   downloadId: number;
   link: DownloadLink;
   book: FullBookType;
   progress: number;
   filepath: string | null;
+  readingInfo: {
+    currentPage: number;
+    bookmarks: Bookmark[];
+    lastRead: string;
+  };
 }
 
 export interface DownloadLink {
@@ -308,3 +318,5 @@ export interface PaypalWebviewFailedMessage {
 export type PaypalWebviewMessage =
   | PaypalWebviewFailedMessage
   | PaypalWebviewSuccessMessage;
+
+export type ThemeType = "auto" | "light" | "dark";

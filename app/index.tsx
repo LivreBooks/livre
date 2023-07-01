@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import BookCard from "../components/BookCard";
 import BookCardSkeleton from "../components/BookCardSkeleton";
-import { BookType, FullBookType, RecommendationCategory } from "../types";
+import { BookType, FullBookType, RecommendationCategory } from "../types/types";
 import { layoutAnimate, sortBooksByCompleteness } from "../utils";
 import BasePage from "../components/BasePage";
 import { LiveAppState } from "../store/store";
@@ -13,7 +13,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Recommendations, {
   RecommendationsSkeletonLoader,
 } from "../components/search/Recommendations";
-import BookBottomSheet from "../components/search/BookBottomShhet";
+import BookBottomSheet from "../components/BookBottomSheet";
 import { BASE_URL } from "../constants";
 
 export default function Search() {

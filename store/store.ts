@@ -13,7 +13,7 @@ import {
   FullBookType,
   Purchase,
   UserProfile,
-} from "../types";
+} from "../types/types";
 import { darkMode, lightMode } from "../constants";
 import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 
