@@ -44,8 +44,8 @@ const EpubViewer = ({
           enableSelection={false}
           enableSwipe={false}
           onReady={(...data) => {
-            console.log("=========");
-            console.log(data);
+            //console.log("=========");
+            //console.log(data);
           }}
           renderOpeningBookComponent={() => (
             <ViewerLoading bookCover={bookCover} />

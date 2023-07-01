@@ -86,17 +86,17 @@ const account = () => {
   function handlePaymentWebviewClose(
     data?: PaypalWebviewSuccessMessage | PaypalWebviewFailedMessage
   ) {
-    console.log("handlePaymentWebviewClose");
+    // //console.log("handlePaymentWebviewClose");
     setShowWebview(false);
 
     if (data?.isSuccesful) {
-      console.log("Settting new account info");
+      // //console.log("Settting new account info");
       UserStore.account.set({
         ...UserStore.account.get(),
         tokens: UserStore.account.tokens.get() + parseInt(data.tokens),
       });
     } else {
-      console.log(data);
+      // //console.log(data);
     }
   }
 

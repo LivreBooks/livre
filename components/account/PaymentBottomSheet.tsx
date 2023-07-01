@@ -33,7 +33,7 @@ const PaymentBottomSheet = ({
 
   useEffect(() => {
     const handle = BackHandler.addEventListener("hardwareBackPress", () => {
-      console.log("Back press on webview sheet");
+      //console.log("Back press on webview sheet");
       close();
       return true;
     });

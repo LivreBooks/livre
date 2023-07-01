@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "expo-router";
 const reader = () => {
   const router = useRouter();
   const { downloadId } = useSearchParams();
-  console.log(downloadId);
+  //console.log(downloadId);
   const [download] = useState(
     DownloadsStore.get().downloads.find(
       (download) => download.downloadId === parseInt(downloadId as string)
@@ -24,4 +24,3 @@ const reader = () => {
 };
 
 export default reader;
-

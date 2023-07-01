@@ -37,7 +37,7 @@ export async function getDownloadLinks(md5: string): Promise<DownloadLink[]> {
   parser.write(html);
   parser.end();
 
-  console.log(options);
+  //console.log(options);
   return options;
 }
 

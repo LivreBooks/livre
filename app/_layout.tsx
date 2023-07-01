@@ -26,7 +26,7 @@ if (Platform.OS === "android") {
 //   typeof Navigator
 // >(Navigator);
 
-// console.log(Tabs);
+// //console.log(Tabs);
 
 function AppLayout() {
   const preferredTheme = useColorScheme();
@@ -35,7 +35,7 @@ function AppLayout() {
 
   UserStore.account.onChange(() => {
     setRerender(Math.random());
-    console.log("Rerender");
+    // //console.log("Rerender");
   });
 
   SettingsStore.theme.onChange((newTheme) => {

@@ -32,13 +32,13 @@ const PdfViewer = React.forwardRef(
     }));
 
     useEffect(() => {
-      console.log({ page });
+      //console.log({ page });
       FileSystem.getInfoAsync(fileUri)
         .then((fileinfo) => {
-          console.log(fileinfo);
+          //console.log(fileinfo);
         })
         .catch((error) => {
-          console.log(error);
+          //console.log(error);
         });
     }, []);
 
@@ -58,10 +58,10 @@ const PdfViewer = React.forwardRef(
             setCurrentpage(page);
           }}
           onError={(error) => {
-            console.log(error);
+            //console.log(error);
           }}
           onPressLink={(uri) => {
-            console.log(`Link pressed: ${uri}`);
+            //console.log(`Link pressed: ${uri}`);
           }}
           page={page}
           style={{

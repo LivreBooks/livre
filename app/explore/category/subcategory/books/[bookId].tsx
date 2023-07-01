@@ -49,7 +49,7 @@ const BookPage = () => {
     if (found) {
       setDownloadedFilepath(found.filepath);
       setDownloadProgress(found.progress);
-      console.log("Progress: " + found.progress);
+      //console.log("Progress: " + found.progress);
     }
   });
 
@@ -65,7 +65,7 @@ const BookPage = () => {
   }
 
   function fetchFullBook() {
-    console.log("Fetching:" + bookPreview.id);
+    //console.log("Fetching:" + bookPreview.id);
     setLoading(true);
     getBook(bookPreview.id)
       .then((data) => {
@@ -73,7 +73,7 @@ const BookPage = () => {
         setFullBook(data);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       })
       .finally(() => {
         setLoading(false);
@@ -90,7 +90,7 @@ const BookPage = () => {
         dowloadBook(fullBook, data);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       })
       .finally(() => {
         setFetchinDownloadLinks(false);
@@ -108,7 +108,7 @@ const BookPage = () => {
     }
   }
   useLayoutEffect(() => {
-    console.log("Loaded book");
+    //console.log("Loaded book");
     if (!fullBook) {
       fetchFullBook();
     }
@@ -116,7 +116,7 @@ const BookPage = () => {
 
   useEffect(() => {
     const handler = BackHandler.addEventListener("hardwareBackPress", () => {
-      console.log(segments);
+      //console.log(segments);
       router.back();
       return true;
     });

@@ -30,7 +30,7 @@ const DownloadsBottomSheet = () => {
   // const [backHandler, setBackHandler] = useState<NativeEventSubscription>(null);
 
   DownloadsStore.downloads.onChange((payload) => {
-    console.log("Change: " + Math.random());
+    //console.log("Change: " + Math.random());
     setDownloads(payload);
     if (snapIndex === -1 && downloads.length != payload.length) {
       show();

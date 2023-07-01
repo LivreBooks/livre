@@ -3,12 +3,16 @@ import React, { useEffect, useMemo, useRef } from "react";
 import { Feather, Foundation } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
-import { IconButton, Text, Button } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import { DownloadsStore, LiveAppState } from "../../store/store";
 import { DownloadType } from "../../types/types";
 import { trimText } from "../../utils";
 import BaseImage from "../BaseImage";
 import CustomBackdrop from "../CustomBackdrop";
+import Text from "../Text";
+import Button from "../Button";
+import Stack from "../Stack";
+import { BookDescription, BookInfo } from "../BookDetails";
 
 const DownloadViewerBottomSheet = ({
   download,
@@ -115,25 +119,23 @@ const DownloadViewerBottomSheet = ({
             </View>
           </View>
           <View style={{ marginHorizontal: 10 }}>
-            <Text variant="titleMedium">{download.book.title}</Text>
-            <Text variant="titleSmall" style={{ opacity: 0.6 }}>
-              {download.book.author}
-            </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-                width: "100%",
-                marginTop: 15,
-                marginBottom: 5,
-              }}
+            <Stack gap={5}>
+              <Text weight="700">{download.book.title}</Text>
+              <Text style={{ opacity: 0.6 }}>{download.book.author}</Text>
+            </Stack>
+            <Stack
+              direction="row"
+              justify="space-between"
+              align="center"
+              block
+              my={15}
             >
               {download.filepath !== null && (
                 <Button
                   mode="contained"
                   onPress={openBook}
-                  style={{ width: "72%" }}
+                  icon={"book-open-blank-variant"}
+                  style={{ width: "72%", borderRadius: 40 }}
                 >
                   READ
                 </Button>
@@ -146,213 +148,15 @@ const DownloadViewerBottomSheet = ({
                 style={{ width: "25%" }}
                 icon={"delete"}
               />
-            </View>
-            <View style={{ opacity: 0.9, height: "37%" }}>
-              <View
-                style={{
-                  backgroundColor:
-                    LiveAppState.themeValue.get().colors.inverseOnSurface,
-                  borderRadius: 10,
-                  paddingVertical: 5,
-                  paddingHorizontal: 8,
-                  marginVertical: 5,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Feather
-                    name="user"
-                    size={18}
-                    color="white"
-                    style={{
-                      marginRight: 5,
-                      color: LiveAppState.themeValue.get().colors.text,
-                    }}
-                  />
-                  <Text
-                    style={{
-                      fontWeight: "bold",
-                      marginRight: 5,
-                    }}
-                  >
-                    Publisher
-                  </Text>
-                </View>
-                {download.book.publisher ? (
-                  <Text>{trimText(download.book.publisher, 40)}</Text>
-                ) : (
-                  <Text style={{ textDecorationLine: "line-through" }}>
-                    missing
-                  </Text>
-                )}
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor:
-                      LiveAppState.themeValue.get().colors.inverseOnSurface,
-                    borderRadius: 10,
-                    paddingVertical: 5,
-                    paddingHorizontal: 8,
-                    flex: 1,
-                    marginRight: 5,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Foundation
-                      name="page"
-                      size={16}
-                      color={LiveAppState.themeValue.get().colors.text}
-                      style={{
-                        marginRight: 5,
-                        color: LiveAppState.themeValue.get().colors.text,
-                      }}
-                    />
-
-                    <Text style={{ marginRight: 5, fontWeight: "bold" }}>
-                      Pages
-                    </Text>
-                  </View>
-                  {download.book.pages ? (
-                    <Text>{download.book.pages}</Text>
-                  ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
-                      missing
-                    </Text>
-                  )}
-                </View>
-                <View
-                  style={{
-                    backgroundColor:
-                      LiveAppState.themeValue.get().colors.inverseOnSurface,
-                    borderRadius: 10,
-                    paddingVertical: 5,
-                    paddingHorizontal: 8,
-                    flex: 1,
-                    marginRight: 5,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Feather
-                      name="calendar"
-                      size={18}
-                      color="white"
-                      style={{
-                        marginRight: 5,
-                        color: LiveAppState.themeValue.get().colors.text,
-                      }}
-                    />
-
-                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                      Year
-                    </Text>
-                  </View>
-                  {download.book.year ? (
-                    <Text>{download.book.year}</Text>
-                  ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
-                      missing
-                    </Text>
-                  )}
-                </View>
-                <View
-                  style={{
-                    backgroundColor:
-                      LiveAppState.themeValue.get().colors.inverseOnSurface,
-                    borderRadius: 10,
-                    paddingVertical: 5,
-                    paddingHorizontal: 8,
-                    flex: 1,
-                    marginRight: 5,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Feather
-                      name="box"
-                      size={18}
-                      color="white"
-                      style={{
-                        marginRight: 5,
-                        color: LiveAppState.themeValue.get().colors.text,
-                      }}
-                    />
-
-                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                      Size
-                    </Text>
-                  </View>
-                  {download.book.filesize ? (
-                    <Text>
-                      {(parseInt(download.book.filesize) / 1e6).toFixed(2)}mb
-                    </Text>
-                  ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
-                      missing
-                    </Text>
-                  )}
-                </View>
-                <View
-                  style={{
-                    backgroundColor:
-                      LiveAppState.themeValue.get().colors.inverseOnSurface,
-                    borderRadius: 10,
-                    paddingVertical: 5,
-                    paddingHorizontal: 8,
-                    flex: 1,
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <Feather
-                      name="file-text"
-                      size={18}
-                      color="white"
-                      style={{
-                        marginRight: 5,
-                        color: LiveAppState.themeValue.get().colors.text,
-                      }}
-                    />
-
-                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
-                      Type
-                    </Text>
-                  </View>
-                  {download.book.extension ? (
-                    <Text>.{download.book.extension}</Text>
-                  ) : (
-                    <Text style={{ textDecorationLine: "line-through" }}>
-                      missing
-                    </Text>
-                  )}
-                </View>
-              </View>
-              <View
-                style={{
-                  padding: 10,
-                  backgroundColor:
-                    LiveAppState.themeValue.get().colors.inverseOnSurface,
-                  borderRadius: 10,
-                  marginVertical: 5,
-                }}
-              >
-                <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
-                  Description
-                </Text>
-                {download.book.descr && (
-                  <ScrollView>
-                    <Text>{download.book.descr.replace(/<[^>]*>/g, "")}</Text>
-                  </ScrollView>
-                )}
-              </View>
-            </View>
+            </Stack>
+            <BookInfo
+              pages={download.book.pages}
+              publisher={download.book.publisher}
+              size={(parseInt(download.book.filesize) / 1e6).toFixed(2)}
+              type={"." + download.book.extension}
+              year={download.book.year}
+            />
+            <BookDescription content={download.book.descr} />
           </View>
         </View>
       </View>

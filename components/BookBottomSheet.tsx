@@ -19,13 +19,13 @@ function BookBottomSheet({
   const snapPoints = useMemo(() => ["97%", "100%"], []);
 
   useEffect(() => {
-    console.log("Visible");
+    //console.log("Visible");
     const handler = BackHandler.addEventListener("hardwareBackPress", () => {
       onClose();
       return true;
     });
     return () => {
-      console.log("Removed");
+      //console.log("Removed");
       handler.remove();
     };
   }, []);

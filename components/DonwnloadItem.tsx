@@ -33,7 +33,7 @@ const DonwnloadItem = ({ download }: { download: DownloadType }) => {
       setProgess(downloads[index].progress);
     }
     if (downloads[index].filepath) {
-      console.log({ filepath: downloads[index].filepath });
+      //console.log({ filepath: downloads[index].filepath });
     }
   });
 

@@ -73,7 +73,7 @@ const ProfileManger = () => {
       await fetchUserProfile();
     } catch (error) {
       // Add your own error handling logic here
-      console.log(error);
+      //console.log(error);
     }
 
     setCreatingAccount(false);
@@ -90,7 +90,7 @@ const ProfileManger = () => {
     );
     setFetchingUserProfile(false);
     if (error) {
-      console.log(error);
+      //console.log(error);
       return;
     }
     setAccountInfo(data.account);
@@ -107,18 +107,18 @@ const ProfileManger = () => {
   useEffect(() => {
     if (response) {
       if (response?.type === "success") {
-        console.log("=================");
+        //console.log("=================");
         setGoogleToken(response.authentication.accessToken);
-        console.log({ token: response.authentication.accessToken });
+        //console.log({ token: response.authentication.accessToken });
         getUserInfoFromGoogle();
       } else {
-        console.log("Error");
+        //console.log("Error");
       }
     }
   }, [response, googleToken]);
 
   useEffect(() => {
-    // console.log(UserStore.account.get());
+    // //console.log(UserStore.account.get());
     fetchUserProfile();
   }, []);
   return (

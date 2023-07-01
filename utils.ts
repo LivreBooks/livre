@@ -28,17 +28,17 @@ export async function downloadFile(
   if (folderExists === false) {
     try {
       await RNFS.mkdir(externalPath);
-      console.log("Folder created successfully!");
+      // //console.log("Folder created successfully!");
     } catch (error) {
-      console.log("Error creating folder: ", error);
+      // //console.log("Error creating folder: ", error);
     }
   } else {
-    console.log("folder exists");
+    // //console.log("folder exists");
   }
 
   const fileUri = `file://${externalPath}/${fileName}.${fileType}`;
 
-  console.log({ fileUri });
+  // //console.log({ fileUri });
 
   const downloadResumable = FileSystem.createDownloadResumable(
     url,
@@ -54,7 +54,7 @@ export async function downloadFile(
 
   try {
     const { uri } = await downloadResumable.downloadAsync();
-    console.log("File downloaded to:", uri);
+    // //console.log("File downloaded to:", uri);
     return { uri, id };
   } catch (error) {
     console.error(error);
@@ -88,8 +88,8 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("=======++++++-----");
-        console.log(data);
+        // //console.log("=======++++++-----");
+        // //console.log(data);
 
         const newDownloadRecord: Download = {
           id: Math.random().toString(),
@@ -114,10 +114,10 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
       })
       .catch((err) => {
         reject(err);
-        console.log(err);
+        // //console.log(err);
       })
       .finally(() => {
-        console.log("Account Request Done");
+        // //console.log("Account Request Done");
       });
   });
 }
@@ -157,7 +157,7 @@ export async function dowloadBook(
   fullBook: FullBookType,
   links: DownloadLink[]
 ) {
-  console.log("Beginning");
+  // //console.log("Beginning");
   const downloadId = Math.floor(Math.random() * 1000);
 
   const newDownload: DownloadType = {
@@ -173,19 +173,19 @@ export async function dowloadBook(
     },
   };
 
-  console.log(fullBook.coverurl);
-  console.log(newDownload);
+  // //console.log(fullBook.coverurl);
+  // //console.log(newDownload);
   DownloadsStore.downloads.set([
     newDownload,
     ...DownloadsStore.downloads.get(),
   ]);
-  console.log("Startig cover");
+  // //console.log("Startig cover");
   const base64Cover = await downloadFileAsBase64(fullBook.coverurl);
   DownloadsStore.downloads[0].book.base64Cover.set(
     `data:image/jpeg;base64,${base64Cover}`
   );
 
-  console.log("cover downloaded");
+  // //console.log("cover downloaded");
 
   const { uri, id } = await downloadFile(
     downloadId,
@@ -201,7 +201,7 @@ export async function dowloadBook(
     }
   );
 
-  console.log({ uri });
+  // //console.log({ uri });
 
   const targetDownloadIndex = DownloadsStore.downloads
     .get()
@@ -215,7 +215,7 @@ export async function dowloadBook(
     bookCover: fullBook.coverurl,
     bookAuthor: fullBook.author,
   });
-  console.log(resp);
+  // //console.log(resp);
 }
 
 export function trimText(text: string, maxLength: number) {
@@ -275,7 +275,7 @@ export async function downloadFileAsBase64(fileUrl: string) {
     });
     return data;
   } catch (error) {
-    console.log(error);
+    // //console.log(error);
     return null;
   }
 }

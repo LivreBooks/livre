@@ -74,7 +74,7 @@ export default function Search() {
         setSearchResults(sortBooksByCompleteness(books));
       })
       .catch((err) => {
-        console.log(err);
+        // //console.log(err);
         setShowNoResults(true);
       })
       .finally(() => {
@@ -92,7 +92,7 @@ export default function Search() {
         setRecommendations(data);
       })
       .catch((err) => {
-        console.log(err);
+        // //console.log(err);
       })
       .finally(() => {
         setLoadingRecommendations(false);

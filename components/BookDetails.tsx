@@ -58,7 +58,7 @@ const BookDetails = ({
         setFullBook(data);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       })
       .finally(() => {
         setLoading(false);
@@ -74,7 +74,7 @@ const BookDetails = ({
         dowloadBook(fullBook, data);
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       })
       .finally(() => {
         setFetchinDownloadLinks(false);
@@ -206,28 +206,7 @@ const BookDetails = ({
                 />
               </Card>
             )}
-            <ScrollView
-              style={{
-                padding: 10,
-                backgroundColor: theme.inverseOnSurface,
-                borderRadius: 15,
-                marginVertical: 10,
-                height: _fullbook.descr ? "21%" : "auto",
-              }}
-            >
-              <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
-                Description
-              </Text>
-              {_fullbook.descr ? (
-                <Text style={{ marginBottom: 15 }}>
-                  {_fullbook.descr.replace(/<[^>]*>/g, "")}
-                </Text>
-              ) : (
-                <Text style={{ textDecorationLine: "line-through" }}>
-                  missing
-                </Text>
-              )}
-            </ScrollView>
+            <BookDescription content={_fullbook.descr} />
           </Stack>
         ) : (
           <View>
@@ -249,7 +228,13 @@ interface BookInfoProps {
   type: string;
 }
 
-const BookInfo = ({ publisher, pages, year, size, type }: BookInfoProps) => {
+export const BookInfo = ({
+  publisher,
+  pages,
+  year,
+  size,
+  type,
+}: BookInfoProps) => {
   return (
     <Stack style={{ opacity: 0.9 }} gap={10} block>
       <BookInfoCard icon="publish" label="Publisher" value={publisher} />
@@ -294,5 +279,30 @@ const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
         <Text style={{ textDecorationLine: "line-through" }}>missing</Text>
       )}
     </Stack>
+  );
+};
+
+export const BookDescription = ({ content }: { content: string }) => {
+  const [theme] = useState(LiveAppState.themeValue.colors.get());
+
+  return (
+    <ScrollView
+      style={{
+        padding: 10,
+        backgroundColor: theme.inverseOnSurface,
+        borderRadius: 15,
+        marginVertical: 10,
+        height: content ? "21%" : "auto",
+      }}
+    >
+      <Text style={{ fontWeight: "bold", marginBottom: 5 }}>Description</Text>
+      {content ? (
+        <Text style={{ marginBottom: 15 }}>
+          {content.replace(/<[^>]*>/g, "")}
+        </Text>
+      ) : (
+        <Text style={{ textDecorationLine: "line-through" }}>missing</Text>
+      )}
+    </ScrollView>
   );
 };

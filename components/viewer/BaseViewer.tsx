@@ -99,7 +99,7 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
               bookCover={download.book.base64Cover}
               fileUri={download.filepath}
               onLoad={() => {
-                console.log("Epub loaded");
+                //console.log("Epub loaded");
               }}
             />
           )}

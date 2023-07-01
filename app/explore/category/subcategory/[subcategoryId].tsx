@@ -37,7 +37,7 @@ function SubCategory() {
         setBooks(sortBooksByCompleteness(books));
       })
       .catch((err) => {
-        console.log(err);
+        //console.log(err);
       })
       .finally(() => {
         setLoading(false);

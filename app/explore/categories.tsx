@@ -24,7 +24,7 @@ export default function Categories() {
   const router = useRouter();
 
   function openCategory(category: CategoryType) {
-    console.log("Opening " + category.name);
+    // //console.log("Opening " + category.name);
     router.push({
       pathname: `/explore/category/${category.id}`,
     });
@@ -45,7 +45,7 @@ export default function Categories() {
         }
       })
       .catch((err) => {
-        console.log(err);
+        // //console.log(err);
       })
       .finally(() => {
         setLoading(false);
