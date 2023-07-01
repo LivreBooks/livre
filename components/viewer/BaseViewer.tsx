@@ -345,6 +345,7 @@ const Controls = ({
               pa={showBookmarks ? 10 : 0}
               radius={25}
               align="center"
+              block={showBookmarks ? true : false}
             >
               <Button
                 icon={"bookmark-multiple"}
@@ -367,16 +368,24 @@ const Controls = ({
                   {bookmarks.map((bookmark) => (
                     <Button
                       mode={
-                        currentPageBookmark.page === bookmark.page
+                        currentPageBookmark?.page === bookmark.page
                           ? "contained"
                           : "contained-tonal"
                       }
                       key={bookmark.page}
-                      onPress={() => goToPage(bookmark.page)}
+                      onPress={() => {
+                        goToPage(bookmark.page);
+                        setShowBookmarks(false);
+                      }}
                     >
                       {bookmark.page}
                     </Button>
                   ))}
+                  {bookmarks.length === 0 && (
+                    <Text align="center" style={{ width: "100%" }}>
+                      No Bookmarks
+                    </Text>
+                  )}
                 </Stack>
               )}
             </Stack>
