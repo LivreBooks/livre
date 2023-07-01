@@ -343,7 +343,6 @@ const Controls = ({
             <Stack
               gap={showBookmarks ? 10 : 0}
               pa={showBookmarks ? 10 : 0}
-              color={theme.onPrimary}
               radius={25}
               align="center"
             >
@@ -360,27 +359,36 @@ const Controls = ({
               {showBookmarks && (
                 <Stack
                   direction="row"
-                  gap={5}
                   wrap="wrap"
                   align="center"
-                  justify="center"
-                  style={{ maxWidth: 150 }}
+                  justify="space-between"
+                  block
                 >
                   {bookmarks.map((bookmark) => (
-                    <Button mode="contained-tonal" key={bookmark.page}>
+                    <Button
+                      mode={
+                        currentPageBookmark.page === bookmark.page
+                          ? "contained"
+                          : "contained-tonal"
+                      }
+                      key={bookmark.page}
+                      onPress={() => goToPage(bookmark.page)}
+                    >
                       {bookmark.page}
                     </Button>
                   ))}
                 </Stack>
               )}
             </Stack>
-            <Button
-              mode={currentPageBookmark ? "contained" : "contained-tonal"}
-              icon={"bookmark"}
-              onPress={() => addBookMark()}
-            >
-              Bookmark
-            </Button>
+            {!showBookmarks && (
+              <Button
+                mode={currentPageBookmark ? "contained" : "contained-tonal"}
+                icon={"bookmark"}
+                onPress={() => addBookMark()}
+              >
+                Bookmark
+              </Button>
+            )}
           </Stack>
         </Card>
         {/* <View style={{ flexDirection: "row" }}>
