@@ -6,6 +6,7 @@ import { LiveAppState } from "../../store/store";
 import { WebviewRequirements, PaypalWebviewMessage } from "../../types";
 import { objectToSearchParams } from "../../utils";
 import CustomBackdrop from "../CustomBackdrop";
+import { BASE_URL } from "../../constants";
 
 const PaymentBottomSheet = ({
   data,
@@ -20,9 +21,7 @@ const PaymentBottomSheet = ({
 
   const snapPoints = useMemo(() => ["95%"], []);
 
-  const [url] = useState(
-    `https://livre.framer.website/paypal?${objectToSearchParams(data)}`
-  );
+  const [url] = useState(`${BASE_URL}/paypal?${objectToSearchParams(data)}`);
 
   function onWebviewMessage(e: any) {
     const msg = e.nativeEvent.data;

@@ -79,7 +79,6 @@ const ThemeManger = ({ close }: { close: () => void }) => {
               SettingsStore.theme.set(value);
               setTheme(value);
             }}
-            theme={LiveAppState.themeValue.get()}
             buttons={[
               {
                 value: "light",

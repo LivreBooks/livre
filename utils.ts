@@ -106,7 +106,9 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
           ...UserStore.downloads.get(),
         ]);
 
-        UserStore.account.tokens.set(UserStore.account.tokens.get() - 1);
+        UserStore.account.tokens.set(
+          parseInt(UserStore.account.tokens.get()) - 1
+        );
 
         resolve(data.data);
       })

@@ -115,14 +115,8 @@ const DownloadViewerBottomSheet = ({
             </View>
           </View>
           <View style={{ marginHorizontal: 10 }}>
-            <Text variant="titleMedium" theme={LiveAppState.themeValue.get()}>
-              {download.book.title}
-            </Text>
-            <Text
-              variant="titleSmall"
-              theme={LiveAppState.themeValue.get()}
-              style={{ opacity: 0.6 }}
-            >
+            <Text variant="titleMedium">{download.book.title}</Text>
+            <Text variant="titleSmall" style={{ opacity: 0.6 }}>
               {download.book.author}
             </Text>
             <View
@@ -180,7 +174,6 @@ const DownloadViewerBottomSheet = ({
                     }}
                   />
                   <Text
-                    theme={LiveAppState.themeValue.get()}
                     style={{
                       fontWeight: "bold",
                       marginRight: 5,
@@ -190,14 +183,9 @@ const DownloadViewerBottomSheet = ({
                   </Text>
                 </View>
                 {download.book.publisher ? (
-                  <Text theme={LiveAppState.themeValue.get()}>
-                    {trimText(download.book.publisher, 40)}
-                  </Text>
+                  <Text>{trimText(download.book.publisher, 40)}</Text>
                 ) : (
-                  <Text
-                    theme={LiveAppState.themeValue.get()}
-                    style={{ textDecorationLine: "line-through" }}
-                  >
+                  <Text style={{ textDecorationLine: "line-through" }}>
                     missing
                   </Text>
                 )}
@@ -230,22 +218,14 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ marginRight: 5, fontWeight: "bold" }}
-                    >
+                    <Text style={{ marginRight: 5, fontWeight: "bold" }}>
                       Pages
                     </Text>
                   </View>
                   {download.book.pages ? (
-                    <Text theme={LiveAppState.themeValue.get()}>
-                      {download.book.pages}
-                    </Text>
+                    <Text>{download.book.pages}</Text>
                   ) : (
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ textDecorationLine: "line-through" }}
-                    >
+                    <Text style={{ textDecorationLine: "line-through" }}>
                       missing
                     </Text>
                   )}
@@ -272,22 +252,14 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ fontWeight: "bold", marginRight: 10 }}
-                    >
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
                       Year
                     </Text>
                   </View>
                   {download.book.year ? (
-                    <Text theme={LiveAppState.themeValue.get()}>
-                      {download.book.year}
-                    </Text>
+                    <Text>{download.book.year}</Text>
                   ) : (
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ textDecorationLine: "line-through" }}
-                    >
+                    <Text style={{ textDecorationLine: "line-through" }}>
                       missing
                     </Text>
                   )}
@@ -314,22 +286,16 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ fontWeight: "bold", marginRight: 10 }}
-                    >
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
                       Size
                     </Text>
                   </View>
                   {download.book.filesize ? (
-                    <Text theme={LiveAppState.themeValue.get()}>
+                    <Text>
                       {(parseInt(download.book.filesize) / 1e6).toFixed(2)}mb
                     </Text>
                   ) : (
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ textDecorationLine: "line-through" }}
-                    >
+                    <Text style={{ textDecorationLine: "line-through" }}>
                       missing
                     </Text>
                   )}
@@ -355,22 +321,14 @@ const DownloadViewerBottomSheet = ({
                       }}
                     />
 
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ fontWeight: "bold", marginRight: 10 }}
-                    >
+                    <Text style={{ fontWeight: "bold", marginRight: 10 }}>
                       Type
                     </Text>
                   </View>
                   {download.book.extension ? (
-                    <Text theme={LiveAppState.themeValue.get()}>
-                      .{download.book.extension}
-                    </Text>
+                    <Text>.{download.book.extension}</Text>
                   ) : (
-                    <Text
-                      theme={LiveAppState.themeValue.get()}
-                      style={{ textDecorationLine: "line-through" }}
-                    >
+                    <Text style={{ textDecorationLine: "line-through" }}>
                       missing
                     </Text>
                   )}

@@ -1,4 +1,4 @@
-import { Pressable, View } from "react-native";
+import { Alert, Keyboard, Pressable, View } from "react-native";
 import React, { useMemo, useRef, useState } from "react";
 import { overlayColors, theme } from "../../constants";
 import PdfViewer from "./PdfViewer";
@@ -6,11 +6,19 @@ import { DownloadType } from "../../types";
 import EpubViewer from "./EpubViewer";
 import { Foundation } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Card, ProgressBar, IconButton, Text } from "react-native-paper";
+import {
+  Card,
+  ProgressBar,
+  IconButton,
+  Text,
+  TextInput,
+  Button,
+} from "react-native-paper";
 import { layoutAnimate } from "../../utils";
 import { Slider } from "@miblanchard/react-native-slider";
 import { ReaderProvider } from "@epubjs-react-native/core";
 import { LiveAppState } from "../../store/store";
+import Spacer from "../Spacer";
 
 const BaseViewer = ({ download }: { download: DownloadType }) => {
   const [overlayBrightness, setOverlayBrightness] = useState(0.3);
@@ -20,6 +28,15 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
   const [scale, setScale] = useState(1);
 
   const [viewerDetails, setViewerDetails] = useState(null);
+
+  const pdfViewerRef = useRef();
+
+  function goToPage(page: number) {
+    console.log("Jumping to: ", page);
+    if (download.book.extension === "pdf") {
+      pdfViewerRef.current.jumpToPage(page);
+    }
+  }
 
   return (
     <ReaderProvider>
@@ -37,7 +54,7 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
               top: 0,
               left: 0,
               width: "100%",
-              height: "100%",
+              height: "110%",
               backgroundColor: overlayColor,
               opacity: overlayBrightness,
               position: "absolute",
@@ -50,7 +67,10 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
               bookCover={download.book.base64Cover}
               fileUri={download.filepath}
               setPages={(totalPages: number) => setTotalPages(totalPages)}
-              setCurrentpage={(currentPage: number) => setCurrentPage(currentPage)}
+              setCurrentpage={(currentPage: number) =>
+                setCurrentPage(currentPage)
+              }
+              ref={pdfViewerRef}
             />
           )}
           {download.book.extension === "djvu" && (
@@ -77,6 +97,7 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
           setOverlayBrightness={setOverlayBrightness}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
+          goToPage={goToPage}
           totalPages={totalPages}
           setTotalPages={setTotalPages}
         />
@@ -96,6 +117,7 @@ const Controls = ({
   setCurrentPage,
   totalPages,
   setTotalPages,
+  goToPage,
 }: {
   fileType: string;
   setScale: React.Dispatch<React.SetStateAction<number>>;
@@ -105,23 +127,39 @@ const Controls = ({
   setOverlayBrightness: (value: number) => void;
   currentPage: number;
   setCurrentPage: (value: number) => void;
+  goToPage: (value: number) => void;
   totalPages: number;
   setTotalPages: (value: number) => void;
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["3.5%", "35%"], []);
-  const [snapIndex, setSnapIndex] = useState(0);
+  const snapPoints = useMemo(() => ["3.5%", "50%"], []);
   const [selectedTheme, setSelectedTheme] = useState(0);
+  const [jumpToPage, setJumpToPage] = useState("");
+
+  const keyboardHandler = Keyboard;
+
+  function triggerJumpTo() {
+    const targetPage = parseInt(jumpToPage);
+    if (targetPage >= 1 && targetPage <= totalPages) {
+      console.log(jumpToPage);
+      goToPage(targetPage);
+      setJumpToPage("");
+      bottomSheetRef.current.snapToIndex(0);
+    } else {
+      Alert.alert("Invalid Page Number");
+    }
+    keyboardHandler.dismiss();
+  }
 
   return (
     <BottomSheet
       ref={bottomSheetRef}
-      index={snapIndex}
+      index={0}
       snapPoints={snapPoints}
-      style={{ marginHorizontal: 15, zIndex: 20 }}
+      style={{ marginHorizontal: 0, zIndex: 20 }}
       backgroundStyle={{
-        backgroundColor: LiveAppState.themeValue.get().colors.inversePrimary,
-        borderRadius: 20,
+        backgroundColor: LiveAppState.themeValue.get().colors.backdrop,
+        borderRadius: 40,
         overflow: "hidden",
       }}
       handleIndicatorStyle={{
@@ -134,69 +172,127 @@ const Controls = ({
         borderRadius: 20,
       }}
       handleHeight={30}
-      onChange={(index) => { }}
+      onChange={(index) => {}}
     >
-      <View style={{ paddingHorizontal: 10 }}>
-        <View
-          style={{
+      <View style={{ paddingHorizontal: 15 }}>
+        <Card
+          style={{ borderRadius: 40 }}
+          contentStyle={{
             flexDirection: "row",
-            width: "100%",
+            alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: 10,
           }}
         >
-          <Card style={{ flex: 1 }} contentStyle={{ flexDirection: "row" }}>
+          <View
+            style={{
+              borderRadius: 10,
+              margin: 20,
+              width: "40%",
+            }}
+          >
             <View
               style={{
-                borderRadius: 10,
-                padding: 8,
-                flex: 1,
+                flexDirection: "row",
+                alignItems: "center",
+                marginBottom: 5,
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 5,
-                }}
-              >
-                <Foundation
-                  name="page-multiple"
-                  size={16}
-                  color={LiveAppState.themeValue.colors.get().text}
-                  style={{ marginRight: 5 }}
-                />
-                <Text>
-                  {currentPage}/{totalPages}
-                </Text>
-              </View>
-              <ProgressBar
-                progress={currentPage / totalPages}
-                style={{ height: 10, borderRadius: 10 }}
+              <Foundation
+                name="page-multiple"
+                size={16}
+                color={LiveAppState.themeValue.colors.get().text}
+                style={{ marginRight: 5 }}
               />
+              <Text>
+                {currentPage}/{totalPages}
+              </Text>
             </View>
+            <ProgressBar
+              progress={currentPage / totalPages}
+              style={{ height: 10, borderRadius: 10 }}
+              color={
+                overlayColor === "transparent"
+                  ? LiveAppState.themeValue.colors.primary.get()
+                  : overlayColor
+              }
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginRight: 10,
+              borderRadius: 20,
+            }}
+          >
+            <TextInput
+              keyboardType="number-pad"
+              mode="flat"
+              dense
+              placeholder="Go to"
+              value={jumpToPage}
+              style={{
+                width: 100,
+                borderRadius: 20,
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+              }}
+              onChangeText={(value) => setJumpToPage(value)}
+              underlineStyle={{ height: 0, borderRadius: 20 }}
+              outlineStyle={{ borderRadius: 20 }}
+              blurOnSubmit
+              onSubmitEditing={() => triggerJumpTo()}
+            />
+            <IconButton
+              icon={"check"}
+              mode="contained-tonal"
+              size={20}
+              disabled={jumpToPage ? false : true}
+              onPress={() => triggerJumpTo()}
+            />
+          </View>
+        </Card>
+        <Spacer height={10} />
+        <Card
+          style={{ padding: 10, borderRadius: 40 }}
+          contentStyle={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button
+            icon={"bookmark-outline"}
+            mode="contained-tonal"
+            onPress={() => {}}
+          >
+            Bookmark
+          </Button>
+          <Button
+            icon={"bookmark-multiple"}
+            mode="contained-tonal"
+            onPress={() => {}}
+          >
+            Bookmarks
+          </Button>
+        </Card>
+        {/* <View style={{ flexDirection: "row" }}>
+          <IconButton
+            icon={"magnify-plus-outline"}
+            mode="contained-tonal"
+            style={{ borderRadius: 8 }}
+            onPress={() => setScale((prev: number) => prev + 0.1)}
+          />
+          <IconButton
+            icon={"magnify-minus-outline"}
+            mode="contained-tonal"
+            style={{ borderRadius: 8 }}
+            onPress={() => setScale((prev: number) => prev - 0.1)}
+          />
+        </View> */}
+        <Spacer height={10} />
 
-            <IconButton
-              icon={"plus"}
-              mode="contained-tonal"
-              style={{ borderRadius: 8 }}
-              onPress={() => setScale((prev: number) => prev + 0.1)}
-            />
-            <IconButton
-              icon={"minus"}
-              mode="contained-tonal"
-              style={{ borderRadius: 8 }}
-              onPress={() => setScale((prev: number) => prev - 0.1)}
-            />
-            <IconButton
-              icon={"bookmark-outline"}
-              mode="contained-tonal"
-              onPress={() => { }}
-              style={{ borderRadius: 8 }}
-            />
-          </Card>
-        </View>
-        <Card style={{ padding: 10 }}>
+        <Card style={{ padding: 20, borderRadius: 20 }}>
           <Text style={{ marginBottom: 2 }}>Reader Theme</Text>
           <View
             style={{
@@ -256,24 +352,38 @@ const Controls = ({
             ))}
           </View>
 
-          <View style={{ height: 40, marginTop: 5 }}>
+          <View
+            style={{
+              height: overlayColor === "transparent" ? 0 : 40,
+              marginTop: 5,
+              overflow: "hidden",
+            }}
+          >
             <Slider
               containerStyle={{ flex: 0.95 }}
               trackStyle={{
                 height: "100%",
                 borderRadius: 30,
-                backgroundColor: theme.colors.inversePrimary,
-              }}
-              thumbStyle={{
                 backgroundColor: theme.colors.onSurface,
               }}
+              thumbStyle={{
+                backgroundColor:
+                  overlayColor === "transparent"
+                    ? LiveAppState.themeValue.colors.primary.get()
+                    : overlayColor,
+                borderColor: LiveAppState.themeValue.colors.text.get(),
+                borderWidth: 2,
+              }}
               minimumTrackStyle={{
-                backgroundColor: theme.colors.primary,
+                backgroundColor:
+                  overlayColor === "transparent"
+                    ? LiveAppState.themeValue.colors.primary.get()
+                    : overlayColor,
                 height: "80%",
                 marginLeft: 5,
               }}
               value={overlayBrightness}
-              maximumValue={1.0}
+              maximumValue={0.7}
               minimumValue={0.2}
               onValueChange={(value) => {
                 setOverlayBrightness(value[0]);
@@ -287,4 +397,3 @@ const Controls = ({
 };
 
 export default BaseViewer;
-

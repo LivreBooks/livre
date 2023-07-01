@@ -1,15 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import {
-  View,
-  FlatList,
-  Pressable,
-  StyleSheet,
-  TouchableNativeFeedback,
-  Dimensions,
-  BackHandler,
-  Animated,
-} from "react-native";
-import { Banner, Card, IconButton, Searchbar, Text } from "react-native-paper";
+import { View, FlatList, Pressable, Animated } from "react-native";
+import { Card, IconButton, Searchbar, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import BookCard from "../components/BookCard";
@@ -18,17 +9,12 @@ import { BookType, FullBookType, RecommendationCategory } from "../types";
 import { layoutAnimate, sortBooksByCompleteness } from "../utils";
 import BasePage from "../components/BasePage";
 import { LiveAppState } from "../store/store";
-import { useRouter } from "expo-router";
-import BaseImage from "../components/BaseImage";
-import BookDetails from "../components/BookDetails";
-import BottomSheet from "@gorhom/bottom-sheet";
-import Carousel, { ICarouselInstance } from "react-native-reanimated-carousel";
 import { ScrollView } from "react-native-gesture-handler";
-import SkeletonLoader from "expo-skeleton-loader";
 import Recommendations, {
   RecommendationsSkeletonLoader,
 } from "../components/search/Recommendations";
 import BookBottomSheet from "../components/search/BookBottomShhet";
+import { BASE_URL } from "../constants";
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,7 +59,7 @@ export default function Search() {
     layoutAnimate();
     setSearching(true);
     setSearchResults([]);
-    fetch(`https://livre.deno.dev/search/${searchQuery}`)
+    fetch(`${BASE_URL}/search/${searchQuery}`)
       .then((res) => res.json())
       .then((data) => {
         if (!data || data.length === 0) {
@@ -100,7 +86,7 @@ export default function Search() {
     layoutAnimate();
     setLoadingRecommendations(true);
     // setRecommendations([]);
-    fetch(`https://livre.deno.dev/recommendations`)
+    fetch(`${BASE_URL}/recommendations`)
       .then((res) => res.json())
       .then((data) => {
         setRecommendations(data);
@@ -125,6 +111,7 @@ export default function Search() {
             height: "100%",
             width: "100%",
             justifyContent: "flex-start",
+            alignItems: "center",
             position: "relative",
           }}
         >
@@ -161,7 +148,6 @@ export default function Search() {
               placeholder="Search a book or author"
               onChangeText={onChangeSearch}
               value={searchQuery}
-              theme={LiveAppState.themeValue.get()}
               style={{
                 borderRadius: 20,
                 width: "95%",

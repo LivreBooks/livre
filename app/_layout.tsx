@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { ThemeProvider, DarkTheme } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Provider as PaperProvider } from "react-native-paper";
 import {
@@ -89,104 +88,100 @@ function AppLayout() {
   }, [theme]);
 
   return (
-    <ThemeProvider value={LiveAppState.themeValue.get()}>
-      <PaperProvider theme={LiveAppState.themeValue.get()}>
-        <StatusBar
-          style={SettingsStore.theme.get()}
-          backgroundColor={LiveAppState.themeValue.get().colors.text}
-        />
-        <SafeAreaView style={{ flex: 1 }}>
-          <Tabs
-            safeAreaInsets={{ bottom: 0 }}
-            initialRouteName="search"
-            screenOptions={({ route }) => ({
-              headerShown: false,
-              tabBarStyle: {
-                backgroundColor:
-                  LiveAppState.themeValue.get().colors.background,
-                paddingBottom: 5,
-                borderTopWidth: 0,
-                borderTopColor: LiveAppState.themeValue.get().colors.secondary,
+    <PaperProvider theme={LiveAppState.themeValue.get()}>
+      <StatusBar
+        style={SettingsStore.theme.get()}
+        backgroundColor={LiveAppState.themeValue.get().colors.text}
+      />
+      <SafeAreaView style={{ flex: 1 }}>
+        <Tabs
+          safeAreaInsets={{ bottom: 0 }}
+          initialRouteName="search"
+          screenOptions={({ route }) => ({
+            headerShown: false,
+            tabBarStyle: {
+              backgroundColor: LiveAppState.themeValue.get().colors.background,
+              paddingBottom: 5,
+              borderTopWidth: 0,
+              borderTopColor: LiveAppState.themeValue.get().colors.secondary,
+            },
+            tabBarActiveTintColor: LiveAppState.themeValue.get().colors.primary,
+          })}
+        >
+          <Tabs.Screen
+            name="index"
+            options={{
+              title: `Search`,
+              tabBarIcon: ({ color, focused }) => {
+                return (
+                  <MaterialCommunityIcons
+                    name={focused ? "book-search" : "book-search-outline"}
+                    size={24}
+                    color={color}
+                  />
+                );
               },
-              tabBarActiveTintColor:
-                LiveAppState.themeValue.get().colors.primary,
-            })}
-          >
-            <Tabs.Screen
-              name="index"
-              options={{
-                title: `Search`,
-                tabBarIcon: ({ color, focused }) => {
-                  return (
+            }}
+          />
+          <Tabs.Screen
+            name="explore"
+            options={{
+              title: `Explore`,
+              tabBarIcon: ({ color, focused }) => {
+                return (
+                  <MaterialCommunityIcons
+                    name={focused ? "star" : "star-outline"}
+                    size={24}
+                    color={color}
+                  />
+                );
+              },
+            }}
+          />
+          <Tabs.Screen
+            name="library"
+            options={{
+              title: "Library",
+              tabBarIcon: ({ color, focused }) => {
+                return (
+                  <View>
                     <MaterialCommunityIcons
-                      name={focused ? "book-search" : "book-search-outline"}
+                      name={focused ? "book" : "book-outline"}
                       size={24}
                       color={color}
                     />
-                  );
-                },
-              }}
-            />
-            <Tabs.Screen
-              name="explore"
-              options={{
-                title: `Explore`,
-                tabBarIcon: ({ color, focused }) => {
-                  return (
+                  </View>
+                );
+              },
+            }}
+          />
+          <Tabs.Screen
+            name="account"
+            options={{
+              title: "Account",
+              tabBarIcon: ({ color, focused }) => {
+                return (
+                  <View>
                     <MaterialCommunityIcons
-                      name={focused ? "star" : "star-outline"}
+                      name={focused ? "account" : "account-outline"}
                       size={24}
                       color={color}
                     />
-                  );
-                },
-              }}
-            />
-            <Tabs.Screen
-              name="library"
-              options={{
-                title: "Library",
-                tabBarIcon: ({ color, focused }) => {
-                  return (
-                    <View>
-                      <MaterialCommunityIcons
-                        name={focused ? "book" : "book-outline"}
-                        size={24}
-                        color={color}
-                      />
-                    </View>
-                  );
-                },
-              }}
-            />
-            <Tabs.Screen
-              name="account"
-              options={{
-                title: "Account",
-                tabBarIcon: ({ color, focused }) => {
-                  return (
-                    <View>
-                      <MaterialCommunityIcons
-                        name={focused ? "account" : "account-outline"}
-                        size={24}
-                        color={color}
-                      />
-                    </View>
-                  );
-                },
-              }}
-            />
-            <Tabs.Screen
-              name="[...unmatched]"
-              options={{
-                title: "404",
-                href: null,
-              }}
-            />
-          </Tabs>
-        </SafeAreaView>
-      </PaperProvider>
-    </ThemeProvider>
+                  </View>
+                );
+              },
+            }}
+          />
+          <Tabs.Screen
+            name="[...unmatched]"
+            options={{
+              title: "404",
+              href: null,
+            }}
+          />
+        </Tabs>
+      </SafeAreaView>
+    </PaperProvider>
   );
 }
 

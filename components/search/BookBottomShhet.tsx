@@ -40,15 +40,16 @@ function BookBottomSheet({
       }}
       handleIndicatorStyle={{
         width: "12%",
-        backgroundColor: LiveAppState.themeValue.get().colors.background,
+        backgroundColor: LiveAppState.themeValue.get().colors.text,
         height: 6,
         borderRadius: 10,
       }}
-      handleStyle={
-        {
-          // position: "absolute",
-        }
-      }
+      handleStyle={{
+        position: "absolute",
+        // top: 0,
+        // left: 0,
+        // width: "100%",
+      }}
       enablePanDownToClose
       onClose={() => {
         onClose();

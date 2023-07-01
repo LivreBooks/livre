@@ -47,6 +47,7 @@ function BasePage(props: {
           style={{
             paddingHorizontal: props.headerInfo ? 10 : 0,
             width: "100%",
+            alignItems: "center",
           }}
         >
           {props.children}

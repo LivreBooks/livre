@@ -6,7 +6,7 @@ import {
   ToastAndroid,
 } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { theme } from "../../../../../constants";
+import { BASE_URL, theme } from "../../../../../constants";
 import {
   ActivityIndicator,
   Button,
@@ -20,9 +20,8 @@ import { dowloadBook, trimText } from "../../../../../utils";
 import { FullBookType } from "../../../../../types";
 import { useRouter, useSegments } from "expo-router";
 import BaseImage from "../../../../../components/BaseImage";
-import { getBook, } from "../../../../../services/services";
+import { getBook } from "../../../../../services/services";
 import BasePage from "../../../../../components/BasePage";
-
 
 const BookPage = () => {
   const router = useRouter();
@@ -62,7 +61,7 @@ const BookPage = () => {
       if (found) {
         setDownloadedFilepath(found.filepath);
       }
-    } catch (error) { }
+    } catch (error) {}
   }
 
   function fetchFullBook() {
@@ -85,7 +84,7 @@ const BookPage = () => {
   function fetchDownloadLinks() {
     setFetchinDownloadLinks(true);
     // getDownloadLinks(fullBook.md5)
-    fetch(`https://livre.deno.dev/download/${fullBook.md5}`)
+    fetch(`${BASE_URL}/download/${fullBook.md5}`)
       .then((res) => res.json())
       .then((data) => {
         dowloadBook(fullBook, data);
@@ -401,15 +400,11 @@ const BookPage = () => {
               {downloadedFilepath ? (
                 <Button
                   mode="contained-tonal"
-                  icon={"book"}
+                  icon={"book-open-blank-variant"}
                   style={{ marginVertical: 5 }}
                   onPress={openReader}
                 >
-                  <Text
-                    style={{ fontWeight: "bold", color: theme.colors.primary }}
-                  >
-                    OPEN
-                  </Text>
+                  OPEN
                 </Button>
               ) : downloadProgress === null ? (
                 <Button

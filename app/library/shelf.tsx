@@ -1,7 +1,6 @@
-import { useRouter } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { View, Dimensions, TouchableOpacity, BackHandler } from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { useState } from "react";
+import { View, Dimensions, TouchableOpacity } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import { ActivityIndicator, Searchbar, Text } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import BaseImage from "../../components/BaseImage";
@@ -55,7 +54,6 @@ export default function Search() {
                 icon={"filter-outline"}
                 onChangeText={onChangeFilter}
                 value={filterQuery}
-                theme={LiveAppState.themeValue.get()}
                 style={{
                   borderRadius: 20,
                   marginBottom: 5,

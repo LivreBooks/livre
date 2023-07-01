@@ -10,6 +10,7 @@ import { CategoryType } from "../../types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
 import BasePage from "../../components/BasePage";
+import { BASE_URL } from "../../constants";
 
 export default function Categories() {
   const [filterQuery, setFilterQuery] = useState("");
@@ -35,7 +36,7 @@ export default function Categories() {
       return;
     }
     setLoading(true);
-    fetch("https://livre.deno.dev/categories")
+    fetch(`${BASE_URL}/categories`)
       .then((res) => res.json())
       .then((data) => {
         setExploreData(data);

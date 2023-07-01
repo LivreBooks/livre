@@ -41,7 +41,7 @@ function Recommendations({
         height: card.height + 10,
       } as const);
   return (
-    <View style={{ width: "100%" }}>
+    <View style={{ width: "98%" }}>
       {categories.map((category) => {
         return (
           <View
@@ -97,8 +97,6 @@ function Recommendations({
                   >
                     <TouchableNativeFeedback
                       onPress={() => {
-                        console.log("Clicked");
-                        console.log(book);
                         selectBook(book);
                       }}
                       background={TouchableNativeFeedback.Ripple(

@@ -1,14 +1,6 @@
-import {
-  StyleSheet,
-  View,
-  Image,
-  Dimensions,
-  Pressable,
-  BackHandler,
-  ToastAndroid,
-} from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
-import { theme } from "../constants";
+import { View, Dimensions, ToastAndroid } from "react-native";
+import React, { useEffect, useState } from "react";
+import { BASE_URL, theme } from "../constants";
 import {
   ActivityIndicator,
   Button,
@@ -19,12 +11,10 @@ import {
 import { DownloadsStore, LiveAppState } from "../store/store";
 import { Feather, Foundation } from "@expo/vector-icons";
 import { dowloadBook, trimText } from "../utils";
-import { BookType, DownloadType, FullBookType } from "../types";
-import { useRouter, useSegments } from "expo-router";
+import { BookType, FullBookType } from "../types";
+import { useRouter } from "expo-router";
 import BaseImage from "./BaseImage";
-import { useObservable } from "@legendapp/state/react";
 import { getBook } from "../services/services";
-import BasePage from "./BasePage";
 import { ScrollView } from "react-native-gesture-handler";
 
 const { width: sWidth, height: sHeight } = Dimensions.get("screen");
@@ -37,9 +27,6 @@ const BookDetails = ({
   fullBook?: FullBookType;
 }) => {
   const router = useRouter();
-
-  console.log(LiveAppState.selectedBookPreInfo.get());
-
   const [loading, setLoading] = useState(false);
   const [fetchinDownloadLinks, setFetchinDownloadLinks] = useState(false);
   const [downloadedFilepath, setDownloadedFilepath] = useState(null);
@@ -54,28 +41,23 @@ const BookDetails = ({
     if (found) {
       setDownloadedFilepath(found.filepath);
       setDownloadProgress(found.progress);
-      console.log("Progress: " + found.progress);
     }
   });
 
   function checkIfDownloaded() {
-    try {
-      const found = DownloadsStore.downloads.find(
-        (download) => download.book.id === _fullbook.id
-      );
-      if (found) {
-        setDownloadedFilepath(found.filepath);
-      }
-    } catch (error) {}
+    const found = DownloadsStore.downloads.find(
+      (download) => download.book.id === book.id
+    );
+    if (found) {
+      setDownloadedFilepath(found.filepath);
+    }
   }
 
   function fetchFullBook() {
-    console.log("Fetching:" + bookPreview.id);
     setLoading(true);
     getBook(bookPreview.id)
       .then((data) => {
         data.coverurl = bookPreview.cover;
-        console.log("Full book found");
         setFullBook(data);
       })
       .catch((err) => {
@@ -83,17 +65,15 @@ const BookDetails = ({
       })
       .finally(() => {
         setLoading(false);
-        checkIfDownloaded();
       });
   }
 
   function fetchDownloadLinks() {
     setFetchinDownloadLinks(true);
     // getDownloadLinks(fullbook.md5)
-    fetch(`https://livre.deno.dev/download/${_fullbook.md5}`)
+    fetch(`${BASE_URL}/download/${_fullbook.md5}`)
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         dowloadBook(fullBook, data);
       })
       .catch((err) => {
@@ -114,13 +94,10 @@ const BookDetails = ({
       ToastAndroid.show("Book Not Found", ToastAndroid.SHORT);
     }
   }
-  useLayoutEffect(() => {
-    console.log("Loaded book");
+  useEffect(() => {
+    checkIfDownloaded();
     if (bookPreview?.id) {
-      console.log("===Book Preview===");
       fetchFullBook();
-    } else {
-      console.log("===Full Book===");
     }
   }, []);
 
@@ -261,7 +238,7 @@ const BookDetails = ({
                       Pages
                     </Text>
                   </View>
-                  {bookPreview?.pages || _fullbook.pages ? (
+                  {bookPreview?.pages || _fullbook?.pages ? (
                     <Text>{bookPreview?.pages || _fullbook.pages}</Text>
                   ) : (
                     <Text style={{ textDecorationLine: "line-through" }}>
@@ -332,7 +309,9 @@ const BookDetails = ({
                   {bookPreview?.size || _fullbook.filesize ? (
                     <Text>
                       {bookPreview?.size ||
-                        (parseInt(_fullbook.filesize) / 1e6).toFixed(2)}
+                        (parseInt(_fullbook.filesize) / 1e6)
+                          .toFixed(2)
+                          .toString() + " mb"}
                     </Text>
                   ) : (
                     <Text style={{ textDecorationLine: "line-through" }}>
@@ -389,15 +368,11 @@ const BookDetails = ({
             {downloadedFilepath ? (
               <Button
                 mode="contained-tonal"
-                icon={"book"}
+                icon={"book-open-blank-variant"}
                 style={{ marginVertical: 5 }}
                 onPress={openReader}
               >
-                <Text
-                  style={{ fontWeight: "bold", color: theme.colors.primary }}
-                >
-                  OPEN
-                </Text>
+                OPEN
               </Button>
             ) : downloadProgress === null ? (
               <Button
@@ -437,15 +412,19 @@ const BookDetails = ({
                   LiveAppState.themeValue.get().colors.inverseOnSurface,
                 borderRadius: 10,
                 marginVertical: 5,
-                height: 150,
+                height: _fullbook.descr ? "28%" : "auto",
               }}
             >
               <Text style={{ fontWeight: "bold", marginBottom: 5 }}>
                 Description
               </Text>
-              {_fullbook.descr && (
+              {_fullbook.descr ? (
                 <Text style={{ marginBottom: 15 }}>
                   {_fullbook.descr.replace(/<[^>]*>/g, "")}
+                </Text>
+              ) : (
+                <Text style={{ textDecorationLine: "line-through" }}>
+                  missing
                 </Text>
               )}
             </ScrollView>

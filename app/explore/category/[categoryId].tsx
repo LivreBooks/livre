@@ -1,10 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  View,
-  Dimensions,
-  BackHandler,
-  Animated,
-} from "react-native";
+import { View, Dimensions, BackHandler, Animated } from "react-native";
 import { Searchbar } from "react-native-paper";
 import CategoryCard from "../../../components/CategoryCard";
 import { useRouter, useLocalSearchParams, useSearchParams } from "expo-router";
@@ -78,14 +73,16 @@ export default function Category() {
           position: "relative",
         }}
       >
-        <CollapsiblePageHeader title={category.name} scrollOffsetY={scrollOffsetY}>
+        <CollapsiblePageHeader
+          title={category.name}
+          scrollOffsetY={scrollOffsetY}
+        >
           {category.subCategories.length > 10 && (
             <Searchbar
               placeholder="Filter"
               icon={"filter-outline"}
               onChangeText={onChangeFilter}
               value={filterQuery}
-              theme={LiveAppState.themeValue.get()}
               style={{
                 borderRadius: 20,
                 marginHorizontal: 10,

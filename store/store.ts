@@ -15,6 +15,7 @@ import {
   UserProfile,
 } from "../types";
 import { darkMode, lightMode } from "../constants";
+import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
 
 configureObservablePersistence({
   persistLocal: ObservablePersistMMKV,
@@ -23,7 +24,7 @@ configureObservablePersistence({
 interface AppStateType {
   selectedBookPreInfo: BookType;
   selectedBookRecommendation: FullBookType;
-  themeValue: typeof darkMode;
+  themeValue: typeof MD3DarkTheme | typeof MD3LightTheme;
 }
 
 interface UserStore {

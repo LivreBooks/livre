@@ -4,12 +4,11 @@ import BasePage from "../components/BasePage";
 import { LiveAppState, SettingsStore, UserStore } from "../store/store";
 import { Text, IconButton } from "react-native-paper";
 import * as WebBrowser from "expo-web-browser";
+import * as Animatable from "react-native-animatable";
 import {
   Download,
   Purchase,
-  UserProfile,
   WebviewRequirements,
-  PaypalWebviewMessage,
   PaypalWebviewSuccessMessage,
   PaypalWebviewFailedMessage,
 } from "../types";
@@ -20,8 +19,6 @@ import ThemeManager from "../components/account/ThemeManager";
 import TokensManager from "../components/account/TokensManager";
 import ProfileManger from "../components/account/ProfileManger";
 import Spacer from "../components/Spacer";
-import { BASE_URL } from "../constants";
-import { fetchUtil } from "../utils";
 
 const BottomSheetOpener = ({
   label,
@@ -96,7 +93,7 @@ const account = () => {
       console.log("Settting new account info");
       UserStore.account.set({
         ...UserStore.account.get(),
-        tokens: UserStore.account.tokens.get() + data.tokens,
+        tokens: UserStore.account.tokens.get() + parseInt(data.tokens),
       });
     } else {
       console.log(data);
@@ -110,7 +107,9 @@ const account = () => {
   return (
     <>
       <BasePage headerInfo={{ title: "Account", icon: "account" }}>
-        <View
+        <Animatable.View
+          animation={"fadeInUp"}
+          delay={10}
           style={{
             height: "100%",
             width: "100%",
@@ -137,7 +136,7 @@ const account = () => {
             label="Downloads"
             onPress={() => setShowDownloads(true)}
           />
-        </View>
+        </Animatable.View>
       </BasePage>
 
       {showPurchases && (
