@@ -42,7 +42,7 @@ const BottomSheetOpener = ({
 				}}
 			>
 				<Text style={{ fontWeight: "bold" }}>{label}</Text>
-				<IconButton icon={"chevron-up"} />
+				<IconButton icon={"chevron-down"} />
 			</View>
 		</TouchableOpacity>
 	);
