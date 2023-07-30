@@ -6,11 +6,11 @@ import { Text, IconButton } from "react-native-paper";
 import * as WebBrowser from "expo-web-browser";
 import * as Animatable from "react-native-animatable";
 import {
-  Download,
-  Purchase,
-  WebviewRequirements,
-  PaypalWebviewSuccessMessage,
-  PaypalWebviewFailedMessage,
+	Download,
+	Purchase,
+	WebviewRequirements,
+	PaypalWebviewSuccessMessage,
+	PaypalWebviewFailedMessage,
 } from "../types/types";
 import PurchasesBottomSheet from "../components/account/PurchasesBottomSheet";
 import PaymentBottomSheet from "../components/account/PaymentBottomSheet";
@@ -21,141 +21,143 @@ import ProfileManger from "../components/account/ProfileManger";
 import Spacer from "../components/Spacer";
 
 const BottomSheetOpener = ({
-  label,
-  onPress,
+	label,
+	onPress,
 }: {
-  label: string;
-  onPress: () => void;
+	label: string;
+	onPress: () => void;
 }) => {
-  return (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
-      <View
-        style={{
-          padding: 5,
-          paddingLeft: 20,
-          borderRadius: 20,
-          backgroundColor: LiveAppState.themeValue.colors.surface.get(),
-          width: "100%",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Text style={{ fontWeight: "bold" }}>{label}</Text>
-        <IconButton icon={"chevron-up"} />
-      </View>
-    </TouchableOpacity>
-  );
+	return (
+		<TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+			<View
+				style={{
+					padding: 5,
+					paddingLeft: 20,
+					borderRadius: 20,
+					backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+					width: "100%",
+					flexDirection: "row",
+					alignItems: "center",
+					justifyContent: "space-between",
+				}}
+			>
+				<Text style={{ fontWeight: "bold" }}>{label}</Text>
+				<IconButton icon={"chevron-up"} />
+			</View>
+		</TouchableOpacity>
+	);
 };
 
 WebBrowser.maybeCompleteAuthSession();
 
 const account = () => {
-  const [reRender, setReRender] = useState(1);
+	const [reRender, setReRender] = useState(1);
 
-  const [showThemeManager, setShowThemeManager] = useState(false);
+	const [showThemeManager, setShowThemeManager] = useState(false);
 
-  const [tokensToBuy, setTokensToBuy] = useState(5);
+	const [tokensToBuy, setTokensToBuy] = useState(5);
 
-  const [showTokenForm, setShowTokenForm] = useState(false);
+	const [showTokenForm, setShowTokenForm] = useState(false);
 
-  const [showWebview, setShowWebview] = useState(false);
+	const [showWebview, setShowWebview] = useState(false);
 
-  const [downloads, setDownloads] = useState<Download[]>([]);
+	const [downloads, setDownloads] = useState<Download[]>([]);
 
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
+	const [purchases, setPurchases] = useState<Purchase[]>([]);
 
-  const [showPurchases, setShowPurchases] = useState(false);
+	const [showPurchases, setShowPurchases] = useState(false);
 
-  const [showDownloads, setShowDownloads] = useState(false);
+	const [showDownloads, setShowDownloads] = useState(false);
 
-  const [webviewData, setWebviewData] = useState<WebviewRequirements>(null);
+	const [webviewData, setWebviewData] = useState<WebviewRequirements>(null);
 
-  function openPaypalWebview() {
-    setShowTokenForm(false);
-    setWebviewData({
-      avatar: UserStore.account.avatar_url.get(),
-      email: UserStore.account.email.get(),
-      name: UserStore.account.fullname.get(),
-      tokens: tokensToBuy,
-      user_id: UserStore.account.id.get(),
-    });
-    setShowWebview(true);
-  }
+	function openPaypalWebview() {
+		setShowTokenForm(false);
+		setWebviewData({
+			avatar: UserStore.account.avatar_url.get(),
+			email: UserStore.account.email.get(),
+			name: UserStore.account.fullname.get(),
+			tokens: tokensToBuy,
+			user_id: UserStore.account.id.get(),
+		});
+		setShowWebview(true);
+	}
 
-  function handlePaymentWebviewClose(
-    data?: PaypalWebviewSuccessMessage | PaypalWebviewFailedMessage
-  ) {
-    // //console.log("handlePaymentWebviewClose");
-    setShowWebview(false);
+	function handlePaymentWebviewClose(
+		data?: PaypalWebviewSuccessMessage | PaypalWebviewFailedMessage
+	) {
+		// //console.log("handlePaymentWebviewClose");
+		setShowWebview(false);
 
-    if (data?.isSuccesful) {
-      // //console.log("Settting new account info");
-      UserStore.account.set({
-        ...UserStore.account.get(),
-        tokens: UserStore.account.tokens.get() + parseInt(data.tokens),
-      });
-    } else {
-      // //console.log(data);
-    }
-  }
+		if (data?.isSuccesful) {
+			// //console.log("Settting new account info");
+			UserStore.account.set({
+				...UserStore.account.get(),
+				tokens: UserStore.account.tokens.get() + parseInt(data.tokens),
+			});
+		} else {
+			// //console.log(data);
+		}
+	}
 
-  UserStore.onChange(() => {
-    setReRender(Math.random());
-  });
+	UserStore.onChange(() => {
+		setReRender(Math.random());
+	});
 
-  return (
-    <>
-      <BasePage headerInfo={{ title: "Account", icon: "account" }}>
-        <Animatable.View
-          animation={"fadeInUp"}
-          delay={10}
-          style={{
-            height: "100%",
-            width: "100%",
-            paddingHorizontal: 5,
-          }}
-        >
-          <ProfileManger />
+	return (
+		<>
+			<BasePage headerInfo={{ title: "Account", icon: "account" }}>
+				<Animatable.View
+					animation={"fadeInUp"}
+					delay={10}
+					style={{
+						height: "100%",
+						width: "100%",
+						paddingHorizontal: 5,
+					}}
+				>
+					<ProfileManger />
 
-          <Spacer height={10} />
+					<Spacer height={10} />
 
-          <TokensManager openPaypalWebview={() => openPaypalWebview()} />
+					{UserStore.account.get() && (
+						<TokensManager openPaypalWebview={() => openPaypalWebview()} />
+					)}
 
-          <BottomSheetOpener
-            label="Theme"
-            onPress={() => setShowThemeManager(true)}
-          />
-          <Spacer height={10} />
-          <BottomSheetOpener
-            label="Purchases"
-            onPress={() => setShowPurchases(true)}
-          />
-          <Spacer height={10} />
-          <BottomSheetOpener
-            label="Downloads"
-            onPress={() => setShowDownloads(true)}
-          />
-        </Animatable.View>
-      </BasePage>
+					<BottomSheetOpener
+						label="Theme"
+						onPress={() => setShowThemeManager(true)}
+					/>
+					<Spacer height={10} />
+					<BottomSheetOpener
+						label="Purchases"
+						onPress={() => setShowPurchases(true)}
+					/>
+					<Spacer height={10} />
+					<BottomSheetOpener
+						label="Downloads"
+						onPress={() => setShowDownloads(true)}
+					/>
+				</Animatable.View>
+			</BasePage>
 
-      {showPurchases && (
-        <PurchasesBottomSheet close={() => setShowPurchases(false)} />
-      )}
-      {showDownloads && (
-        <DownloadsBottomSheet close={() => setShowDownloads(false)} />
-      )}
-      {showWebview && webviewData && (
-        <PaymentBottomSheet
-          close={(data) => handlePaymentWebviewClose(data)}
-          data={webviewData}
-        />
-      )}
-      {showThemeManager && (
-        <ThemeManager close={() => setShowThemeManager(false)} />
-      )}
-    </>
-  );
+			{showPurchases && (
+				<PurchasesBottomSheet close={() => setShowPurchases(false)} />
+			)}
+			{showDownloads && (
+				<DownloadsBottomSheet close={() => setShowDownloads(false)} />
+			)}
+			{showWebview && webviewData && (
+				<PaymentBottomSheet
+					close={(data) => handlePaymentWebviewClose(data)}
+					data={webviewData}
+				/>
+			)}
+			{showThemeManager && (
+				<ThemeManager close={() => setShowThemeManager(false)} />
+			)}
+		</>
+	);
 };
 
 export default account;

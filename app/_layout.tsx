@@ -14,9 +14,9 @@ import { darkMode, lightMode } from "../constants";
 import { ThemeType } from "../types/types";
 
 if (Platform.OS === "android") {
-  if (UIManager.setLayoutAnimationEnabledExperimental) {
-    UIManager.setLayoutAnimationEnabledExperimental(true);
-  }
+	if (UIManager.setLayoutAnimationEnabledExperimental) {
+		UIManager.setLayoutAnimationEnabledExperimental(true);
+	}
 }
 
 // const { Navigator } = createMaterialBottomTabNavigator();
@@ -29,147 +29,147 @@ if (Platform.OS === "android") {
 // //console.log(Tabs);
 
 function AppLayout() {
-  const preferredTheme = useColorScheme();
+	const preferredTheme = useColorScheme();
 
-  const [reRender, setRerender] = useState(1);
+	const [reRender, setRerender] = useState(1);
 
-  UserStore.account.onChange(() => {
-    setRerender(Math.random());
-    // //console.log("Rerender");
-  });
+	UserStore.account.onChange(() => {
+		setRerender(Math.random());
+		// //console.log("Rerender");
+	});
 
-  SettingsStore.theme.onChange((newTheme) => {
-    updateTheme(newTheme);
-  });
+	SettingsStore.theme.onChange((newTheme) => {
+		updateTheme(newTheme);
+	});
 
-  function updateTheme(theme: ThemeType) {
-    if (theme === "auto") {
-      if (preferredTheme === "dark") {
-        LiveAppState.themeValue.set(darkMode);
-      }
+	function updateTheme(theme: ThemeType) {
+		if (theme === "auto") {
+			if (preferredTheme === "dark") {
+				LiveAppState.themeValue.set(darkMode);
+			}
 
-      if (preferredTheme === "light") {
-        LiveAppState.themeValue.set(lightMode);
-      }
-    } else {
-      if (theme === "dark") {
-        LiveAppState.themeValue.set(darkMode);
-      }
+			if (preferredTheme === "light") {
+				LiveAppState.themeValue.set(lightMode);
+			}
+		} else {
+			if (theme === "dark") {
+				LiveAppState.themeValue.set(darkMode);
+			}
 
-      if (theme === "light") {
-        LiveAppState.themeValue.set(lightMode);
-      }
-    }
-    setRerender(Math.random());
-  }
+			if (theme === "light") {
+				LiveAppState.themeValue.set(lightMode);
+			}
+		}
+		setRerender(Math.random());
+	}
 
-  useEffect(() => {
-    const theme = SettingsStore.theme.get();
-    updateTheme(theme);
-  }, []);
+	useEffect(() => {
+		const theme = SettingsStore.theme.get();
+		updateTheme(theme);
+	}, []);
 
-  return (
-    <PaperProvider theme={LiveAppState.themeValue.get()}>
-      <StatusBar
-        style={SettingsStore.theme.get()}
-        backgroundColor={LiveAppState.themeValue.get().colors.text}
-      />
-      <SafeAreaView style={{ flex: 1 }}>
-        <Tabs
-          safeAreaInsets={{ bottom: 0 }}
-          initialRouteName="search"
-          screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarStyle: {
-              backgroundColor: LiveAppState.themeValue.get().colors.background,
-              paddingBottom: 5,
-              borderTopWidth: 0,
-              borderTopColor: LiveAppState.themeValue.get().colors.secondary,
-            },
-            tabBarActiveTintColor: LiveAppState.themeValue.get().colors.primary,
-          })}
-        >
-          <Tabs.Screen
-            name="index"
-            options={{
-              title: `Search`,
-              tabBarIcon: ({ color, focused }) => {
-                return (
-                  <MaterialCommunityIcons
-                    name={focused ? "book-search" : "book-search-outline"}
-                    size={24}
-                    color={color}
-                  />
-                );
-              },
-            }}
-          />
-          <Tabs.Screen
-            name="explore"
-            options={{
-              title: `Explore`,
-              tabBarIcon: ({ color, focused }) => {
-                return (
-                  <MaterialCommunityIcons
-                    name={focused ? "star" : "star-outline"}
-                    size={24}
-                    color={color}
-                  />
-                );
-              },
-            }}
-          />
-          <Tabs.Screen
-            name="library"
-            options={{
-              title: "Library",
-              tabBarIcon: ({ color, focused }) => {
-                return (
-                  <View>
-                    <MaterialCommunityIcons
-                      name={focused ? "book" : "book-outline"}
-                      size={24}
-                      color={color}
-                    />
-                  </View>
-                );
-              },
-            }}
-          />
-          <Tabs.Screen
-            name="account"
-            options={{
-              title: "Account",
-              tabBarIcon: ({ color, focused }) => {
-                return (
-                  <View>
-                    <MaterialCommunityIcons
-                      name={focused ? "account" : "account-outline"}
-                      size={24}
-                      color={color}
-                    />
-                  </View>
-                );
-              },
-            }}
-          />
-          <Tabs.Screen
-            name="[...unmatched]"
-            options={{
-              title: "404",
-              href: null,
-            }}
-          />
-        </Tabs>
-      </SafeAreaView>
-    </PaperProvider>
-  );
+	return (
+		<PaperProvider theme={LiveAppState.themeValue.get()}>
+			<StatusBar
+				style={SettingsStore.theme.get()}
+				backgroundColor={LiveAppState.themeValue.get().colors.background}
+			/>
+			<SafeAreaView style={{ flex: 1 }}>
+				<Tabs
+					safeAreaInsets={{ bottom: 0 }}
+					initialRouteName="search"
+					screenOptions={({ route }) => ({
+						headerShown: false,
+						tabBarStyle: {
+							backgroundColor: LiveAppState.themeValue.get().colors.background,
+							paddingBottom: 5,
+							borderTopWidth: 0,
+							borderTopColor: LiveAppState.themeValue.get().colors.secondary,
+						},
+						tabBarActiveTintColor: LiveAppState.themeValue.get().colors.primary,
+					})}
+				>
+					<Tabs.Screen
+						name="index"
+						options={{
+							title: `Search`,
+							tabBarIcon: ({ color, focused }) => {
+								return (
+									<MaterialCommunityIcons
+										name={focused ? "book-search" : "book-search-outline"}
+										size={24}
+										color={color}
+									/>
+								);
+							},
+						}}
+					/>
+					<Tabs.Screen
+						name="explore"
+						options={{
+							title: `Explore`,
+							tabBarIcon: ({ color, focused }) => {
+								return (
+									<MaterialCommunityIcons
+										name={focused ? "star" : "star-outline"}
+										size={24}
+										color={color}
+									/>
+								);
+							},
+						}}
+					/>
+					<Tabs.Screen
+						name="library"
+						options={{
+							title: "Library",
+							tabBarIcon: ({ color, focused }) => {
+								return (
+									<View>
+										<MaterialCommunityIcons
+											name={focused ? "book" : "book-outline"}
+											size={24}
+											color={color}
+										/>
+									</View>
+								);
+							},
+						}}
+					/>
+					<Tabs.Screen
+						name="account"
+						options={{
+							title: "Account",
+							tabBarIcon: ({ color, focused }) => {
+								return (
+									<View>
+										<MaterialCommunityIcons
+											name={focused ? "account" : "account-outline"}
+											size={24}
+											color={color}
+										/>
+									</View>
+								);
+							},
+						}}
+					/>
+					<Tabs.Screen
+						name="[...unmatched]"
+						options={{
+							title: "404",
+							href: null,
+						}}
+					/>
+				</Tabs>
+			</SafeAreaView>
+		</PaperProvider>
+	);
 }
 
 export default AppLayout;
 
 {
-  /* {downloads.filter(
+	/* {downloads.filter(
                         (download) => download?.filepath === null
                       ).length > 0 && (
                         <Animatable.View
