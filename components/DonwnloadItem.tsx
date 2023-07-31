@@ -16,7 +16,7 @@ const DonwnloadItem = ({ download }: { download: DownloadType }) => {
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   function openReader() {
-    router.push(`/library/reader?downloadId=${download.downloadId}`);
+    router.push(`/tabs/library/reader?downloadId=${download.downloadId}`);
   }
   function deleteDownload() {
     const updatedDownloads = DownloadsStore.get().downloads.filter(

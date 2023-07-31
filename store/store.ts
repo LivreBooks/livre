@@ -53,6 +53,8 @@ export const UserStore = observable<UserStore>({
   purchases: [],
 });
 
+
+
 interface DonwloadsStoreType {
   downloads: DownloadType[];
   updateId: number;
@@ -61,6 +63,9 @@ export const DownloadsStore = observable<DonwloadsStoreType>({
   downloads: [],
   updateId: 0,
 });
+setTimeout(() => {
+  DownloadsStore.downloads.set(DownloadsStore.downloads.get().filter(_dl => _dl))
+}, 1000);
 
 interface SettingsStoreType {
   theme: "auto" | "light" | "dark";
@@ -68,7 +73,7 @@ interface SettingsStoreType {
 }
 
 export const SettingsStore = observable<SettingsStoreType>({
-  theme: "auto",
+  theme: "dark",
   user: null,
 });
 

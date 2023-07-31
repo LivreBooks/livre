@@ -11,6 +11,7 @@ import {
   FullBookType,
 } from "./types/types";
 import { BASE_URL } from "./constants";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 export async function downloadFile(
   id: number,
@@ -140,9 +141,9 @@ async function requestExternalStoragePermission() {
 
     if (
       granted["android.permission.READ_EXTERNAL_STORAGE"] !==
-        PermissionsAndroid.RESULTS.GRANTED ||
+      PermissionsAndroid.RESULTS.GRANTED ||
       granted["android.permission.WRITE_EXTERNAL_STORAGE"] !==
-        PermissionsAndroid.RESULTS.GRANTED
+      PermissionsAndroid.RESULTS.GRANTED
     ) {
       // If the user denied one or both permissions, exit the function
       return false;
@@ -209,6 +210,9 @@ export async function dowloadBook(
 
   DownloadsStore.downloads[targetDownloadIndex].filepath.set(uri);
   DownloadsStore.downloads.set([...DownloadsStore.downloads.get()]);
+
+  Toast.show({ title: "Download Complete", textBody: newDownload.book.title, type: ALERT_TYPE.SUCCESS });
+
   const resp = await recordDownload({
     bookId: fullBook.id,
     bookName: fullBook.title,

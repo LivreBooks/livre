@@ -10,16 +10,19 @@ import Spacer from "../components/Spacer";
 import { BASE_URL, theme } from "../constants";
 import { NewUser, Account, GoogleUser, UserProfile } from "../types/types";
 import { FetchResponse, fetchUtil } from "../utils";
-import { useRouter } from "expo-router";
+import { Redirect, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import { makeRedirectUri } from "expo-auth-session";
 
-WebBrowser.maybeCompleteAuthSession();
+// WebBrowser.maybeCompleteAuthSession();
 
 const index = () => {
 	const redirectUri = makeRedirectUri({
 		scheme: "livre",
+		isTripleSlashed: true,
 	});
+
+	console.log(redirectUri);
 
 	const [googleToken, setGoogleToken] = useState("");
 
@@ -130,71 +133,77 @@ const index = () => {
 	}, [response, googleToken]);
 
 	return (
-		<Box
-			height={"100%"}
-			pa={20}
-			align="center"
-			justify="center"
-			color={LiveAppState.themeValue.colors.background.get()}
-		>
-			<Animatable.View
-				animation={"fadeInUp"}
-				style={{
-					marginBottom: 40,
-					alignItems: "center",
-					width: "100%",
-				}}
-			>
-				<Animated.Image
-					source={require("../assets/logo.png")}
-					style={{
-						width: 150,
-						height: 150,
-					}}
-				/>
-				<Animated.Text
-					style={{
-						color: LiveAppState.themeValue.get().colors.primary,
-						fontWeight: "900",
-						fontSize: 42,
-					}}
+		<>
+			{accountInfo ? (
+				<Redirect href={"/tabs/library/shelf"} />
+			) : (
+				<Box
+					height={"100%"}
+					pa={20}
+					align="center"
+					justify="center"
+					color={LiveAppState.themeValue.colors.background.get()}
 				>
-					Livre
-				</Animated.Text>
-				<Spacer height={20} />
-				<Box align="center">
-					<Text
-						size={22}
-						align="center"
-						weight="300"
-						color={theme.colors.surface}
+					<Animatable.View
+						animation={"fadeInUp"}
+						style={{
+							marginBottom: 40,
+							alignItems: "center",
+							width: "100%",
+						}}
 					>
-						Thousands of Books
-					</Text>
-					<Text
-						size={22}
-						align="center"
-						color={theme.colors.surface}
-						weight="300"
-					>
-						on The Palm of Your Hand
-					</Text>
+						<Animated.Image
+							source={require("../assets/logo.png")}
+							style={{
+								width: 150,
+								height: 150,
+							}}
+						/>
+						<Animated.Text
+							style={{
+								color: LiveAppState.themeValue.get().colors.primary,
+								fontWeight: "900",
+								fontSize: 42,
+							}}
+						>
+							Livre
+						</Animated.Text>
+						<Spacer height={20} />
+						<Box align="center">
+							<Text
+								size={22}
+								align="center"
+								weight="300"
+								color={theme.colors.text}
+							>
+								Thousands of Books
+							</Text>
+							<Text
+								size={22}
+								align="center"
+								color={theme.colors.text}
+								weight="300"
+							>
+								on The Palm of Your Hand
+							</Text>
+						</Box>
+						<Spacer height={40} />
+						<Button
+							mode="contained"
+							onPress={() => {
+								router.push("/oauthredirect");
+								// setCreatingAccount(true);
+								// promptAsync();
+							}}
+							labelStyle={{ fontWeight: "bold" }}
+							style={{ width: "100%" }}
+						>
+							Next
+						</Button>
+					</Animatable.View>
 				</Box>
-				<Spacer height={40} />
-				<Button
-					mode="contained"
-					icon={"google"}
-					onPress={() => {
-						setCreatingAccount(true);
-						promptAsync();
-					}}
-					labelStyle={{ fontWeight: "bold" }}
-					style={{ width: "100%" }}
-				>
-					Sign Up
-				</Button>
-			</Animatable.View>
-		</Box>
+			)}
+		</>
 	);
 };
 

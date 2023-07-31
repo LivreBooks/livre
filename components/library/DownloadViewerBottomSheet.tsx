@@ -13,6 +13,7 @@ import Text from "../Text";
 import Button from "../Button";
 import Box from "../Box";
 import { BookDescription, BookInfo } from "../BookDetails";
+import { theme } from "../../constants";
 
 const DownloadViewerBottomSheet = ({
 	download,
@@ -27,7 +28,7 @@ const DownloadViewerBottomSheet = ({
 	const snapPoints = useMemo(() => ["60%", "100%"], []);
 
 	function openBook() {
-		const link = `/library/reader?downloadId=${download.downloadId}`;
+		const link = `/tabs/library/reader?downloadId=${download.downloadId}`;
 		router.push(link);
 	}
 
@@ -54,7 +55,7 @@ const DownloadViewerBottomSheet = ({
 			ref={bottomSheetRef}
 			index={0}
 			snapPoints={snapPoints}
-			style={{ marginBottom: 20 }}
+			style={{ marginBottom: 20, overflow: "hidden", borderRadius: 20 }}
 			backgroundStyle={{
 				backgroundColor: LiveAppState.themeValue.get().colors.surface,
 			}}
@@ -84,7 +85,7 @@ const DownloadViewerBottomSheet = ({
 					<View
 						style={{
 							width: "100%",
-							height: 210,
+							height: 240,
 							alignItems: "center",
 							justifyContent: "center",
 							marginBottom: 10,
@@ -113,8 +114,8 @@ const DownloadViewerBottomSheet = ({
 						>
 							<BaseImage
 								source={{ uri: download.book.base64Cover }}
-								style={{ height: "95%", width: "40%", borderRadius: 10 }}
-								placeholderStyles={{ height: "95%", width: "40%" }}
+								style={{ height: "85%", width: "36%", borderRadius: 10 }}
+								placeholderStyles={{ height: "85%", width: "36%" }}
 							/>
 						</View>
 					</View>
@@ -124,7 +125,7 @@ const DownloadViewerBottomSheet = ({
 							<Text style={{ opacity: 0.6 }}>{download.book.author}</Text>
 						</Box>
 						<Box
-							direction="row"
+							direction="row-reverse"
 							justify="space-between"
 							align="center"
 							block
@@ -135,18 +136,17 @@ const DownloadViewerBottomSheet = ({
 									mode="contained"
 									onPress={openBook}
 									icon={"book-open-blank-variant"}
-									style={{ width: "72%", borderRadius: 40 }}
+									style={{ width: "75%", borderRadius: 40 }}
 								>
 									READ
 								</Button>
 							)}
 							<IconButton
-								containerColor={
-									LiveAppState.themeValue.get().colors.surfaceVariant
-								}
+								containerColor={theme.colors.errorContainer}
 								onPress={deleteDownload}
-								style={{ width: "25%" }}
+								style={{ width: "20%" }}
 								icon={"delete"}
+								iconColor={theme.colors.error}
 							/>
 						</Box>
 						<BookInfo

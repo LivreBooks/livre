@@ -12,7 +12,7 @@ import {
 } from "../../../types/types";
 import { layoutAnimate, sortBooksByCompleteness } from "../../../utils";
 import BasePage from "../../../components/BasePage";
-import { LiveAppState } from "../../../store/store";
+import { LiveAppState, SettingsStore } from "../../../store/store";
 import { ScrollView } from "react-native-gesture-handler";
 import Recommendations, {
 	RecommendationsSkeletonLoader,
@@ -107,6 +107,14 @@ export default function Search() {
 		getRecommendations();
 	}, []);
 
+	const [reRender, setRerender] = useState(1);
+
+	SettingsStore.theme.onChange((newTheme) => {
+		setRerender(Math.random());
+	});
+
+	useEffect(() => {}, [reRender]);
+
 	return (
 		<>
 			<BasePage>
@@ -152,10 +160,12 @@ export default function Search() {
 							placeholder="Search a book or author"
 							onChangeText={onChangeSearch}
 							value={searchQuery}
+							theme={LiveAppState.themeValue.get()}
 							style={{
 								borderRadius: 20,
 								width: "95%",
 								marginTop: 10,
+								backgroundColor: LiveAppState.themeValue.colors.surface.get(),
 							}}
 							inputStyle={{
 								fontSize: 16,

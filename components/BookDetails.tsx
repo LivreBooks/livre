@@ -86,7 +86,7 @@ const BookDetails = ({
 			(download) => download.book.id === _fullbook.id
 		).downloadId;
 		if (downloadId) {
-			router.push(`/library/reader?downloadId=${downloadId}`);
+			router.push(`/tabs/library/reader?downloadId=${downloadId}`);
 		} else {
 			ToastAndroid.show("Book Not Found", ToastAndroid.SHORT);
 		}
@@ -174,7 +174,7 @@ const BookDetails = ({
 								icon={"book-open-blank-variant"}
 								onPress={openReader}
 							>
-								OPEN
+								Read
 							</Button>
 						) : downloadProgress === null ? (
 							<Button
@@ -185,7 +185,11 @@ const BookDetails = ({
 								Download
 							</Button>
 						) : (
-							<Card style={{ padding: 5 }}>
+							<Box
+								pa={5}
+								radius={10}
+								color={LiveAppState.themeValue.colors.surface.get()}
+							>
 								<Text
 									style={{
 										fontWeight: "bold",
@@ -204,7 +208,7 @@ const BookDetails = ({
 										borderRadius: 20,
 									}}
 								/>
-							</Card>
+							</Box>
 						)}
 						<BookDescription content={_fullbook.descr} />
 					</Box>
@@ -257,7 +261,7 @@ interface BookInfoCardProps {
 const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
 	const [theme] = useState(LiveAppState.themeValue.colors.get());
 	return (
-		<Box color={theme.inverseOnSurface} radius={10} py={6.5} px={6.5}>
+		<Box color={theme.surface} radius={10} py={6.5} px={6.5}>
 			<Box direction="row" align="center" gap={5}>
 				<MaterialCommunityIcons
 					name={icon as any}
@@ -289,7 +293,7 @@ export const BookDescription = ({ content }: { content: string }) => {
 		<ScrollView
 			style={{
 				padding: 10,
-				backgroundColor: theme.inverseOnSurface,
+				backgroundColor: theme.surface,
 				borderRadius: 15,
 				marginVertical: 10,
 				height: content ? "25%" : "auto",

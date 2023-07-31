@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Dimensions, TouchableOpacity } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
-import { ActivityIndicator, Searchbar, Text } from "react-native-paper";
+import { ActivityIndicator, Searchbar } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import BaseImage from "../../../components/BaseImage";
-import { DownloadsStore, LiveAppState } from "../../../store/store";
+import {
+	DownloadsStore,
+	LiveAppState,
+	SettingsStore,
+} from "../../../store/store";
 import { DownloadType } from "../../../types/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BasePage from "../../../components/BasePage";
+import Text from "../../../components/Text";
 import DownloadViewerBottomSheet from "../../../components/library/DownloadViewerBottomSheet";
+import Box from "../../../components/Box";
 
 const { width: sWidth, height: sHeight } = Dimensions.get("screen");
 const coverWidth = sWidth / 2 - 40;
-const coverHeight = coverWidth * 1.4;
+const coverHeight = coverWidth * 1.4 + 10;
 
 export default function Search() {
 	const [filterQuery, setFilterQuery] = useState("");
@@ -33,16 +39,18 @@ export default function Search() {
 		setDownloads(downloads);
 	});
 
+	const [reRender, setRerender] = useState(1);
+
+	SettingsStore.theme.onChange((newTheme) => {
+		setRerender(Math.random());
+	});
+
+	useEffect(() => {}, [reRender]);
+
 	return (
 		<>
 			<BasePage headerInfo={{ title: "Library", icon: "book" }}>
-				<View
-					style={{
-						height: "94%",
-						width: "100%",
-						justifyContent: "flex-start",
-					}}
-				>
+				<Box block justify="center" height={"auto"}>
 					{downloads && downloads.length > 0 && (
 						<Animatable.View animation={"fadeInUp"} delay={10}>
 							<Searchbar
@@ -50,9 +58,13 @@ export default function Search() {
 								icon={"filter-outline"}
 								onChangeText={onChangeFilter}
 								value={filterQuery}
+								theme={LiveAppState.themeValue.get()}
 								style={{
 									borderRadius: 20,
 									marginBottom: 5,
+									backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+									width: "98%",
+									alignSelf: "center",
 								}}
 								inputStyle={{
 									fontSize: 16,
@@ -75,7 +87,7 @@ export default function Search() {
 								<MaterialCommunityIcons
 									name="package-variant"
 									size={120}
-									color={LiveAppState.themeValue.get().colors.onBackground}
+									color={LiveAppState.themeValue.get().colors.primary}
 								/>
 								<Text
 									style={{
@@ -85,8 +97,7 @@ export default function Search() {
 										color: LiveAppState.themeValue.get().colors.onBackground,
 									}}
 								>
-									{" "}
-									Your library is empty. Go to search and fill it up.{" "}
+									Your library is empty. Go to search and fill it up.
 								</Text>
 							</View>
 						))}
@@ -105,7 +116,7 @@ export default function Search() {
 							data={downloads
 								.filter((download) => download !== null)
 								.filter((download) =>
-									download.book.title.includes(filterQuery)
+									download?.book.title.includes(filterQuery)
 								)}
 							keyExtractor={(item) => item.downloadId.toString()}
 							renderItem={({
@@ -175,7 +186,7 @@ export default function Search() {
 							)}
 						/>
 					)}
-				</View>
+				</Box>
 			</BasePage>
 
 			{selectedDownload && (

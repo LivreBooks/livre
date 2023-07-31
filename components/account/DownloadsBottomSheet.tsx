@@ -5,15 +5,17 @@ import { LiveAppState, UserStore } from "../../store/store";
 import { Download } from "../../types/types";
 import CustomBackdrop from "../CustomBackdrop";
 import { ScrollView } from "react-native-gesture-handler";
-import { Text } from "react-native-paper";
 import BaseImage from "../BaseImage";
+import Text from "../Text";
+import Box from "../Box";
+import Spacer from "../Spacer";
 
 const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 	const [downloads, setDownloads] = useState(UserStore.downloads.get());
 
 	const bottomSheetRef = useRef<BottomSheet>(null);
 
-	const snapPoints = useMemo(() => ["85%"], []);
+	const snapPoints = useMemo(() => ["96%"], []);
 
 	useEffect(() => {
 		const handle = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -32,6 +34,7 @@ const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 			snapPoints={snapPoints}
 			backgroundStyle={{
 				backgroundColor: LiveAppState.themeValue.get().colors.background,
+				borderRadius: 25,
 			}}
 			handleIndicatorStyle={{
 				width: "12%",
@@ -43,23 +46,21 @@ const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 			backdropComponent={CustomBackdrop}
 			onClose={() => close()}
 		>
-			<View style={{ padding: 10, paddingHorizontal: 15, height: "99.8%" }}>
-				<Text
-					style={{
-						marginBottom: 20,
-						fontWeight: "bold",
-						fontSize: 22,
-						textAlign: "center",
-					}}
-				>
+			<Box px={10} align="center" block>
+				<Text weight="bold" size={22} align="center">
 					Downloads
 				</Text>
-				<ScrollView>
+				<Spacer height={10} />
+				<ScrollView
+					style={{ width: "100%", height: "auto" }}
+					contentContainerStyle={{ paddingBottom: 20 }}
+				>
 					{downloads.map((download) => (
 						<DownloadCard download={download} key={download.id} />
 					))}
 				</ScrollView>
-			</View>
+				<Spacer height={10} />
+			</Box>
 		</BottomSheet>
 	);
 };
@@ -70,7 +71,6 @@ const DownloadCard = ({ download }: { download: Download }) => {
 			style={{
 				...styles.container,
 				flexDirection: "row",
-				padding: 15,
 				borderRadius: 15,
 				backgroundColor: LiveAppState.themeValue.colors.background.get(),
 			}}

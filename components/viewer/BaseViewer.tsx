@@ -15,6 +15,7 @@ import Spacer from "../Spacer";
 import Box from "../Box";
 import Text from "../Text";
 import Button from "../Button";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 const BaseViewer = ({ download }: { download: DownloadType }) => {
 	const [overlayBrightness, setOverlayBrightness] = useState(0.3);
@@ -38,7 +39,7 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
 	function updateCurrentPage(page: number) {
 		const allDownloads = DownloadsStore.downloads.get();
 		const updatedDownloads = allDownloads.map((_download) => {
-			if (_download.book.id === download.book.id) {
+			if (_download?.book.id === download?.book.id) {
 				const _updatedDownload = {
 					..._download,
 					readingInfo: {
@@ -147,7 +148,7 @@ const Controls = ({
 	setTotalPages: (value: number) => void;
 }) => {
 	const bottomSheetRef = useRef<BottomSheet>(null);
-	const snapPoints = useMemo(() => ["3.5%", "50%"], []);
+	const snapPoints = useMemo(() => ["3.8%", "50%"], []);
 
 	const [jumpToPage, setJumpToPage] = useState("");
 
@@ -203,6 +204,8 @@ const Controls = ({
 				// Update the bookmarks and return the updated download
 				setBookmarks(updatedBookmarks);
 
+				Toast.show({ title: "Bookmark Added", type: ALERT_TYPE.SUCCESS });
+
 				return {
 					..._download,
 					readingInfo: {
@@ -236,11 +239,13 @@ const Controls = ({
 			ref={bottomSheetRef}
 			index={0}
 			snapPoints={snapPoints}
-			style={{ marginHorizontal: 0, zIndex: 20 }}
-			backgroundStyle={{
-				backgroundColor: LiveAppState.themeValue.get().colors.backdrop,
+			style={{
+				zIndex: 20,
 				borderRadius: 40,
 				overflow: "hidden",
+			}}
+			backgroundStyle={{
+				backgroundColor: LiveAppState.themeValue.colors.background.get(),
 			}}
 			handleIndicatorStyle={{
 				width: "15%",
@@ -248,20 +253,18 @@ const Controls = ({
 				height: 6,
 				borderRadius: 10,
 			}}
-			handleStyle={{
-				borderRadius: 20,
-			}}
 			handleHeight={30}
 			onChange={() => {}}
 		>
-			<View style={{ paddingHorizontal: 15 }}>
-				<Card
+			<Box px={15} block>
+				<Box
 					style={{ borderRadius: 40 }}
-					contentStyle={{
-						flexDirection: "row",
-						alignItems: "center",
-						justifyContent: "space-between",
-					}}
+					radius={40}
+					direction="row"
+					align="center"
+					justify="space-between"
+					color={LiveAppState.themeValue.colors.surface.get()}
+					block
 				>
 					<View
 						style={{
@@ -309,19 +312,22 @@ const Controls = ({
 							keyboardType="number-pad"
 							mode="flat"
 							dense
-							placeholder="Go to"
+							placeholder="Jump To"
 							value={jumpToPage}
 							style={{
 								width: 100,
 								borderRadius: 20,
 								borderTopLeftRadius: 20,
 								borderTopRightRadius: 20,
+								backgroundColor:
+									LiveAppState.themeValue.colors.background.get(),
 							}}
 							onChangeText={(value) => setJumpToPage(value)}
 							underlineStyle={{ height: 0, borderRadius: 20 }}
 							outlineStyle={{ borderRadius: 20 }}
 							blurOnSubmit
 							onSubmitEditing={() => triggerJumpTo()}
+							theme={LiveAppState.themeValue.get()}
 						/>
 						<IconButton
 							icon={"check"}
@@ -329,11 +335,17 @@ const Controls = ({
 							size={20}
 							disabled={jumpToPage ? false : true}
 							onPress={() => triggerJumpTo()}
+							theme={LiveAppState.themeValue.get()}
 						/>
 					</View>
-				</Card>
+				</Box>
 				<Spacer height={10} />
-				<Card style={{ padding: 10, borderRadius: 40 }}>
+				<Box
+					pa={10}
+					radius={40}
+					block
+					color={LiveAppState.themeValue.colors.surface.get()}
+				>
 					<Box block justify="space-between" direction="row" align="flex-start">
 						<Box
 							gap={showBookmarks ? 10 : 0}
@@ -344,7 +356,8 @@ const Controls = ({
 						>
 							<Button
 								icon={"bookmark-multiple"}
-								mode={showBookmarks ? "contained" : "contained-tonal"}
+								mode={showBookmarks ? "contained" : "text"}
+								textColor={LiveAppState.themeValue.colors.text.get()}
 								onPress={() => {
 									animateLayout();
 									setShowBookmarks(!showBookmarks);
@@ -386,15 +399,16 @@ const Controls = ({
 						</Box>
 						{!showBookmarks && (
 							<Button
-								mode={currentPageBookmark ? "contained" : "contained-tonal"}
+								mode={currentPageBookmark ? "contained" : "text"}
 								icon={"bookmark"}
+								textColor={LiveAppState.themeValue.colors.text.get()}
 								onPress={() => addBookMark()}
 							>
 								Bookmark
 							</Button>
 						)}
 					</Box>
-				</Card>
+				</Box>
 				{/* <View style={{ flexDirection: "row" }}>
           <IconButton
             icon={"magnify-plus-outline"}
@@ -411,7 +425,12 @@ const Controls = ({
         </View> */}
 				<Spacer height={10} />
 
-				<Card style={{ padding: 20, borderRadius: 20 }}>
+				<Box
+					pa={20}
+					radius={30}
+					block
+					color={LiveAppState.themeValue.colors.surface.get()}
+				>
 					<Text style={{ marginBottom: 2 }}>Reader Theme</Text>
 					<View
 						style={{
@@ -499,8 +518,8 @@ const Controls = ({
 							}}
 						/>
 					</View>
-				</Card>
-			</View>
+				</Box>
+			</Box>
 		</BottomSheet>
 	);
 };

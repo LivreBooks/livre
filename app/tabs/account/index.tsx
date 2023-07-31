@@ -2,13 +2,14 @@ import { View, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import BasePage from "../../../components/BasePage";
 import { LiveAppState, UserStore } from "../../../store/store";
-import { Text, IconButton } from "react-native-paper";
+import { IconButton } from "react-native-paper";
 import * as WebBrowser from "expo-web-browser";
 import * as Animatable from "react-native-animatable";
 import DownloadsBottomSheet from "../../../components/account/DownloadsBottomSheet";
 import ThemeManager from "../../../components/account/ThemeManager";
 import ProfileManger from "../../../components/account/ProfileManger";
 import Spacer from "../../../components/Spacer";
+import Text from "../../../components/Text";
 
 const BottomSheetOpener = ({
 	label,
@@ -32,7 +33,10 @@ const BottomSheetOpener = ({
 				}}
 			>
 				<Text style={{ fontWeight: "bold" }}>{label}</Text>
-				<IconButton icon={"chevron-up"} />
+				<IconButton
+					icon={"chevron-up"}
+					iconColor={LiveAppState.themeValue.colors.text.get()}
+				/>
 			</View>
 		</TouchableOpacity>
 	);

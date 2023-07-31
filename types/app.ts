@@ -27,7 +27,7 @@ export interface AppTextProps {
     color?: string;
     gap?: number;
   };
-  wrapperProps?: Omit<ViewProps, "children" | "style"> & ViewStyle;
+  wrapperProps?: Omit<AppStackProps, "children" | "style"> & ViewStyle;
   children: ReactNode;
 }
 

@@ -32,6 +32,7 @@ export const lightMode = {
     placeholder: "#B3B3B3",
     backdrop: "rgba(30, 30, 30, 0.5)",
     onBackground: "#000",
+
   },
 };
 

@@ -7,7 +7,8 @@ import {
 	createMaterialBottomTabNavigator,
 } from "@react-navigation/material-bottom-tabs";
 import { withLayoutContext } from "expo-router";
-import { darkMode, lightMode } from "../../constants";
+import { Provider as PaperProvider } from "react-native-paper";
+import { darkMode, lightMode, theme } from "../../constants";
 import { ThemeType } from "../../types/types";
 
 if (Platform.OS === "android") {
@@ -18,118 +19,122 @@ if (Platform.OS === "android") {
 
 const { Navigator } = createMaterialBottomTabNavigator();
 
+const modifiedTheme = {
+	...theme,
+	colors: {
+		...theme.colors,
+		secondaryContainer: "#9258FF",
+	},
+};
+
 export const Tabs = withLayoutContext<
 	MaterialBottomTabNavigationOptions,
 	typeof Navigator
 >(Navigator);
 
 function AppLayout() {
-	const preferredTheme = useColorScheme();
-
 	const [reRender, setRerender] = useState(1);
 
-	UserStore.account.onChange(() => {
-		setRerender(Math.random());
-		// //console.log("Rerender");
-	});
-
 	SettingsStore.theme.onChange((newTheme) => {
-		updateTheme(newTheme);
+		setRerender(Math.random());
 	});
 
-	function updateTheme(theme: ThemeType) {
-		if (theme === "auto") {
-			if (preferredTheme === "dark") {
-				LiveAppState.themeValue.set(darkMode);
-			}
-
-			if (preferredTheme === "light") {
-				LiveAppState.themeValue.set(lightMode);
-			}
-		} else {
-			if (theme === "dark") {
-				LiveAppState.themeValue.set(darkMode);
-			}
-
-			if (theme === "light") {
-				LiveAppState.themeValue.set(lightMode);
-			}
-		}
-		setRerender(Math.random());
-	}
-
-	useEffect(() => {
-		const theme = SettingsStore.theme.get();
-		updateTheme(theme);
-	}, []);
-
+	useEffect(() => {}, [reRender]);
 	return (
-		<Tabs safeAreaInsets={{ bottom: 0 }} initialRouteName="search">
-			<Tabs.Screen
-				name="index"
-				options={{
-					title: `Search`,
-					tabBarIcon: ({ color, focused }) => {
-						return (
-							<MaterialCommunityIcons
-								name={focused ? "book-search" : "book-search-outline"}
-								size={24}
-								color={color}
-							/>
-						);
-					},
+		<PaperProvider theme={modifiedTheme}>
+			<Tabs
+				safeAreaInsets={{ bottom: 0 }}
+				initialRouteName="search"
+				barStyle={{
+					backgroundColor: LiveAppState.themeValue.colors.background.get(),
 				}}
-			/>
-			<Tabs.Screen
-				name="explore"
-				options={{
-					title: `Explore`,
-					tabBarIcon: ({ color, focused }) => {
-						return (
-							<MaterialCommunityIcons
-								name={focused ? "star" : "star-outline"}
-								size={24}
-								color={color}
-							/>
-						);
-					},
-				}}
-			/>
-			<Tabs.Screen
-				name="library"
-				options={{
-					title: "Library",
-					tabBarIcon: ({ color, focused }) => {
-						return (
-							<View>
+				inactiveColor={LiveAppState.themeValue.colors.text.get()}
+				activeColor={LiveAppState.themeValue.colors.text.get()}
+				labeled={false}
+				theme={LiveAppState.themeValue.get()}
+			>
+				<Tabs.Screen
+					name="search"
+					options={{
+						title: `Search`,
+						tabBarIcon: ({ color, focused }) => {
+							return (
 								<MaterialCommunityIcons
-									name={focused ? "book" : "book-outline"}
+									name={focused ? "book-search" : "book-search-outline"}
 									size={24}
-									color={color}
+									color={
+										focused
+											? LiveAppState.themeValue.colors.background.get()
+											: LiveAppState.themeValue.colors.text.get()
+									}
 								/>
-							</View>
-						);
-					},
-				}}
-			/>
-			<Tabs.Screen
-				name="account"
-				options={{
-					title: "Account",
-					tabBarIcon: ({ color, focused }) => {
-						return (
-							<View>
+							);
+						},
+					}}
+				/>
+				<Tabs.Screen
+					name="explore"
+					options={{
+						title: `Explore`,
+						tabBarIcon: ({ color, focused }) => {
+							return (
 								<MaterialCommunityIcons
-									name={focused ? "account" : "account-outline"}
+									name={focused ? "compass" : "compass-outline"}
 									size={24}
-									color={color}
+									color={
+										focused
+											? LiveAppState.themeValue.colors.background.get()
+											: LiveAppState.themeValue.colors.text.get()
+									}
 								/>
-							</View>
-						);
-					},
-				}}
-			/>
-		</Tabs>
+							);
+						},
+					}}
+				/>
+				<Tabs.Screen
+					name="library"
+					options={{
+						title: "Library",
+						tabBarIcon: ({ color, focused }) => {
+							return (
+								<View>
+									<MaterialCommunityIcons
+										name={focused ? "book" : "book-outline"}
+										size={24}
+										color={
+											focused
+												? LiveAppState.themeValue.colors.background.get()
+												: LiveAppState.themeValue.colors.text.get()
+										}
+									/>
+								</View>
+							);
+						},
+					}}
+				/>
+				<Tabs.Screen
+					name="account"
+					options={{
+						title: "Account",
+						tabBarIcon: ({ color, focused }) => {
+							return (
+								<View>
+									<MaterialCommunityIcons
+										name={focused ? "account" : "account-outline"}
+										size={24}
+										color={
+											focused
+												? LiveAppState.themeValue.colors.background.get()
+												: LiveAppState.themeValue.colors.text.get()
+										}
+									/>
+								</View>
+							);
+						},
+					}}
+				/>
+			</Tabs>
+		</PaperProvider>
 	);
 }
 
