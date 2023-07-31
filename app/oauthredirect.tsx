@@ -19,13 +19,6 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function oauthredirect() {
 	const router = useRouter();
-	const searchParams = useSearchParams<{
-		authuser: string;
-		code: string;
-		prompt: string;
-		scope: string;
-		state: string;
-	}>();
 
 	const [request, response, promptAsync] = Google.useAuthRequest({
 		androidClientId:
