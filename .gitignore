@@ -71,3 +71,5 @@ web-build/
 android/
 
 ios/
+
+.env

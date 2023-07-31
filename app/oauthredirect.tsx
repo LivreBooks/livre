@@ -28,8 +28,7 @@ export default function oauthredirect() {
 	}>();
 
 	const [request, response, promptAsync] = Google.useAuthRequest({
-		androidClientId:
-			"119960243223-vvjr9qm1qt7ekcennt9mb6q0vnnhva85.apps.googleusercontent.com",
+		androidClientId: process.env.EXPO_PUBLIC_ANDROID_CLIENT_ID,
 	});
 
 	const [loading, setLoading] = useState(false);
