@@ -1,8 +1,8 @@
 import * as Animatable from "react-native-animatable";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "../components/Box";
 import Text from "../components/Text";
-import { Animated } from "react-native";
+import { Animated, Pressable } from "react-native";
 import { LiveAppState, UserStore } from "../store/store";
 import Button from "../components/Button";
 import Spacer from "../components/Spacer";
@@ -51,15 +51,22 @@ const index = () => {
 								height: 150,
 							}}
 						/>
-						<Animated.Text
-							style={{
-								color: LiveAppState.themeValue.get().colors.primary,
-								fontWeight: "900",
-								fontSize: 42,
+						<Pressable
+							onLongPress={() => {
+								router.replace("/tabs/search");
 							}}
 						>
-							Livre
-						</Animated.Text>
+							<Animated.Text
+								style={{
+									color: LiveAppState.themeValue.get().colors.primary,
+									fontWeight: "900",
+									fontSize: 42,
+								}}
+							>
+								Livre
+							</Animated.Text>
+						</Pressable>
+
 						<Spacer height={20} />
 						<Box align="center">
 							<Text
