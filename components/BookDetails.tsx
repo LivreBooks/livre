@@ -4,7 +4,7 @@ import { BASE_URL, theme } from "../constants";
 import { ActivityIndicator, Card, ProgressBar } from "react-native-paper";
 import { DownloadsStore, LiveAppState } from "../store/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { dowloadBook, trimText } from "../utils";
+import { downloadBook, trimText } from "../utils";
 import { BookType, FullBookType } from "../types/types";
 import { useRouter } from "expo-router";
 import BaseImage from "./BaseImage";
@@ -55,6 +55,7 @@ const BookDetails = ({
 		getBook(bookPreview.id)
 			.then((data) => {
 				data.coverurl = bookPreview.cover;
+				console.log("Setting Fullbook");
 				setFullBook(data);
 			})
 			.catch((err) => {
@@ -71,7 +72,7 @@ const BookDetails = ({
 		fetch(`${BASE_URL}/download/${_fullbook.md5}`)
 			.then((res) => res.json())
 			.then((data) => {
-				dowloadBook(fullBook, data);
+				downloadBook(_fullbook, data);
 			})
 			.catch((err) => {
 				//console.log(err);

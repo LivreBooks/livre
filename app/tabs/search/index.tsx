@@ -243,6 +243,7 @@ export default function Search() {
 							}}
 							data={searchResults}
 							keyExtractor={(item) => item.id}
+							style={{ width: "95%" }}
 							renderItem={({ item }) => (
 								<BookCard
 									book={item}

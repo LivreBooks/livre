@@ -154,10 +154,14 @@ async function requestExternalStoragePermission() {
   return true;
 }
 
-export async function dowloadBook(
+export async function downloadBook(
   fullBook: FullBookType,
   links: DownloadLink[]
 ) {
+  if (!fullBook || links.length === 0) {
+    Toast.show({ title: "Error Downloading Book", textBody: "Missing Data" })
+    return
+  }
   // //console.log("Beginning");
   const downloadId = Math.floor(Math.random() * 1000);
 

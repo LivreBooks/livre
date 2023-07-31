@@ -14,14 +14,9 @@ function BookCard({
 	onPress = null,
 }: {
 	book: BookType;
-	onPress?: (book: BookType) => void;
+	onPress: (book: BookType) => void;
 }) {
 	const router = useRouter();
-
-	function openBookPage() {
-		LiveAppState.selectedBookPreInfo.set(book);
-		router.push(`/tabs/explore/category/subcategory/books/${book.id}`);
-	}
 
 	return (
 		<View
@@ -32,7 +27,7 @@ function BookCard({
 			}}
 		>
 			<TouchableNativeFeedback
-				onPress={onPress ? () => onPress(book) : () => openBookPage()}
+				onPress={() => onPress(book)}
 				background={TouchableNativeFeedback.Ripple(
 					LiveAppState.themeValue.get().colors.primaryContainer,
 					false

@@ -4,7 +4,7 @@ import { Searchbar } from "react-native-paper";
 import CategoryCard from "../../../../components/CategoryCard";
 import { useRouter, useSearchParams } from "expo-router";
 import { ScrollView } from "react-native-gesture-handler";
-import { ExploreStore } from "../../../../store/store";
+import { ExploreStore, LiveAppState } from "../../../../store/store";
 import BasePage from "../../../../components/BasePage";
 import CollapsiblePageHeader from "../../../../components/CollapsiblePageHeader";
 
@@ -77,9 +77,11 @@ export default function Category() {
 							icon={"filter-outline"}
 							onChangeText={onChangeFilter}
 							value={filterQuery}
+							theme={LiveAppState.themeValue.get()}
 							style={{
 								borderRadius: 20,
 								marginHorizontal: 10,
+								backgroundColor: LiveAppState.themeValue.colors.surface.get(),
 							}}
 							inputStyle={{
 								fontSize: 16,
