@@ -23,7 +23,7 @@ export default function Categories() {
 	function openCategory(category: CategoryType) {
 		// //console.log("Opening " + category.name);
 		router.push({
-			pathname: `/explore/category/${category.id}`,
+			pathname: `/tabs/explore/category/${category.id}`,
 		});
 	}
 

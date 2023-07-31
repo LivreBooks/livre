@@ -10,7 +10,11 @@ import {
 	FullBookType,
 	RecommendationCategory,
 } from "../../../types/types";
-import { layoutAnimate, sortBooksByCompleteness } from "../../../utils";
+import {
+	layoutAnimate,
+	shuffleArray,
+	sortBooksByCompleteness,
+} from "../../../utils";
 import BasePage from "../../../components/BasePage";
 import { LiveAppState, SettingsStore } from "../../../store/store";
 import { ScrollView } from "react-native-gesture-handler";
@@ -93,10 +97,10 @@ export default function Search() {
 		fetch(`${BASE_URL}/recommendations`)
 			.then((res) => res.json())
 			.then((data) => {
-				setRecommendations(data);
+				setRecommendations(shuffleArray(data));
 			})
 			.catch((err) => {
-				// //console.log(err);
+				console.log(err);
 			})
 			.finally(() => {
 				setLoadingRecommendations(false);

@@ -43,7 +43,7 @@ export default function Category() {
 
 	function openSubCategory(subcategory: { id: string; name: string }) {
 		router.push({
-			pathname: `/explore/category/subcategory/${subcategory.id}`,
+			pathname: `/tabs/explore/category/subcategory/${subcategory.id}`,
 			params: {
 				name: subcategory.name,
 			},
