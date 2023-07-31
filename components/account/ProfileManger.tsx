@@ -24,10 +24,10 @@ const ProfileManger = () => {
 
 	function signOut() {
 		console.log("Signing Out");
+		router.replace("/");
 		SettingsStore.user.set(null);
 		UserStore.account.set(null);
 		setAccountInfo(null);
-		router.replace("/");
 	}
 
 	return (
@@ -69,13 +69,8 @@ const ProfileManger = () => {
 					</Pressable>
 				}
 			>
-				<Menu.Item onPress={() => {}} title="Sign Out" />
+				<Menu.Item onPress={signOut} title="Sign Out" />
 			</Menu>
-			{/* <Pressable onPress={() => signOut()}>
-				<Text color={LiveAppState.themeValue.colors.text.get()} size={12}>
-					Sign Out
-				</Text>
-			</Pressable> */}
 		</Box>
 	);
 };
