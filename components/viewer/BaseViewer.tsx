@@ -49,13 +49,14 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
 				};
 				return _updatedDownload;
 			}
+			return _download;
 		});
 		DownloadsStore.downloads.set(updatedDownloads);
 	}
 
 	return (
 		<ReaderProvider>
-			<View style={{ height: "100%", backgroundColor: "white" }}>
+			<View style={{ height: "100%" }}>
 				<View
 					style={{
 						height: "94%",
