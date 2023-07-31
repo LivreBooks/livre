@@ -11,7 +11,7 @@ import BaseImage from "./BaseImage";
 import { getBook } from "../services/services";
 import { ScrollView } from "react-native-gesture-handler";
 import Button from "./Button";
-import Stack from "./Stack";
+import Box from "./Box";
 import Text from "./Text";
 
 const BookDetails = ({
@@ -99,9 +99,9 @@ const BookDetails = ({
 	}, []);
 
 	return (
-		<Stack width={"100%"} height={"100%"}>
-			<Stack style={{ paddingBottom: 10 }}>
-				<Stack gap={10}>
+		<Box width={"100%"} height={"100%"}>
+			<Box style={{ paddingBottom: 10 }}>
+				<Box gap={10}>
 					<View
 						style={{
 							width: "100%",
@@ -143,15 +143,15 @@ const BookDetails = ({
 							/>
 						</View>
 					</View>
-					<Stack mx={10} gap={10}>
-						<Stack gap={5}>
+					<Box mx={10} gap={10}>
+						<Box gap={5}>
 							<Text weight="bold" size={16} letterSpacing={0.5}>
 								{bookPreview?.title || _fullbook.title}
 							</Text>
 							<Text style={{ opacity: 0.9 }}>
 								{bookPreview?.authors[0].name || _fullbook.author}
 							</Text>
-						</Stack>
+						</Box>
 						<BookInfo
 							publisher={bookPreview?.publisher || _fullbook.publisher}
 							pages={bookPreview?.pages || _fullbook.pages}
@@ -163,11 +163,11 @@ const BookDetails = ({
 							}
 							type={`.${bookPreview?.extension || _fullbook.extension}`}
 						/>
-					</Stack>
-				</Stack>
+					</Box>
+				</Box>
 
 				{_fullbook ? (
-					<Stack mx={10} py={10}>
+					<Box mx={10} py={10}>
 						{downloadedFilepath ? (
 							<Button
 								mode="contained-tonal"
@@ -207,14 +207,14 @@ const BookDetails = ({
 							</Card>
 						)}
 						<BookDescription content={_fullbook.descr} />
-					</Stack>
+					</Box>
 				) : (
 					<View>
 						<ActivityIndicator size={"small"} />
 					</View>
 				)}
-			</Stack>
-		</Stack>
+			</Box>
+		</Box>
 	);
 };
 
@@ -236,15 +236,15 @@ export const BookInfo = ({
 	type,
 }: BookInfoProps) => {
 	return (
-		<Stack style={{ opacity: 0.9 }} gap={10} block>
+		<Box style={{ opacity: 0.9 }} gap={10} block>
 			<BookInfoCard icon="publish" label="Publisher" value={publisher} />
-			<Stack direction="row" justify="space-between" gap={10} block>
+			<Box direction="row" justify="space-between" gap={10} block>
 				<BookInfoCard icon="page-next-outline" label="Pages" value={pages} />
 				<BookInfoCard icon="calendar-outline" label="Year" value={year} />
 				<BookInfoCard icon="database-outline" label="Size" value={size} />
 				<BookInfoCard icon="file-document-outline" label="Type" value={type} />
-			</Stack>
-		</Stack>
+			</Box>
+		</Box>
 	);
 };
 
@@ -257,8 +257,8 @@ interface BookInfoCardProps {
 const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
 	const [theme] = useState(LiveAppState.themeValue.colors.get());
 	return (
-		<Stack color={theme.inverseOnSurface} radius={10} py={6.5} px={6.5}>
-			<Stack direction="row" align="center" gap={5}>
+		<Box color={theme.inverseOnSurface} radius={10} py={6.5} px={6.5}>
+			<Box direction="row" align="center" gap={5}>
 				<MaterialCommunityIcons
 					name={icon as any}
 					size={18}
@@ -272,13 +272,13 @@ const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
 				>
 					{label}
 				</Text>
-			</Stack>
+			</Box>
 			{value ? (
 				<Text>{value}</Text>
 			) : (
 				<Text style={{ textDecorationLine: "line-through" }}>missing</Text>
 			)}
-		</Stack>
+		</Box>
 	);
 };
 

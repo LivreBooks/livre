@@ -11,157 +11,157 @@ import BaseImage from "../BaseImage";
 import CustomBackdrop from "../CustomBackdrop";
 import Text from "../Text";
 import Button from "../Button";
-import Stack from "../Stack";
+import Box from "../Box";
 import { BookDescription, BookInfo } from "../BookDetails";
 
 const DownloadViewerBottomSheet = ({
-  download,
-  setSelectedDownload,
+	download,
+	setSelectedDownload,
 }: {
-  download: DownloadType;
-  setSelectedDownload: (value: any) => void;
+	download: DownloadType;
+	setSelectedDownload: (value: any) => void;
 }) => {
-  const router = useRouter();
-  const bottomSheetRef = useRef<BottomSheet>(null);
+	const router = useRouter();
+	const bottomSheetRef = useRef<BottomSheet>(null);
 
-  const snapPoints = useMemo(() => ["60%", "100%"], []);
+	const snapPoints = useMemo(() => ["60%", "100%"], []);
 
-  function openBook() {
-    const link = `/library/reader?downloadId=${download.downloadId}`;
-    router.push(link);
-  }
+	function openBook() {
+		const link = `/library/reader?downloadId=${download.downloadId}`;
+		router.push(link);
+	}
 
-  function deleteDownload() {
-    const updatedDownloads = DownloadsStore.get().downloads.filter(
-      (_download) => _download.downloadId != download.downloadId
-    );
-    DownloadsStore.downloads.set(updatedDownloads);
-    setSelectedDownload(null);
-  }
+	function deleteDownload() {
+		const updatedDownloads = DownloadsStore.get().downloads.filter(
+			(_download) => _download.downloadId != download.downloadId
+		);
+		DownloadsStore.downloads.set(updatedDownloads);
+		setSelectedDownload(null);
+	}
 
-  useEffect(() => {
-    const handle = BackHandler.addEventListener("hardwareBackPress", () => {
-      setSelectedDownload(null);
-      return true;
-    });
-    return () => {
-      handle.remove();
-    };
-  }, []);
+	useEffect(() => {
+		const handle = BackHandler.addEventListener("hardwareBackPress", () => {
+			setSelectedDownload(null);
+			return true;
+		});
+		return () => {
+			handle.remove();
+		};
+	}, []);
 
-  return (
-    <BottomSheet
-      ref={bottomSheetRef}
-      index={0}
-      snapPoints={snapPoints}
-      style={{ marginBottom: 20 }}
-      backgroundStyle={{
-        backgroundColor: LiveAppState.themeValue.get().colors.surface,
-      }}
-      handleIndicatorStyle={{
-        width: "12%",
-        backgroundColor: LiveAppState.themeValue.get().colors.background,
-        height: 6,
-        borderRadius: 10,
-      }}
-      handleStyle={{
-        position: "absolute",
-      }}
-      enablePanDownToClose
-      backdropComponent={CustomBackdrop}
-      onClose={() => {
-        setSelectedDownload(null);
-      }}
-    >
-      <View
-        style={{
-          flex: 1,
-          width: "100%",
-          backgroundColor: LiveAppState.themeValue.get().colors.background,
-        }}
-      >
-        <View>
-          <View
-            style={{
-              width: "100%",
-              height: 210,
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: 10,
-            }}
-          >
-            <BaseImage
-              source={{ uri: download.book.base64Cover }}
-              style={{
-                height: "100%",
-                width: "100%",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                opacity: 0.5,
-              }}
-              blurRadius={5}
-              placeholderStyles={{ height: "100%", width: "100%" }}
-            />
-            <View
-              style={{
-                flex: 1,
-                width: "100%",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <BaseImage
-                source={{ uri: download.book.base64Cover }}
-                style={{ height: "95%", width: "40%", borderRadius: 10 }}
-                placeholderStyles={{ height: "95%", width: "40%" }}
-              />
-            </View>
-          </View>
-          <View style={{ marginHorizontal: 10 }}>
-            <Stack gap={5}>
-              <Text weight="700">{download.book.title}</Text>
-              <Text style={{ opacity: 0.6 }}>{download.book.author}</Text>
-            </Stack>
-            <Stack
-              direction="row"
-              justify="space-between"
-              align="center"
-              block
-              my={15}
-            >
-              {download.filepath !== null && (
-                <Button
-                  mode="contained"
-                  onPress={openBook}
-                  icon={"book-open-blank-variant"}
-                  style={{ width: "72%", borderRadius: 40 }}
-                >
-                  READ
-                </Button>
-              )}
-              <IconButton
-                containerColor={
-                  LiveAppState.themeValue.get().colors.surfaceVariant
-                }
-                onPress={deleteDownload}
-                style={{ width: "25%" }}
-                icon={"delete"}
-              />
-            </Stack>
-            <BookInfo
-              pages={download.book.pages}
-              publisher={download.book.publisher}
-              size={(parseInt(download.book.filesize) / 1e6).toFixed(2)}
-              type={"." + download.book.extension}
-              year={download.book.year}
-            />
-            <BookDescription content={download.book.descr} />
-          </View>
-        </View>
-      </View>
-    </BottomSheet>
-  );
+	return (
+		<BottomSheet
+			ref={bottomSheetRef}
+			index={0}
+			snapPoints={snapPoints}
+			style={{ marginBottom: 20 }}
+			backgroundStyle={{
+				backgroundColor: LiveAppState.themeValue.get().colors.surface,
+			}}
+			handleIndicatorStyle={{
+				width: "12%",
+				backgroundColor: LiveAppState.themeValue.get().colors.background,
+				height: 6,
+				borderRadius: 10,
+			}}
+			handleStyle={{
+				position: "absolute",
+			}}
+			enablePanDownToClose
+			backdropComponent={CustomBackdrop}
+			onClose={() => {
+				setSelectedDownload(null);
+			}}
+		>
+			<View
+				style={{
+					flex: 1,
+					width: "100%",
+					backgroundColor: LiveAppState.themeValue.get().colors.background,
+				}}
+			>
+				<View>
+					<View
+						style={{
+							width: "100%",
+							height: 210,
+							alignItems: "center",
+							justifyContent: "center",
+							marginBottom: 10,
+						}}
+					>
+						<BaseImage
+							source={{ uri: download.book.base64Cover }}
+							style={{
+								height: "100%",
+								width: "100%",
+								position: "absolute",
+								top: 0,
+								left: 0,
+								opacity: 0.5,
+							}}
+							blurRadius={5}
+							placeholderStyles={{ height: "100%", width: "100%" }}
+						/>
+						<View
+							style={{
+								flex: 1,
+								width: "100%",
+								alignItems: "center",
+								justifyContent: "center",
+							}}
+						>
+							<BaseImage
+								source={{ uri: download.book.base64Cover }}
+								style={{ height: "95%", width: "40%", borderRadius: 10 }}
+								placeholderStyles={{ height: "95%", width: "40%" }}
+							/>
+						</View>
+					</View>
+					<View style={{ marginHorizontal: 10 }}>
+						<Box gap={5}>
+							<Text weight="700">{download.book.title}</Text>
+							<Text style={{ opacity: 0.6 }}>{download.book.author}</Text>
+						</Box>
+						<Box
+							direction="row"
+							justify="space-between"
+							align="center"
+							block
+							my={15}
+						>
+							{download.filepath !== null && (
+								<Button
+									mode="contained"
+									onPress={openBook}
+									icon={"book-open-blank-variant"}
+									style={{ width: "72%", borderRadius: 40 }}
+								>
+									READ
+								</Button>
+							)}
+							<IconButton
+								containerColor={
+									LiveAppState.themeValue.get().colors.surfaceVariant
+								}
+								onPress={deleteDownload}
+								style={{ width: "25%" }}
+								icon={"delete"}
+							/>
+						</Box>
+						<BookInfo
+							pages={download.book.pages}
+							publisher={download.book.publisher}
+							size={(parseInt(download.book.filesize) / 1e6).toFixed(2)}
+							type={"." + download.book.extension}
+							year={download.book.year}
+						/>
+						<BookDescription content={download.book.descr} />
+					</View>
+				</View>
+			</View>
+		</BottomSheet>
+	);
 };
 
 export default DownloadViewerBottomSheet;

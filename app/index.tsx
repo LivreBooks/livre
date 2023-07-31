@@ -1,276 +1,201 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { View, FlatList, Pressable, Animated } from "react-native";
-import { Card, IconButton, Searchbar, Text } from "react-native-paper";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
-import BookCard from "../components/BookCard";
-import BookCardSkeleton from "../components/BookCardSkeleton";
-import { BookType, FullBookType, RecommendationCategory } from "../types/types";
-import { layoutAnimate, sortBooksByCompleteness } from "../utils";
-import BasePage from "../components/BasePage";
-import { LiveAppState } from "../store/store";
-import { ScrollView } from "react-native-gesture-handler";
-import Recommendations, {
-  RecommendationsSkeletonLoader,
-} from "../components/search/Recommendations";
-import BookBottomSheet from "../components/BookBottomSheet";
-import { BASE_URL } from "../constants";
+import React, { useEffect, useState } from "react";
+import * as Google from "expo-auth-session/providers/google";
+import Box from "../components/Box";
+import Text from "../components/Text";
+import { Animated } from "react-native";
+import { LiveAppState, UserStore } from "../store/store";
+import Button from "../components/Button";
+import Spacer from "../components/Spacer";
+import { BASE_URL, theme } from "../constants";
+import { NewUser, Account, GoogleUser, UserProfile } from "../types/types";
+import { FetchResponse, fetchUtil } from "../utils";
+import { useRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
+import { makeRedirectUri } from "expo-auth-session";
 
-export default function Search() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [recommendations, setRecommendations] = useState<
-    RecommendationCategory[]
-  >([]);
-  const [searching, setSearching] = useState(false);
-  const [showNoResults, setShowNoResults] = useState(false);
-  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
-  const [selectedBook, setSelectedBook] = useState<FullBookType>(null);
-  const [selectedBook2, setSelectedBook2] = useState<BookType>(null);
+WebBrowser.maybeCompleteAuthSession();
 
-  const H_MAX_HEIGHT = 190;
-  const H_MIN_HEIGHT = 70;
-  const H_SCROLL_DISTANCE = H_MAX_HEIGHT - H_MIN_HEIGHT;
+const index = () => {
+	const redirectUri = makeRedirectUri({
+		scheme: "livre",
+	});
 
-  const scrollOffsetY = useRef(new Animated.Value(0)).current;
+	const [googleToken, setGoogleToken] = useState("");
 
-  const headerScrollHeight = scrollOffsetY.interpolate({
-    inputRange: [0, H_SCROLL_DISTANCE],
-    outputRange: [H_MAX_HEIGHT, H_MIN_HEIGHT],
-    extrapolate: "clamp",
-  });
+	const [accountInfo, setAccountInfo] = useState<Account | null>(
+		UserStore.account.get()
+	);
 
-  const logoSize = scrollOffsetY.interpolate({
-    inputRange: [0, H_SCROLL_DISTANCE],
-    outputRange: [80, 0],
-    extrapolate: "clamp",
-  });
+	const [creatingAccount, setCreatingAccount] = useState(false);
 
-  const headingSize = scrollOffsetY.interpolate({
-    inputRange: [0, H_SCROLL_DISTANCE],
-    outputRange: [32, 0],
-    extrapolate: "clamp",
-  });
+	const [request, response, promptAsync] = Google.useAuthRequest({
+		androidClientId:
+			"119960243223-vvjr9qm1qt7ekcennt9mb6q0vnnhva85.apps.googleusercontent.com",
+	});
 
-  const [searchResults, setSearchResults] = useState<BookType[]>([]);
-  const onChangeSearch = (query: string) => setSearchQuery(query);
+	const [fetchingUserProfile, setFetchingUserProfile] = useState(false);
 
-  function search() {
-    scrollOffsetY.setValue(0);
-    layoutAnimate();
-    setSearching(true);
-    setSearchResults([]);
-    fetch(`${BASE_URL}/search/${searchQuery}`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data || data.length === 0) {
-          setShowNoResults(true);
-          return;
-        }
-        const books = data.filter(
-          (book: BookType) =>
-            book.extension === "pdf" || book.extension === "epub"
-        );
+	const router = useRouter();
 
-        setSearchResults(sortBooksByCompleteness(books));
-      })
-      .catch((err) => {
-        // //console.log(err);
-        setShowNoResults(true);
-      })
-      .finally(() => {
-        setSearching(false);
-      });
-  }
+	const createAccount = async (user: NewUser): Promise<Account> => {
+		const response: FetchResponse<{ data: Account }> = await fetchUtil<{
+			data: Account;
+		}>(`${BASE_URL}/create_account`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				id: user.id,
+				fullname: user.name,
+				email: user.email,
+				avatar_url: user.picture,
+			}),
+		});
 
-  function getRecommendations() {
-    layoutAnimate();
-    setLoadingRecommendations(true);
-    // setRecommendations([]);
-    fetch(`${BASE_URL}/recommendations`)
-      .then((res) => res.json())
-      .then((data) => {
-        setRecommendations(data);
-      })
-      .catch((err) => {
-        // //console.log(err);
-      })
-      .finally(() => {
-        setLoadingRecommendations(false);
-      });
-  }
+		if (response.error) {
+			console.error(response.error);
+			throw response.error; // Reject the Promise if there's an error
+		}
 
-  useEffect(() => {
-    getRecommendations();
-  }, []);
+		UserStore.account.set(response.data.data);
+		setAccountInfo(response.data.data);
+		return response.data.data;
+	};
 
-  return (
-    <>
-      <BasePage>
-        <View
-          style={{
-            height: "100%",
-            width: "100%",
-            justifyContent: "flex-start",
-            alignItems: "center",
-            position: "relative",
-          }}
-        >
-          <Animatable.View
-            animation={"fadeInUp"}
-            style={{
-              marginBottom: 40,
-              alignItems: "center",
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: headerScrollHeight,
-              zIndex: 10,
-            }}
-          >
-            <Animated.Image
-              source={require("../assets/logo.png")}
-              style={{
-                width: logoSize,
-                height: logoSize,
-              }}
-            />
-            <Animated.Text
-              style={{
-                color: LiveAppState.themeValue.get().colors.primary,
-                fontWeight: "bold",
-                fontSize: headingSize,
-              }}
-            >
-              Livre
-            </Animated.Text>
-            <Searchbar
-              placeholder="Search a book or author"
-              onChangeText={onChangeSearch}
-              value={searchQuery}
-              style={{
-                borderRadius: 20,
-                width: "95%",
-                marginTop: 10,
-              }}
-              inputStyle={{
-                fontSize: 16,
-              }}
-              onSubmitEditing={search}
-              blurOnSubmit
-              clearIcon={({ size, color }) => (
-                <Pressable
-                  onPress={() => {
-                    layoutAnimate();
-                    setSearchResults([]);
-                    setSearchQuery("");
-                    scrollOffsetY.setValue(0);
-                    setShowNoResults(false);
-                  }}
-                >
-                  <MaterialCommunityIcons
-                    name="close"
-                    size={size - 5}
-                    color={color}
-                  />
-                </Pressable>
-              )}
-            />
-            {showNoResults && (
-              <Card
-                style={{ width: "95%", top: 10 }}
-                elevation={5}
-                contentStyle={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  paddingLeft: 15,
-                  borderRadius: 10,
-                  zIndex: 20,
-                  backgroundColor:
-                    LiveAppState.themeValue.colors.errorContainer.get(),
-                }}
-              >
-                <Text
-                  style={{ color: LiveAppState.themeValue.colors.text.get() }}
-                >
-                  No Books Found
-                </Text>
-                <IconButton
-                  icon={"close"}
-                  size={20}
-                  onPress={() => setShowNoResults(false)}
-                />
-              </Card>
-            )}
-          </Animatable.View>
-          {searching && (
-            <FlatList
-              data={[1, 2, 3]}
-              keyExtractor={(item) => item.toString()}
-              renderItem={() => <BookCardSkeleton />}
-              contentContainerStyle={{
-                paddingTop: H_MAX_HEIGHT,
-              }}
-            />
-          )}
-          {!searching && searchResults.length > 0 && (
-            <FlatList
-              onScroll={Animated.event(
-                [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-                { useNativeDriver: false }
-              )}
-              contentContainerStyle={{
-                paddingTop: H_MAX_HEIGHT,
-              }}
-              data={searchResults}
-              keyExtractor={(item) => item.id}
-              renderItem={({ item }) => (
-                <BookCard
-                  book={item}
-                  onPress={(book) => {
-                    setSelectedBook2(book);
-                  }}
-                />
-              )}
-            />
-          )}
-          {recommendations.length > 0 &&
-            searchResults.length === 0 &&
-            searching === false &&
-            loadingRecommendations == false && (
-              <ScrollView
-                onScroll={Animated.event(
-                  [{ nativeEvent: { contentOffset: { y: scrollOffsetY } } }],
-                  { useNativeDriver: false }
-                )}
-              >
-                <View style={{ paddingTop: H_MAX_HEIGHT + 10 }}>
-                  <Recommendations
-                    categories={recommendations}
-                    selectBook={(book) => setSelectedBook(book)}
-                  />
-                </View>
-              </ScrollView>
-            )}
-          {loadingRecommendations && (
-            <View style={{ paddingTop: 190 }}>
-              <RecommendationsSkeletonLoader />
-              <RecommendationsSkeletonLoader />
-            </View>
-          )}
-        </View>
-      </BasePage>
-      {(selectedBook || selectedBook2) && (
-        <BookBottomSheet
-          fullbook={selectedBook}
-          bookPreview={selectedBook2}
-          onClose={() => {
-            setSelectedBook2(null);
-            setSelectedBook(null);
-          }}
-        />
-      )}
-    </>
-  );
-}
+	async function fetchUserProfile() {
+		const user_id = UserStore.account.id.get();
+		if (!user_id) {
+			return;
+		}
+		setFetchingUserProfile(true);
+		const { data, error, status } = await fetchUtil<UserProfile>(
+			`${BASE_URL}/get_user_profile?user_id=${user_id}`
+		);
+		setFetchingUserProfile(false);
+		if (error) {
+			//console.log(error);
+			return;
+		}
+		setAccountInfo(data.account);
+		UserStore.account.set(data.account);
+		UserStore.downloads.set(data.downloads);
+		UserStore.purchases.set(data.purchases);
+	}
+
+	const getUserInfoFromGoogle = async () => {
+		if (!googleToken) return;
+
+		try {
+			const response: FetchResponse<GoogleUser> = await fetchUtil<GoogleUser>(
+				"https://www.googleapis.com/userinfo/v2/me",
+				{
+					headers: {
+						Authorization: `Bearer ${googleToken}`,
+					},
+				}
+			);
+
+			if (response.error) {
+				console.error(response.error);
+				throw response.error; // Add your own error handling logic here
+			}
+
+			const user = await createAccount(response.data);
+			if (!user) return;
+			await fetchUserProfile();
+			router.replace("/tabs/search");
+		} catch (error) {
+			// Add your own error handling logic here
+			//console.log(error);
+		}
+
+		setCreatingAccount(false);
+	};
+
+	useEffect(() => {
+		if (response) {
+			if (response?.type === "success") {
+				//console.log("=================");
+				setGoogleToken(response.authentication.accessToken);
+				//console.log({ token: response.authentication.accessToken });
+				getUserInfoFromGoogle();
+			} else {
+				console.log("Error");
+			}
+		} else {
+			console.log("No response");
+		}
+	}, [response, googleToken]);
+
+	return (
+		<Box
+			height={"100%"}
+			pa={20}
+			align="center"
+			justify="center"
+			color={LiveAppState.themeValue.colors.background.get()}
+		>
+			<Animatable.View
+				animation={"fadeInUp"}
+				style={{
+					marginBottom: 40,
+					alignItems: "center",
+					width: "100%",
+				}}
+			>
+				<Animated.Image
+					source={require("../assets/logo.png")}
+					style={{
+						width: 150,
+						height: 150,
+					}}
+				/>
+				<Animated.Text
+					style={{
+						color: LiveAppState.themeValue.get().colors.primary,
+						fontWeight: "900",
+						fontSize: 42,
+					}}
+				>
+					Livre
+				</Animated.Text>
+				<Spacer height={20} />
+				<Box align="center">
+					<Text
+						size={22}
+						align="center"
+						weight="300"
+						color={theme.colors.surface}
+					>
+						Thousands of Books
+					</Text>
+					<Text
+						size={22}
+						align="center"
+						color={theme.colors.surface}
+						weight="300"
+					>
+						on The Palm of Your Hand
+					</Text>
+				</Box>
+				<Spacer height={40} />
+				<Button
+					mode="contained"
+					icon={"google"}
+					onPress={() => {
+						setCreatingAccount(true);
+						promptAsync();
+					}}
+					labelStyle={{ fontWeight: "bold" }}
+					style={{ width: "100%" }}
+				>
+					Sign Up
+				</Button>
+			</Animatable.View>
+		</Box>
+	);
+};
+
+export default index;
