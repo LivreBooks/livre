@@ -159,14 +159,14 @@ export default function oauthredirect() {
 							size={22}
 							align="center"
 							weight="300"
-							color={theme.colors.text}
+							color={LiveAppState.themeValue.colors.text.get()}
 						>
 							Adventure awaits!
 						</Text>
 						<Text
 							size={22}
 							align="center"
-							color={theme.colors.text}
+							color={LiveAppState.themeValue.colors.text.get()}
 							weight="300"
 						>
 							Embrace the magic of reading

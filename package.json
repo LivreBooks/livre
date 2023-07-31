@@ -28,6 +28,7 @@
 		"expo-auth-session": "~4.0.3",
 		"expo-crypto": "~12.2.1",
 		"expo-dev-client": "~2.2.1",
+		"expo-image": "~1.0.1",
 		"expo-linear-gradient": "~12.1.2",
 		"expo-linking": "~4.0.1",
 		"expo-router": "^1.4.3",
@@ -57,12 +58,12 @@
 		"rn-fetch-blob": "^0.12.0"
 	},
 	"devDependencies": {
-		"typescript": "^4.9.4",
 		"@babel/core": "^7.19.3",
 		"@babel/plugin-proposal-export-namespace-from": "^7.18.9",
 		"@config-plugins/react-native-blob-util": "^0.0.0",
 		"@config-plugins/react-native-pdf": "^0.0.0",
-		"@types/react": "~18.0.27"
+		"@types/react": "~18.0.27",
+		"typescript": "^4.9.4"
 	},
 	"resolutions": {
 		"metro": "^0.73.7",
