@@ -113,11 +113,9 @@ export default function Search() {
 								paddingHorizontal: 5,
 								width: "100%",
 							}}
-							data={downloads
-								.filter((download) => download !== null)
-								.filter((download) =>
-									download?.book.title.includes(filterQuery)
-								)}
+							data={downloads.filter((download) =>
+								download?.book.title.includes(filterQuery)
+							)}
 							keyExtractor={(item) => item.downloadId.toString()}
 							renderItem={({
 								item,
