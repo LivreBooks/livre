@@ -32,7 +32,7 @@ const BottomSheetOpener = ({
 					justifyContent: "space-between",
 				}}
 			>
-				<Text style={{ fontWeight: "bold" }}>{label}</Text>
+				<Text weight="bold">{label}</Text>
 				<IconButton
 					icon={"chevron-up"}
 					iconColor={LiveAppState.themeValue.colors.text.get()}

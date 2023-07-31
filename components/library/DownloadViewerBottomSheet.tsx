@@ -121,7 +121,7 @@ const DownloadViewerBottomSheet = ({
 					</View>
 					<View style={{ marginHorizontal: 10 }}>
 						<Box gap={5}>
-							<Text weight="300" size={16}>
+							<Text weight="bold" size={16}>
 								{download.book.title}
 							</Text>
 							<Text style={{ opacity: 0.9 }}>{download.book.author}</Text>
