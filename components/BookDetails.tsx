@@ -13,6 +13,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import Button from "./Button";
 import Box from "./Box";
 import Text from "./Text";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 const BookDetails = ({
 	bookPreview = null,
@@ -59,7 +60,11 @@ const BookDetails = ({
 				setFullBook(data);
 			})
 			.catch((err) => {
-				//console.log(err);
+				Toast.show({
+					title: "Error Fetching Full Book Details",
+					textBody: err?.message || "",
+					type: ALERT_TYPE.DANGER,
+				});
 			})
 			.finally(() => {
 				setLoading(false);
@@ -68,14 +73,19 @@ const BookDetails = ({
 
 	function fetchDownloadLinks() {
 		setFetchinDownloadLinks(true);
-		// getDownloadLinks(fullbook.md5)
+
 		fetch(`${BASE_URL}/download/${_fullbook.md5}`)
 			.then((res) => res.json())
 			.then((data) => {
 				downloadBook(_fullbook, data);
 			})
 			.catch((err) => {
-				//console.log(err);
+				Toast.show({
+					title: "Error Getting Download Link",
+					textBody: err?.message || "",
+					type: ALERT_TYPE.DANGER,
+				});
+				console.log(err);
 			})
 			.finally(() => {
 				setFetchinDownloadLinks(false);
@@ -146,7 +156,7 @@ const BookDetails = ({
 					</View>
 					<Box mx={10} gap={10}>
 						<Box gap={5}>
-							<Text weight="bold" size={16} letterSpacing={0.5}>
+							<Text weight="300" size={16}>
 								{bookPreview?.title || _fullbook.title}
 							</Text>
 							<Text style={{ opacity: 0.9 }}>
@@ -242,11 +252,19 @@ export const BookInfo = ({
 }: BookInfoProps) => {
 	return (
 		<Box style={{ opacity: 0.9 }} gap={10} block>
-			<BookInfoCard icon="publish" label="Publisher" value={publisher} />
+			<BookInfoCard icon="post" label="Publisher" value={publisher} />
 			<Box direction="row" justify="space-between" gap={10} block>
-				<BookInfoCard icon="page-next-outline" label="Pages" value={pages} />
+				<BookInfoCard
+					icon="page-next-outline"
+					label="Pages"
+					value={pages.replace(/\[.*?\]/g, "")}
+				/>
 				<BookInfoCard icon="calendar-outline" label="Year" value={year} />
-				<BookInfoCard icon="database-outline" label="Size" value={size} />
+				<BookInfoCard
+					icon="database-outline"
+					label="Size"
+					value={`${size} mb`}
+				/>
 				<BookInfoCard icon="file-document-outline" label="Type" value={type} />
 			</Box>
 		</Box>
@@ -271,7 +289,6 @@ const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
 				/>
 				<Text
 					style={{
-						fontWeight: "bold",
 						marginRight: 10,
 					}}
 				>
@@ -300,7 +317,7 @@ export const BookDescription = ({ content }: { content: string }) => {
 				height: content ? "25%" : "auto",
 			}}
 		>
-			<Text style={{ fontWeight: "bold", marginBottom: 5 }}>Description</Text>
+			<Text style={{ marginBottom: 5 }}>Description</Text>
 			{content ? (
 				<Text style={{ marginBottom: 15 }}>
 					{content.replace(/<[^>]*>/g, "")}
