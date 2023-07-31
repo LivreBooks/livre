@@ -130,8 +130,8 @@ export function RecommendationsSkeletonLoader() {
 	return (
 		<View style={styles.container}>
 			<SkeletonLoader
-				boneColor={LiveAppState.themeValue.get().colors.surfaceVariant}
-				highlightColor={LiveAppState.themeValue.get().colors.surfaceVariant}
+				boneColor={LiveAppState.themeValue.get().colors.surface}
+				highlightColor={LiveAppState.themeValue.get().colors.surface}
 				duration={1500}
 			>
 				<SkeletonLoader.Item style={styles.title} />
