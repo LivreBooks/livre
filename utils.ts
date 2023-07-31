@@ -13,6 +13,58 @@ import {
 import { BASE_URL } from "./constants";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
+// export async function downloadFile(
+//   id: number,
+//   url: string,
+//   fileName: string,
+//   fileType: string,
+//   onProgress: (id: number, progress: number) => void
+// ) {
+//   await requestExternalStoragePermission();
+
+//   const externalPath = `${RNFS.ExternalStorageDirectoryPath}/livre`;
+
+//   const folderExists = await RNFS.exists(externalPath);
+
+//   if (folderExists === false) {
+//     try {
+//       await RNFS.mkdir(externalPath);
+//       console.log("Folder created successfully!");
+//     } catch (error) {
+//       console.log("Error creating folder: ");
+//       console.log(error);
+//       Toast.show({ title: "Error Creating Livre Folder", textBody: error.message })
+//     }
+//   } else {
+//     console.log("folder exists");
+//   }
+
+//   const fileUri = `file://${externalPath}/${fileName}.${fileType}`;
+
+//   // //console.log({ fileUri });
+
+//   const downloadResumable = FileSystem.createDownloadResumable(
+//     url,
+//     fileUri,
+//     {},
+//     (downloadProgress) => {
+//       const progress =
+//         downloadProgress.totalBytesWritten /
+//         downloadProgress.totalBytesExpectedToWrite;
+//       onProgress(id, progress);
+//     }
+//   );
+
+//   try {
+//     const { uri } = await downloadResumable.downloadAsync();
+//     // //console.log("File downloaded to:", uri);
+//     return { uri, id };
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+
+
 export async function downloadFile(
   id: number,
   url: string,
@@ -20,47 +72,44 @@ export async function downloadFile(
   fileType: string,
   onProgress: (id: number, progress: number) => void
 ) {
-  await requestExternalStoragePermission();
+  const documentDirectory = FileSystem.documentDirectory + 'livre';
 
-  const externalPath = `${RNFS.ExternalStorageDirectoryPath}/livre`;
+  const folderExists = await FileSystem.getInfoAsync(documentDirectory);
 
-  const folderExists = await RNFS.exists(externalPath);
-
-  if (folderExists === false) {
+  if (!folderExists.exists) {
     try {
-      await RNFS.mkdir(externalPath);
-      // //console.log("Folder created successfully!");
+      await FileSystem.makeDirectoryAsync(documentDirectory, { intermediates: true });
+      console.log('Folder created successfully!');
     } catch (error) {
-      // //console.log("Error creating folder: ", error);
+      console.log('Error creating folder: ');
+      console.log(error);
+      Toast.show({ title: 'Error Creating Livre Folder', textBody: error.message });
     }
   } else {
-    // //console.log("folder exists");
+    console.log('Folder exists');
   }
 
-  const fileUri = `file://${externalPath}/${fileName}.${fileType}`;
-
-  // //console.log({ fileUri });
+  const fileUri = `${documentDirectory}/${fileName}.${fileType}`;
 
   const downloadResumable = FileSystem.createDownloadResumable(
     url,
     fileUri,
     {},
     (downloadProgress) => {
-      const progress =
-        downloadProgress.totalBytesWritten /
-        downloadProgress.totalBytesExpectedToWrite;
+      const progress = downloadProgress.totalBytesWritten / downloadProgress.totalBytesExpectedToWrite;
       onProgress(id, progress);
     }
   );
 
   try {
     const { uri } = await downloadResumable.downloadAsync();
-    // //console.log("File downloaded to:", uri);
+    // console.log('File downloaded to:', uri);
     return { uri, id };
   } catch (error) {
     console.error(error);
   }
 }
+
 
 interface DownloadRecord {
   bookId: string;
@@ -107,9 +156,6 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
           ...UserStore.downloads.get(),
         ]);
 
-        UserStore.account.tokens.set(
-          parseInt(UserStore.account.tokens.get()) - 1
-        );
 
         resolve(data.data);
       })
@@ -217,13 +263,12 @@ export async function downloadBook(
 
   Toast.show({ title: "Download Complete", textBody: newDownload.book.title, type: ALERT_TYPE.SUCCESS });
 
-  const resp = await recordDownload({
-    bookId: fullBook.id,
-    bookName: fullBook.title,
-    bookCover: fullBook.coverurl,
-    bookAuthor: fullBook.author,
-  });
-  // //console.log(resp);
+  // await recordDownload({
+  //   bookId: fullBook.id,
+  //   bookName: fullBook.title,
+  //   bookCover: fullBook.coverurl,
+  //   bookAuthor: fullBook.author,
+  // });
 }
 
 export function trimText(text: string, maxLength: number) {
