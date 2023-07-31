@@ -156,7 +156,7 @@ const BookDetails = ({
 					</View>
 					<Box mx={10} gap={10}>
 						<Box gap={5}>
-							<Text weight="300" size={16}>
+							<Text weight="bold" size={16}>
 								{bookPreview?.title || _fullbook.title}
 							</Text>
 							<Text style={{ opacity: 0.9 }}>
@@ -169,8 +169,7 @@ const BookDetails = ({
 							year={bookPreview?.year || _fullbook.year}
 							size={
 								bookPreview?.size ||
-								(parseInt(_fullbook.filesize) / 1e6).toFixed(2).toString() +
-									" mb"
+								(parseInt(_fullbook.filesize) / 1e6).toFixed(2).toString()
 							}
 							type={`.${bookPreview?.extension || _fullbook.extension}`}
 						/>
@@ -284,7 +283,7 @@ const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
 			<Box direction="row" align="center" gap={5}>
 				<MaterialCommunityIcons
 					name={icon as any}
-					size={18}
+					size={14}
 					color={theme.text}
 				/>
 				<Text
