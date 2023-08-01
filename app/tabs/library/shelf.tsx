@@ -107,12 +107,13 @@ export default function Search() {
 							numColumns={2}
 							columnWrapperStyle={{
 								flex: 1,
-								justifyContent: "space-between",
-								alignItems: "flex-start",
-								paddingVertical: 10,
+								justifyContent: "space-evenly",
+								paddingTop: 10,
+								paddingBottom: 10,
 								paddingHorizontal: 5,
 								width: "100%",
 							}}
+							contentContainerStyle={{ paddingBottom: 140 }}
 							data={downloads.filter((download) =>
 								download?.book.title.includes(filterQuery)
 							)}
