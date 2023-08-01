@@ -262,7 +262,7 @@ export const BookInfo = ({
 				<BookInfoCard
 					icon="database-outline"
 					label="Size"
-					value={`${size} mb`}
+					value={`${size.toLowerCase().replace("mb", "")} mb`}
 				/>
 				<BookInfoCard icon="file-document-outline" label="Type" value={type} />
 			</Box>
