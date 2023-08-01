@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { View } from "react-native";
+import { View, ViewProps, ViewStyle } from "react-native";
 import { Image, ImageProps, ImageStyle } from "expo-image";
 import { LiveAppState } from "../store/store";
 
 type CustomImageProps = {
 	source: ImageProps["source"];
 	defaultImage?: ImageProps["source"];
-	placeholderStyles?: ImageStyle;
+	placeholderStyles?: ViewProps;
 } & ImageProps;
 
 const BaseImage = ({
@@ -32,12 +32,16 @@ const BaseImage = ({
 						top: 0,
 						left: 0,
 						...placeholderStyles,
-						backgroundColor:
-							LiveAppState.themeValue.get().colors.surfaceVariant,
+						backgroundColor: LiveAppState.themeValue.get().colors.surface,
 					}}
 				></View>
 			)}
-			<Image source={source} onLoadEnd={handleLoad} {...rest} />
+			<Image
+				source={source}
+				onLoadEnd={handleLoad}
+				cachePolicy="disk"
+				{...rest}
+			/>
 		</>
 	);
 };
