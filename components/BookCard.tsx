@@ -1,11 +1,10 @@
 import React from "react";
-import { TouchableNativeFeedback, View } from "react-native";
-import * as Animatable from "react-native-animatable";
+import { View } from "react-native";
+import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { BookType } from "../types/types";
-import { theme } from "../constants";
 import { trimText } from "../utils";
 import BaseImage from "./BaseImage";
-import { Link, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { LiveAppState } from "../store/store";
 import Text from "./Text";
 import Box from "./Box";
@@ -17,8 +16,6 @@ function BookCard({
 	book: BookType;
 	onPress: (book: BookType) => void;
 }) {
-	const router = useRouter();
-
 	return (
 		<Box
 			my={5}
@@ -30,7 +27,7 @@ function BookCard({
 			<TouchableNativeFeedback
 				onPress={() => onPress(book)}
 				background={TouchableNativeFeedback.Ripple(
-					LiveAppState.themeValue.get().colors.primaryContainer,
+					LiveAppState.themeValue.get().colors.surface,
 					false
 				)}
 			>
