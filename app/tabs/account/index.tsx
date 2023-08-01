@@ -10,6 +10,7 @@ import ThemeManager from "../../../components/account/ThemeManager";
 import ProfileManger from "../../../components/account/ProfileManger";
 import Spacer from "../../../components/Spacer";
 import Text from "../../../components/Text";
+import CloutBottomSheet from "../../../components/account/CloutBottomSheet";
 
 const BottomSheetOpener = ({
 	label,
@@ -51,6 +52,8 @@ const account = () => {
 
 	const [showDownloads, setShowDownloads] = useState(false);
 
+	const [showCloutSheet, setShowCloutSheet] = useState(false);
+
 	UserStore.onChange(() => {
 		setReRender(Math.random());
 	});
@@ -82,6 +85,10 @@ const account = () => {
 						label="Downloads"
 						onPress={() => setShowDownloads(true)}
 					/>
+					<BottomSheetOpener
+						label="Who Created Me"
+						onPress={() => setShowCloutSheet(true)}
+					/>
 				</Animatable.View>
 			</BasePage>
 
@@ -90,6 +97,9 @@ const account = () => {
 			)}
 			{showThemeManager && (
 				<ThemeManager close={() => setShowThemeManager(false)} />
+			)}
+			{showCloutSheet && (
+				<CloutBottomSheet close={() => setShowCloutSheet(false)} />
 			)}
 		</>
 	);
