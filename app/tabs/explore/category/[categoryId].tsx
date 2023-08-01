@@ -71,24 +71,22 @@ export default function Category() {
 					title={category.name}
 					scrollOffsetY={scrollOffsetY}
 				>
-					{category.subCategories.length > 10 && (
-						<Searchbar
-							placeholder="Filter"
-							icon={"filter-outline"}
-							onChangeText={onChangeFilter}
-							value={filterQuery}
-							theme={LiveAppState.themeValue.get()}
-							style={{
-								borderRadius: 20,
-								marginHorizontal: 10,
-								backgroundColor: LiveAppState.themeValue.colors.surface.get(),
-							}}
-							inputStyle={{
-								fontSize: 16,
-								marginLeft: -10,
-							}}
-						/>
-					)}
+					<Searchbar
+						placeholder="Filter"
+						icon={"filter-outline"}
+						onChangeText={onChangeFilter}
+						value={filterQuery}
+						theme={LiveAppState.themeValue.get()}
+						style={{
+							borderRadius: 20,
+							marginHorizontal: 10,
+							backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+						}}
+						inputStyle={{
+							fontSize: 16,
+							marginLeft: -10,
+						}}
+					/>
 				</CollapsiblePageHeader>
 				<View style={{ flex: 1, width: "100%" }}>
 					<ScrollView
