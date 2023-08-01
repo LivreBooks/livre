@@ -27,7 +27,7 @@ export interface AppTextProps {
     color?: string;
     gap?: number;
   };
-  wrapperProps?: Omit<AppStackProps, "children" | "style"> & ViewStyle;
+  wrapperProps?: Omit<AppStackProps, "children">;
   children: ReactNode;
 }
 
@@ -44,6 +44,16 @@ export interface AppStackProps {
   mx?: number;
   my?: number;
   ma?: number;
+  pt?: number;
+  pb?: number;
+  pl?: number;
+  pr?: number;
+  mt?: number;
+  mb?: number;
+  ml?: number;
+  mr?: number;
+  borderWidth?: ViewStyle["borderWidth"];
+  borderColor?: ViewStyle["borderColor"];
   width?: ViewStyle["width"];
   height?: ViewStyle["height"];
   color?: ViewStyle["backgroundColor"];
