@@ -1,5 +1,4 @@
 import React from "react";
-import { Text } from "react-native-paper";
 import { TouchableNativeFeedback, View } from "react-native";
 import * as Animatable from "react-native-animatable";
 import { BookType } from "../types/types";
@@ -8,6 +7,8 @@ import { trimText } from "../utils";
 import BaseImage from "./BaseImage";
 import { Link, useRouter } from "expo-router";
 import { LiveAppState } from "../store/store";
+import Text from "./Text";
+import Box from "./Box";
 
 function BookCard({
 	book,
@@ -19,10 +20,10 @@ function BookCard({
 	const router = useRouter();
 
 	return (
-		<View
+		<Box
+			my={5}
+			radius={15}
 			style={{
-				marginVertical: 5,
-				borderRadius: 15,
 				overflow: "hidden",
 			}}
 		>
@@ -33,13 +34,13 @@ function BookCard({
 					false
 				)}
 			>
-				<View
+				<Box
+					direction="row"
+					block
+					justify="space-between"
+					pa={10}
 					style={{
-						flexDirection: "row",
-						width: "100%",
 						overflow: "hidden",
-						justifyContent: "space-between",
-						padding: 10,
 					}}
 				>
 					<BaseImage
@@ -53,201 +54,57 @@ function BookCard({
 							left: 10,
 						}}
 					/>
-					<View
+					<Box
+						pl={10}
+						justify="space-between"
 						style={{
-							paddingLeft: 10,
 							flex: 1,
 						}}
 					>
-						<View>
-							<Text
-								variant="titleMedium"
-								style={{
-									lineHeight: 18,
-									marginBottom: 5,
-									fontSize: 14,
-									color: LiveAppState.themeValue.get().colors.onBackground,
-								}}
-							>
+						<Box>
+							<Text size={14} lineHeight={18} weight="bold">
 								{trimText(book.title, 70)}
 							</Text>
-							<Text
-								style={{
-									color: LiveAppState.themeValue.get().colors.onBackground,
-								}}
-							>
-								{book.authors[0].name}
-							</Text>
-						</View>
-						<View style={{ marginTop: 10 }}>
-							<View
-								style={{
-									borderRadius: 10,
-									paddingVertical: 5,
-								}}
-							>
-								<View
-									style={{
-										flexDirection: "row",
-										alignItems: "center",
-									}}
-								>
-									<Text
-										style={{
-											fontWeight: "bold",
-											marginRight: 10,
-											color: LiveAppState.themeValue.get().colors.onBackground,
-										}}
-									>
-										Publisher
-									</Text>
-								</View>
-								{book.publisher ? (
-									<Text
-										style={{
-											color: LiveAppState.themeValue.get().colors.onBackground,
-										}}
-									>
-										{trimText(book.publisher, 40)}
-									</Text>
-								) : (
-									<Text
-										style={{
-											textDecorationLine: "line-through",
-											color: LiveAppState.themeValue.get().colors.onBackground,
-										}}
-									>
-										missing
-									</Text>
-								)}
-							</View>
-							<View
-								style={{
-									flexDirection: "row",
-								}}
-							>
-								<View
-									style={{
-										borderRadius: 10,
-										marginRight: 10,
-									}}
-								>
-									<View style={{ flexDirection: "row", alignItems: "center" }}>
-										<Text
-											style={{
-												marginRight: 10,
-												fontWeight: "bold",
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											Pages
-										</Text>
-									</View>
-									{book.pages ? (
-										<Text
-											style={{
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											{book.pages}
-										</Text>
-									) : (
-										<Text
-											style={{
-												textDecorationLine: "line-through",
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											missing
-										</Text>
-									)}
-								</View>
-								<View
-									style={{
-										borderRadius: 10,
-										marginRight: 10,
-									}}
-								>
-									<View style={{ flexDirection: "row", alignItems: "center" }}>
-										<Text
-											style={{
-												fontWeight: "bold",
-												marginRight: 10,
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											Year
-										</Text>
-									</View>
-									{book.year ? (
-										<Text
-											style={{
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											{book.year}
-										</Text>
-									) : (
-										<Text
-											style={{
-												textDecorationLine: "line-through",
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											missing
-										</Text>
-									)}
-								</View>
-								<View
-									style={{
-										borderRadius: 10,
-									}}
-								>
-									<View style={{ flexDirection: "row", alignItems: "center" }}>
-										<Text
-											style={{
-												fontWeight: "bold",
-												marginRight: 10,
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											Type
-										</Text>
-									</View>
-									{book.extension ? (
-										<Text
-											style={{
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											{book.extension}
-										</Text>
-									) : (
-										<Text
-											style={{
-												textDecorationLine: "line-through",
-												color:
-													LiveAppState.themeValue.get().colors.onBackground,
-											}}
-										>
-											missing
-										</Text>
-									)}
-								</View>
-							</View>
-						</View>
-					</View>
-				</View>
+							<Text>{book.authors[0].name}</Text>
+						</Box>
+						<Box mt={10}>
+							<BookInfo label="Publisher" info={book.publisher} />
+							<Box direction="row" justify="space-between">
+								<BookInfo
+									label="Pages"
+									info={book?.pages.replace(/\[.*?\]/g, "")}
+								/>
+								<BookInfo label="Year" info={book.year} />
+								<BookInfo label="Type" info={book.extension} />
+							</Box>
+						</Box>
+					</Box>
+				</Box>
 			</TouchableNativeFeedback>
-		</View>
+		</Box>
+	);
+}
+
+export function BookInfo({ label, info }: { label: string; info: string }) {
+	return (
+		<Box radius={10} py={5}>
+			<Box direction="row" align="center">
+				<Text wrapperProps={{ mr: 10 }} size={12}>
+					{label}
+				</Text>
+			</Box>
+			{info ? (
+				<Text size={14}>{trimText(info, 40)}</Text>
+			) : (
+				<Text
+					style={{
+						textDecorationLine: "line-through",
+					}}
+				>
+					missing
+				</Text>
+			)}
+		</Box>
 	);
 }
 
