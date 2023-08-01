@@ -3,7 +3,7 @@ import { View, Dimensions, TouchableNativeFeedback } from "react-native";
 import { Text } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import { CategoryType, SubCategoryType } from "../types/types";
-import { SettingsStore } from "../store/store";
+import { LiveAppState, SettingsStore } from "../store/store";
 
 function CategoryCard({
 	category,
@@ -29,17 +29,16 @@ function CategoryCard({
 		>
 			<TouchableNativeFeedback
 				onPress={() => selectCategory(category)}
-				background={TouchableNativeFeedback.Ripple("gray", false)}
+				background={TouchableNativeFeedback.Ripple("#9258FF", false)}
 			>
 				<View
 					style={{
 						flex: 1,
 						height: 100,
-						backgroundColor:
-							SettingsStore.theme.get() === "light" ? "#C0ADE4" : "#3C314F",
-
+						backgroundColor: LiveAppState.themeValue.colors.surface.get(),
 						borderRadius: 20,
 						padding: 5,
+						paddingHorizontal: 10,
 						alignItems: "center",
 						justifyContent: "center",
 					}}
@@ -50,7 +49,7 @@ function CategoryCard({
 							color:
 								SettingsStore.theme.get() === "light" ? "#4C3E66" : "#A090BD",
 							fontWeight: "bold",
-							fontSize: 16,
+							fontSize: 14,
 						}}
 					>
 						{category.name || "Missing"}
