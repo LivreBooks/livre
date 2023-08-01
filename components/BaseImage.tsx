@@ -6,7 +6,7 @@ import { LiveAppState } from "../store/store";
 type CustomImageProps = {
 	source: ImageProps["source"];
 	defaultImage?: ImageProps["source"];
-	placeholderStyles?: ViewProps;
+	placeholderStyles?: ViewStyle;
 } & ImageProps;
 
 const BaseImage = ({
