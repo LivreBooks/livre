@@ -252,7 +252,6 @@ export async function downloadBook(
     }
   );
 
-  // //console.log({ uri });
 
   const targetDownloadIndex = DownloadsStore.downloads
     .get()
@@ -263,12 +262,12 @@ export async function downloadBook(
 
   Toast.show({ title: "Download Complete", textBody: newDownload.book.title, type: ALERT_TYPE.SUCCESS });
 
-  // await recordDownload({
-  //   bookId: fullBook.id,
-  //   bookName: fullBook.title,
-  //   bookCover: fullBook.coverurl,
-  //   bookAuthor: fullBook.author,
-  // });
+  await recordDownload({
+    bookId: fullBook.id,
+    bookName: fullBook.title,
+    bookCover: fullBook.coverurl,
+    bookAuthor: fullBook.author,
+  });
 }
 
 export function trimText(text: string, maxLength: number) {
