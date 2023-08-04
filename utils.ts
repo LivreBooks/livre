@@ -1,6 +1,5 @@
 import * as FileSystem from "expo-file-system";
 import { LayoutAnimation, PermissionsAndroid } from "react-native";
-import RNFS from "react-native-fs";
 
 import { DownloadsStore, SettingsStore, UserStore } from "./store/store";
 import {
@@ -12,58 +11,6 @@ import {
 } from "./types/types";
 import { BASE_URL } from "./constants";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
-
-// export async function downloadFile(
-//   id: number,
-//   url: string,
-//   fileName: string,
-//   fileType: string,
-//   onProgress: (id: number, progress: number) => void
-// ) {
-//   await requestExternalStoragePermission();
-
-//   const externalPath = `${RNFS.ExternalStorageDirectoryPath}/livre`;
-
-//   const folderExists = await RNFS.exists(externalPath);
-
-//   if (folderExists === false) {
-//     try {
-//       await RNFS.mkdir(externalPath);
-//       console.log("Folder created successfully!");
-//     } catch (error) {
-//       console.log("Error creating folder: ");
-//       console.log(error);
-//       Toast.show({ title: "Error Creating Livre Folder", textBody: error.message })
-//     }
-//   } else {
-//     console.log("folder exists");
-//   }
-
-//   const fileUri = `file://${externalPath}/${fileName}.${fileType}`;
-
-//   // //console.log({ fileUri });
-
-//   const downloadResumable = FileSystem.createDownloadResumable(
-//     url,
-//     fileUri,
-//     {},
-//     (downloadProgress) => {
-//       const progress =
-//         downloadProgress.totalBytesWritten /
-//         downloadProgress.totalBytesExpectedToWrite;
-//       onProgress(id, progress);
-//     }
-//   );
-
-//   try {
-//     const { uri } = await downloadResumable.downloadAsync();
-//     // //console.log("File downloaded to:", uri);
-//     return { uri, id };
-//   } catch (error) {
-//     console.error(error);
-//   }
-// }
-
 
 export async function downloadFile(
   id: number,
@@ -79,10 +26,7 @@ export async function downloadFile(
   if (!folderExists.exists) {
     try {
       await FileSystem.makeDirectoryAsync(documentDirectory, { intermediates: true });
-      console.log('Folder created successfully!');
     } catch (error) {
-      console.log('Error creating folder: ');
-      console.log(error);
       Toast.show({ title: 'Error Creating Livre Folder', textBody: error.message });
     }
   } else {
@@ -103,7 +47,6 @@ export async function downloadFile(
 
   try {
     const { uri } = await downloadResumable.downloadAsync();
-    // console.log('File downloaded to:', uri);
     return { uri, id };
   } catch (error) {
     console.error(error);
@@ -138,8 +81,6 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
     })
       .then((res) => res.json())
       .then((data) => {
-        // //console.log("=======++++++-----");
-        // //console.log(data);
 
         const newDownloadRecord: Download = {
           id: Math.random().toString(),
@@ -161,43 +102,8 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
       })
       .catch((err) => {
         reject(err);
-        // //console.log(err);
       })
-      .finally(() => {
-        // //console.log("Account Request Done");
-      });
   });
-}
-
-async function requestExternalStoragePermission() {
-  // Check if we have read and write permission to external storage
-  const hasReadPermission = await PermissionsAndroid.check(
-    PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE
-  );
-  const hasWritePermission = await PermissionsAndroid.check(
-    PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE
-  );
-
-  if (!hasReadPermission || !hasWritePermission) {
-    // If we don't have both permissions, request them
-    const granted = await PermissionsAndroid.requestMultiple([
-      PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-      PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-    ]);
-
-    if (
-      granted["android.permission.READ_EXTERNAL_STORAGE"] !==
-      PermissionsAndroid.RESULTS.GRANTED ||
-      granted["android.permission.WRITE_EXTERNAL_STORAGE"] !==
-      PermissionsAndroid.RESULTS.GRANTED
-    ) {
-      // If the user denied one or both permissions, exit the function
-      return false;
-    }
-  }
-
-  // If we have both permissions, return true to indicate success
-  return true;
 }
 
 export async function downloadBook(
@@ -208,7 +114,6 @@ export async function downloadBook(
     Toast.show({ title: "Error Downloading Book", textBody: "Missing Data" })
     return
   }
-  // //console.log("Beginning");
   const downloadId = Math.floor(Math.random() * 1000);
 
   const newDownload: DownloadType = {
@@ -224,19 +129,15 @@ export async function downloadBook(
     },
   };
 
-  // //console.log(fullBook.coverurl);
-  // //console.log(newDownload);
   DownloadsStore.downloads.set([
     newDownload,
     ...DownloadsStore.downloads.get(),
   ]);
-  // //console.log("Startig cover");
   const base64Cover = await downloadFileAsBase64(fullBook.coverurl);
   DownloadsStore.downloads[0].book.base64Cover.set(
     `data:image/jpeg;base64,${base64Cover}`
   );
 
-  // //console.log("cover downloaded");
 
   const { uri, id } = await downloadFile(
     downloadId,
@@ -260,7 +161,6 @@ export async function downloadBook(
   DownloadsStore.downloads[targetDownloadIndex].filepath.set(uri);
   DownloadsStore.downloads.set([...DownloadsStore.downloads.get()]);
 
-  Toast.show({ title: "Download Complete", textBody: newDownload.book.title, type: ALERT_TYPE.SUCCESS });
 
   await recordDownload({
     bookId: fullBook.id,
@@ -339,7 +239,7 @@ export async function downloadFileAsBase64(fileUrl: string) {
     });
     return data;
   } catch (error) {
-    // //console.log(error);
+    Toast.show({ title: "Failed to download file", textBody: `File: ${fileUrl}` })
     return null;
   }
 }

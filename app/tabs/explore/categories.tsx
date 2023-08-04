@@ -8,6 +8,7 @@ import { ExploreStore } from "../../../store/store";
 import { CategoryType } from "../../../types/types";
 import BasePage from "../../../components/BasePage";
 import { BASE_URL } from "../../../constants";
+import { Toast } from "react-native-alert-notification";
 
 export default function Categories() {
 	const [filterQuery, setFilterQuery] = useState("");
@@ -21,7 +22,6 @@ export default function Categories() {
 	const router = useRouter();
 
 	function openCategory(category: CategoryType) {
-		// //console.log("Opening " + category.name);
 		router.push({
 			pathname: `/tabs/explore/category/${category.id}`,
 		});
@@ -42,7 +42,10 @@ export default function Categories() {
 				}
 			})
 			.catch((err) => {
-				// //console.log(err);
+				Toast.show({
+					title: "Error Fetching Categories",
+					textBody: err.message,
+				});
 			})
 			.finally(() => {
 				setLoading(false);

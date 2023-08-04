@@ -23,6 +23,7 @@ import Recommendations, {
 } from "../../../components/search/Recommendations";
 import BookBottomSheet from "../../../components/BookBottomSheet";
 import { BASE_URL } from "../../../constants";
+import { Toast } from "react-native-alert-notification";
 
 export default function Search() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -67,6 +68,8 @@ export default function Search() {
 		layoutAnimate();
 		setSearching(true);
 		setSearchResults([]);
+		setShowNoResults(false);
+
 		fetch(`${BASE_URL}/search/${searchQuery}`)
 			.then((res) => res.json())
 			.then((data) => {
@@ -82,7 +85,6 @@ export default function Search() {
 				setSearchResults(sortBooksByCompleteness(books));
 			})
 			.catch((err) => {
-				// //console.log(err);
 				setShowNoResults(true);
 			})
 			.finally(() => {
@@ -100,7 +102,10 @@ export default function Search() {
 				setRecommendations(shuffleArray(data));
 			})
 			.catch((err) => {
-				console.log(err);
+				Toast.show({
+					title: "Error Fetching Recommendations",
+					textBody: err.message,
+				});
 			})
 			.finally(() => {
 				setLoadingRecommendations(false);
@@ -110,8 +115,8 @@ export default function Search() {
 	useEffect(() => {
 		getRecommendations();
 		BackHandler.addEventListener("hardwareBackPress", () => {
-			console.log("object");
-			return true;
+			setSearchResults([]);
+			return false;
 		});
 	}, []);
 

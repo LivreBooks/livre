@@ -14,6 +14,7 @@ import { LiveAppState, UserStore } from "../store/store";
 import { BASE_URL, theme } from "../constants";
 import Button from "../components/Button";
 import Spacer from "../components/Spacer";
+import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -61,7 +62,12 @@ export default function oauthredirect() {
 			`${BASE_URL}/get_user_profile?user_id=${user_id}`
 		);
 		if (error) {
-			console.log(error);
+			Toast.show({
+				title: "Error Fetching Your Profile from Google",
+				textBody: error.message,
+				type: ALERT_TYPE.DANGER,
+				autoClose: false,
+			});
 			return;
 		}
 		UserStore.account.set(data.account);
@@ -95,8 +101,12 @@ export default function oauthredirect() {
 
 			router.replace("/tabs/search");
 		} catch (error) {
-			// Add your own error handling logic here
-			console.log(error);
+			Toast.show({
+				title: "Error Fetching Your Account from Google",
+				textBody: error.message,
+				type: ALERT_TYPE.DANGER,
+				autoClose: false,
+			});
 		}
 	};
 
@@ -105,10 +115,19 @@ export default function oauthredirect() {
 			if (response?.type === "success") {
 				getUserInfoFromGoogle(response.authentication.accessToken);
 			} else {
-				console.log("Error");
+				Toast.show({
+					title: "Access Token Error",
+					textBody: `Response is "${response.type}"`,
+					type: ALERT_TYPE.DANGER,
+					autoClose: false,
+				});
 			}
 		} else {
-			console.log("No response");
+			Toast.show({
+				title: "Error: No response Received",
+				type: ALERT_TYPE.DANGER,
+				autoClose: false,
+			});
 		}
 	}, [response]);
 

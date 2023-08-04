@@ -25,7 +25,7 @@ const BookDetails = ({
 }) => {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
-	const [fetchinDownloadLinks, setFetchinDownloadLinks] = useState(false);
+	const [fetchinDownloadLinks, setFetchingDownloadLinks] = useState(false);
 	const [downloadedFilepath, setDownloadedFilepath] = useState(null);
 	const [downloadProgress, setDownloadProgress] = useState(null);
 	const [_fullbook, setFullBook] = useState(fullBook);
@@ -73,12 +73,29 @@ const BookDetails = ({
 	}
 
 	function fetchDownloadLinks() {
-		setFetchinDownloadLinks(true);
+		setFetchingDownloadLinks(true);
 
 		fetch(`${BASE_URL}/download/${_fullbook.md5}`)
 			.then((res) => res.json())
 			.then((data) => {
-				downloadBook(_fullbook, data);
+				downloadBook(_fullbook, data)
+					.then((result) => {
+						Toast.show({
+							title: "Download Complete",
+							textBody: _fullbook.title,
+							type: ALERT_TYPE.SUCCESS,
+							onPress() {
+								openReader();
+							},
+							autoClose: true,
+						});
+					})
+					.catch((err) => {
+						Toast.show({
+							title: "Error Downloading Book",
+							textBody: err?.message,
+						});
+					});
 			})
 			.catch((err) => {
 				Toast.show({
@@ -89,7 +106,7 @@ const BookDetails = ({
 				console.log(err);
 			})
 			.finally(() => {
-				setFetchinDownloadLinks(false);
+				setFetchingDownloadLinks(false);
 			});
 	}
 
@@ -167,7 +184,7 @@ const BookDetails = ({
 							</Box>
 							<BookInfo
 								publisher={bookPreview?.publisher || _fullbook?.publisher || ""}
-								pages={bookPreview?.pages || _fullbook.pages}
+								pages={bookPreview?.pages || _fullbook?.pages}
 								year={bookPreview?.year || _fullbook.year}
 								size={
 									bookPreview?.size ||
@@ -259,7 +276,7 @@ export const BookInfo = ({
 				<BookInfoCard
 					icon="page-next-outline"
 					label="Pages"
-					value={pages.replace(/\[.*?\]/g, "")}
+					value={pages?.replace(/\[.*?\]/g, "") || null}
 				/>
 				<BookInfoCard icon="calendar-outline" label="Year" value={year} />
 				<BookInfoCard

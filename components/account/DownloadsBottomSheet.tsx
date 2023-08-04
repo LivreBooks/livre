@@ -26,6 +26,10 @@ const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 		};
 	}, []);
 
+	useEffect(() => {
+		console.log(downloads);
+	}, []);
+
 	return (
 		<BottomSheet
 			ref={bottomSheetRef}
@@ -45,21 +49,25 @@ const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 			backdropComponent={CustomBackdrop}
 			onClose={() => close()}
 		>
-			<Box px={10} align="center" block>
+			<BottomSheetScrollView
+				style={{ width: "100%", height: "100%" }}
+				contentContainerStyle={{
+					paddingBottom: 20,
+					paddingHorizontal: 10,
+					width: "100%",
+					alignItems: "center",
+				}}
+			>
 				<Text weight="bold" size={22} align="center">
 					Downloads
 				</Text>
+
 				<Spacer height={10} />
-				<BottomSheetScrollView
-					style={{ width: "100%", height: "auto" }}
-					contentContainerStyle={{ paddingBottom: 20 }}
-				>
-					{downloads.map((download) => (
-						<DownloadCard download={download} key={download.id} />
-					))}
-				</BottomSheetScrollView>
-				<Spacer height={10} />
-			</Box>
+
+				{downloads.map((download) => (
+					<DownloadCard download={download} key={download.id} />
+				))}
+			</BottomSheetScrollView>
 		</BottomSheet>
 	);
 };
@@ -75,11 +83,11 @@ const DownloadCard = ({ download }: { download: Download }) => {
 			}}
 		>
 			<BaseImage
-				style={{ height: 160, width: 100, borderRadius: 5 }}
+				style={{ height: 160 + 50, width: 100 + 40, borderRadius: 5 }}
 				source={{ uri: download.book_cover }}
 				placeholderStyles={{
-					height: 200,
-					width: 140,
+					height: 200 + 40,
+					width: 140 + 40,
 					borderRadius: 5,
 					top: 10,
 					left: 10,
@@ -116,7 +124,6 @@ const styles = StyleSheet.create({
 	container: {
 		padding: 10,
 		borderRadius: 8,
-		marginBottom: 15,
 	},
 	label: {
 		fontWeight: "bold",

@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { Stack } from "expo-router";
 import { StatusBar, useColorScheme } from "react-native";
 import { Provider as PaperProvider } from "react-native-paper";
-import { LiveAppState, SettingsStore } from "../store/store";
+import { LiveAppState, SettingsStore, UserStore } from "../store/store";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AlertNotificationRoot } from "react-native-alert-notification";
-import { darkMode, lightMode } from "../constants";
-import { ThemeType } from "../types/types";
+import { AlertNotificationRoot, Toast } from "react-native-alert-notification";
+import { BASE_URL, darkMode, lightMode } from "../constants";
+import { Download, ThemeType } from "../types/types";
+import { fetchUtil } from "../utils";
 
 const _layout = () => {
 	const [reRender, setRerender] = useState(1);
@@ -37,9 +38,27 @@ const _layout = () => {
 		}
 	}
 
+	async function fetchUserDownloads() {
+		const { data, error, status } = await fetchUtil<{ downloads: Download[] }>(
+			`${BASE_URL}/get_downloads?user_id=${UserStore.account.id.get()}`
+		);
+
+		if (data && data.downloads) {
+			UserStore.downloads.set(data.downloads);
+		}
+
+		if (error) {
+			Toast.show({
+				title: "Error Fetching Past Downloads",
+				textBody: error.message,
+			});
+		}
+	}
+
 	useEffect(() => {
 		const theme = SettingsStore.theme.get();
 		updateTheme(theme);
+		fetchUserDownloads();
 	}, [reRender]);
 	return (
 		<AlertNotificationRoot theme="light">
