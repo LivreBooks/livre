@@ -9,11 +9,12 @@ import { BookType, FullBookType } from "../types/types";
 import { useRouter } from "expo-router";
 import BaseImage from "./BaseImage";
 import { getBook } from "../services/services";
-import { ScrollView } from "react-native-gesture-handler";
 import Button from "./Button";
 import Box from "./Box";
 import Text from "./Text";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import Spacer from "./Spacer";
 
 const BookDetails = ({
 	bookPreview = null,
@@ -110,125 +111,127 @@ const BookDetails = ({
 	}, []);
 
 	return (
-		<Box width={"100%"} height={"100%"}>
-			<Box style={{ paddingBottom: 10 }}>
-				<Box gap={10}>
-					<View
-						style={{
-							width: "100%",
-							height: 240,
-							alignItems: "center",
-							justifyContent: "center",
-							marginBottom: 10,
-						}}
-					>
-						<BaseImage
-							source={{
-								uri: bookPreview?.cover || _fullbook.coverurl,
-							}}
-							style={{
-								height: "100%",
-								width: "100%",
-								position: "absolute",
-								top: 0,
-								left: 0,
-								opacity: 0.5,
-							}}
-							blurRadius={20}
-							placeholderStyles={{ height: "100%", width: "100%" }}
-						/>
+		<BottomSheetScrollView>
+			<Box width={"100%"} height={"100%"}>
+				<Box>
+					<Box gap={10}>
 						<View
 							style={{
-								flex: 1,
 								width: "100%",
+								height: 240,
 								alignItems: "center",
 								justifyContent: "center",
+								marginBottom: 10,
 							}}
 						>
 							<BaseImage
 								source={{
 									uri: bookPreview?.cover || _fullbook.coverurl,
 								}}
-								style={{ height: "90%", width: "40%", borderRadius: 10 }}
-								placeholderStyles={{ height: "95%", width: "40%" }}
+								style={{
+									height: "100%",
+									width: "100%",
+									position: "absolute",
+									top: 0,
+									left: 0,
+									opacity: 0.5,
+								}}
+								blurRadius={20}
+								placeholderStyles={{ height: "100%", width: "100%" }}
 							/>
-						</View>
-					</View>
-					<Box mx={10} gap={10}>
-						<Box gap={5}>
-							<Text weight="bold" size={16}>
-								{bookPreview?.title || _fullbook.title}
-							</Text>
-							<Text style={{ opacity: 0.9 }}>
-								{bookPreview?.authors[0].name || _fullbook.author}
-							</Text>
-						</Box>
-						<BookInfo
-							publisher={bookPreview?.publisher || _fullbook.publisher}
-							pages={bookPreview?.pages || _fullbook.pages}
-							year={bookPreview?.year || _fullbook.year}
-							size={
-								bookPreview?.size ||
-								(parseInt(_fullbook.filesize) / 1e6).toFixed(2).toString()
-							}
-							type={`.${bookPreview?.extension || _fullbook.extension}`}
-						/>
-					</Box>
-				</Box>
-
-				{_fullbook ? (
-					<Box mx={10} py={10}>
-						{downloadedFilepath ? (
-							<Button
-								mode="contained-tonal"
-								icon={"book-open-blank-variant"}
-								onPress={openReader}
+							<View
+								style={{
+									flex: 1,
+									width: "100%",
+									alignItems: "center",
+									justifyContent: "center",
+								}}
 							>
-								Read
-							</Button>
-						) : downloadProgress === null ? (
-							<Button
-								mode="contained"
-								loading={fetchinDownloadLinks}
-								onPress={fetchDownloadLinks}
-							>
-								Download
-							</Button>
-						) : (
-							<Box
-								pa={5}
-								radius={10}
-								color={LiveAppState.themeValue.colors.surface.get()}
-							>
-								<Text
-									style={{
-										fontWeight: "bold",
-										textAlign: "center",
-										width: "100%",
+								<BaseImage
+									source={{
+										uri: bookPreview?.cover || _fullbook.coverurl,
 									}}
-								>
-									Downloading...
-								</Text>
-								<ProgressBar
-									progress={downloadProgress}
-									style={{
-										height: 35,
-										marginHorizontal: 5,
-										marginVertical: 5,
-										borderRadius: 20,
-									}}
+									style={{ height: "90%", width: "40%", borderRadius: 10 }}
+									placeholderStyles={{ height: "95%", width: "40%" }}
 								/>
+							</View>
+						</View>
+						<Box mx={10} gap={10}>
+							<Box gap={5}>
+								<Text weight="bold" size={16}>
+									{bookPreview?.title || _fullbook.title}
+								</Text>
+								<Text style={{ opacity: 0.9 }}>
+									{bookPreview?.authors[0]?.name || _fullbook.author || ""}
+								</Text>
 							</Box>
-						)}
-						<BookDescription content={_fullbook.descr} />
+							<BookInfo
+								publisher={bookPreview?.publisher || _fullbook?.publisher || ""}
+								pages={bookPreview?.pages || _fullbook.pages}
+								year={bookPreview?.year || _fullbook.year}
+								size={
+									bookPreview?.size ||
+									(parseInt(_fullbook.filesize) / 1e6).toFixed(2).toString()
+								}
+								type={`.${bookPreview?.extension || _fullbook.extension}`}
+							/>
+						</Box>
 					</Box>
-				) : (
-					<View>
-						<ActivityIndicator size={"small"} />
-					</View>
-				)}
+
+					{_fullbook ? (
+						<Box mx={10} py={10} gap={10}>
+							{downloadedFilepath ? (
+								<Button
+									mode="contained-tonal"
+									icon={"book-open-blank-variant"}
+									onPress={openReader}
+								>
+									Read
+								</Button>
+							) : downloadProgress === null ? (
+								<Button
+									mode="contained"
+									loading={fetchinDownloadLinks}
+									onPress={fetchDownloadLinks}
+								>
+									Download
+								</Button>
+							) : (
+								<Box
+									pa={5}
+									radius={10}
+									color={LiveAppState.themeValue.colors.surface.get()}
+								>
+									<Text
+										style={{
+											fontWeight: "bold",
+											textAlign: "center",
+											width: "100%",
+										}}
+									>
+										Downloading...
+									</Text>
+									<ProgressBar
+										progress={downloadProgress}
+										style={{
+											height: 35,
+											marginHorizontal: 5,
+											marginVertical: 5,
+											borderRadius: 20,
+										}}
+									/>
+								</Box>
+							)}
+							<BookDescription content={_fullbook.descr} />
+						</Box>
+					) : (
+						<View>
+							<ActivityIndicator size={"small"} />
+						</View>
+					)}
+				</Box>
 			</Box>
-		</Box>
+		</BottomSheetScrollView>
 	);
 };
 
@@ -307,13 +310,11 @@ export const BookDescription = ({ content }: { content: string }) => {
 	const [theme] = useState(LiveAppState.themeValue.colors.get());
 
 	return (
-		<ScrollView
+		<Box
 			style={{
 				padding: 10,
 				backgroundColor: theme.surface,
 				borderRadius: 15,
-				marginVertical: 10,
-				height: content ? "25%" : "auto",
 			}}
 		>
 			<Text style={{ marginBottom: 5 }}>Description</Text>
@@ -324,6 +325,6 @@ export const BookDescription = ({ content }: { content: string }) => {
 			) : (
 				<Text style={{ textDecorationLine: "line-through" }}>missing</Text>
 			)}
-		</ScrollView>
+		</Box>
 	);
 };

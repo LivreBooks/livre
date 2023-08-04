@@ -8,6 +8,7 @@ import { useRouter } from "expo-router";
 import { LiveAppState } from "../store/store";
 import Text from "./Text";
 import Box from "./Box";
+import Spacer from "./Spacer";
 
 function BookCard({
 	book,
@@ -62,9 +63,10 @@ function BookCard({
 							<Text size={14} lineHeight={18} weight="bold">
 								{trimText(book.title, 70)}
 							</Text>
+							<Spacer height={5} />
 							<Text>{book.authors[0].name}</Text>
 						</Box>
-						<Box mt={10}>
+						<Box mt={10} style={{ opacity: 0.8 }}>
 							<BookInfo label="Publisher" info={book.publisher} />
 							<Box direction="row" justify="space-between">
 								<BookInfo

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, FlatList, Pressable, Animated } from "react-native";
+import { View, FlatList, Pressable, Animated, BackHandler } from "react-native";
 import { Card, IconButton, Searchbar, Text } from "react-native-paper";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Animatable from "react-native-animatable";
@@ -109,6 +109,10 @@ export default function Search() {
 
 	useEffect(() => {
 		getRecommendations();
+		BackHandler.addEventListener("hardwareBackPress", () => {
+			console.log("object");
+			return true;
+		});
 	}, []);
 
 	const [reRender, setRerender] = useState(1);

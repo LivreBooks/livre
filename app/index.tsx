@@ -11,16 +11,7 @@ import { Redirect, useRouter } from "expo-router";
 import { makeRedirectUri } from "expo-auth-session";
 
 const index = () => {
-	const redirectUri = makeRedirectUri({
-		scheme: "livre",
-		isTripleSlashed: true,
-	});
-
-	console.log(redirectUri);
-
-	const [accountInfo, setAccountInfo] = useState<Account | null>(
-		UserStore.account.get()
-	);
+	const [accountInfo] = useState<Account | null>(UserStore.account.get());
 
 	const router = useRouter();
 

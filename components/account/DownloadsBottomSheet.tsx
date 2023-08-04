@@ -1,10 +1,9 @@
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import React, { useRef, useMemo, useEffect, useState } from "react";
 import { BackHandler, View, StyleSheet } from "react-native";
 import { LiveAppState, UserStore } from "../../store/store";
 import { Download } from "../../types/types";
 import CustomBackdrop from "../CustomBackdrop";
-import { ScrollView } from "react-native-gesture-handler";
 import BaseImage from "../BaseImage";
 import Text from "../Text";
 import Box from "../Box";
@@ -51,14 +50,14 @@ const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 					Downloads
 				</Text>
 				<Spacer height={10} />
-				<ScrollView
+				<BottomSheetScrollView
 					style={{ width: "100%", height: "auto" }}
 					contentContainerStyle={{ paddingBottom: 20 }}
 				>
 					{downloads.map((download) => (
 						<DownloadCard download={download} key={download.id} />
 					))}
-				</ScrollView>
+				</BottomSheetScrollView>
 				<Spacer height={10} />
 			</Box>
 		</BottomSheet>

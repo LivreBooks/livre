@@ -85,6 +85,9 @@ const account = () => {
 						label="Downloads"
 						onPress={() => setShowDownloads(true)}
 					/>
+
+					<Spacer height={10} />
+
 					<BottomSheetOpener
 						label="Who Created Me"
 						onPress={() => setShowCloutSheet(true)}
