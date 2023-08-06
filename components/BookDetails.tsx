@@ -78,6 +78,7 @@ const BookDetails = ({
 		fetch(`${BASE_URL}/download/${_fullbook.md5}`)
 			.then((res) => res.json())
 			.then((data) => {
+				console.log(data);
 				downloadBook(_fullbook, data)
 					.then((result) => {
 						Toast.show({
@@ -94,6 +95,7 @@ const BookDetails = ({
 						Toast.show({
 							title: "Error Downloading Book",
 							textBody: err?.message,
+							autoClose: false,
 						});
 					});
 			})
@@ -282,7 +284,12 @@ export const BookInfo = ({
 				<BookInfoCard
 					icon="database-outline"
 					label="Size"
-					value={`${size.toLowerCase().replace("mb", "")} mb`}
+					value={`${
+						size.toLowerCase().includes("mb") ||
+						size.toLowerCase().includes("kb")
+							? size
+							: size + " mb"
+					}`}
 				/>
 				<BookInfoCard icon="file-document-outline" label="Type" value={type} />
 			</Box>
