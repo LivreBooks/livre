@@ -21,11 +21,45 @@
   - Reader Themes
   - Dark Mode
 
-<p align="center">
-  <img width="16%" src="[https://user-images.githubusercontent.com/56973177/180152688-8cfaf616-0ee7-402a-981f-58ed3e5b2c07.png](https://github.com/LivreBooks/livre/blob/main/screenshots/search.png?raw=true)">
-  <img width="16%" src="[https://user-images.githubusercontent.com/56973177/180152828-78fc4d64-8721-4cee-ade2-463ea1ab63b2.png](https://github.com/LivreBooks/livre/blob/main/screenshots/search%20tab.png?raw=true)"/>
-  <img width="16%" src="[https://user-images.githubusercontent.com/56973177/180152764-4c6a5141-4930-4783-bd1e-b2feaec9b223.png](https://github.com/LivreBooks/livre/blob/main/screenshots/explore-tab.png?raw=true)"/>
-  <img width="16%" src="[https://user-images.githubusercontent.com/56973177/180152842-9f45ea85-45c1-4ffc-a0ee-92069c4d99fb.png](https://github.com/LivreBooks/livre/blob/main/screenshots/category.png?raw=true)"/>
-  <img width="16%" src="[https://user-images.githubusercontent.com/56973177/180152861-ae83ccf5-6e0f-4b58-a6ba-3d8bac20cc36.png](https://github.com/LivreBooks/livre/blob/main/screenshots/subcategory.png?raw=true)"/>
-  <img width="16%" src="[https://user-images.githubusercontent.com/56973177/180152870-9fc33ef1-dd4b-4cd5-9a16-146feb0bc321.png](https://github.com/LivreBooks/livre/blob/main/screenshots/bookviewer.png?raw=true)https://github.com/LivreBooks/livre/blob/main/screenshots/bookviewer.png?raw=true"/>
+## Screenshots
+
+<p>
+  <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/search%20tab.png?raw=true"/>
+  <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/search.png?raw=true"/>
+  <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/explore-tab.png?raw=true"/>
+  <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/category.png?raw=true"/>
+  <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/subcategory.png?raw=true"/>
 </p>
+<p>
+    <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/bookviewer.png?raw=true"/>
+    <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/library-tab.png?raw=true"/>
+    <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/dowbload-viewer.png?raw=true" />
+    <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/reader.png?raw=true"/>
+    <img width="16%" src="https://github.com/LivreBooks/livre/blob/main/screenshots/reader-controls.png?raw=true"/>
+</p>
+
+
+## Feedback
+
+If you have any feedback, please reach out on Twitter @PnTX10 or via Github discussions
+
+## Contributing
+
+Contributions are always welcome!
+
+A lot of features can be added but I don't have the time for all of them so if you want to add something
+just make a pull request
+
+## Development
+
+### Clone and install Dependancies
+```bash
+git clone https://github.com/LivreBooks/livre.git
+cd livre
+yarn
+```
+### Build Development build
+```bash
+yarn prebuild
+npx expo run:android
+```
