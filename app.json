@@ -29,6 +29,12 @@
     },
     "ios": {
       "bundleIdentifier": "com.justpatrick.livre"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c73b5d63-8046-4ea9-b732-c6d9419fa7be"
     }
   }
 }
