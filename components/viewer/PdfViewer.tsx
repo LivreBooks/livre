@@ -6,6 +6,7 @@ import Pdf from "react-native-pdf";
 import { theme } from "../../constants";
 import ViewerLoading from "./ViewerLoading";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import { sentryCapture } from "../../utils";
 
 const PdfViewer = React.forwardRef(
 	(
@@ -42,6 +43,7 @@ const PdfViewer = React.forwardRef(
 					}
 				})
 				.catch((error) => {
+					sentryCapture(error);
 					Toast.show({
 						title: "Error Checking If File Exists",
 						textBody: error?.message || "",
@@ -66,7 +68,7 @@ const PdfViewer = React.forwardRef(
 						setCurrentpage(page);
 					}}
 					onError={(error) => {
-						//console.log(error);
+						sentryCapture(error as Error);
 					}}
 					onPressLink={(uri) => {
 						//console.log(`Link pressed: ${uri}`);

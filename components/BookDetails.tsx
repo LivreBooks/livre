@@ -4,7 +4,7 @@ import { BASE_URL, theme } from "../constants";
 import { ActivityIndicator, Card, ProgressBar } from "react-native-paper";
 import { DownloadsStore, LiveAppState } from "../store/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { downloadBook, trimText } from "../utils";
+import { downloadBook, sentryCapture, trimText } from "../utils";
 import { BookType, FullBookType } from "../types/types";
 import { useRouter } from "expo-router";
 import BaseImage from "./BaseImage";
@@ -58,10 +58,11 @@ const BookDetails = ({
 				console.log("Setting Fullbook");
 				setFullBook(data);
 			})
-			.catch((err) => {
+			.catch((error) => {
+				sentryCapture(error);
 				Toast.show({
 					title: "Error Fetching Full Book Details",
-					textBody: err?.message || "",
+					textBody: error?.message || "",
 					type: ALERT_TYPE.DANGER,
 				});
 			})
@@ -89,21 +90,23 @@ const BookDetails = ({
 							autoClose: true,
 						});
 					})
-					.catch((err) => {
+					.catch((error) => {
+						sentryCapture(error);
 						Toast.show({
 							title: "Error Downloading Book",
-							textBody: err?.message,
+							textBody: error?.message,
 							autoClose: false,
 						});
 					});
 			})
-			.catch((err) => {
+			.catch((error) => {
+				sentryCapture(error);
 				Toast.show({
 					title: "Error Getting Download Link",
-					textBody: err?.message || "",
+					textBody: error?.message || "",
 					type: ALERT_TYPE.DANGER,
 				});
-				console.log(err);
+				console.log(error);
 			})
 			.finally(() => {
 				setFetchingDownloadLinks(false);

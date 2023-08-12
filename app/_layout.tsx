@@ -6,9 +6,16 @@ import { LiveAppState, SettingsStore, UserStore } from "../store/store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { BASE_URL, darkMode, lightMode } from "../constants";
-import { Download, ThemeType } from "../types/types";
-import { fetchUtil } from "../utils";
-import Text from "../components/Text";
+import { Download } from "../types/types";
+import { fetchUtil, sentryCapture } from "../utils";
+
+import * as Sentry from "sentry-expo";
+
+Sentry.init({
+	dsn: "https://a618675a21c40982b73484129bb15fa5@o4505693037395968.ingest.sentry.io/4505693040410624",
+	enableInExpoDevelopment: true,
+	debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 const _layout = () => {
 	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
@@ -56,6 +63,8 @@ const _layout = () => {
 		}
 
 		if (error) {
+			sentryCapture(error);
+
 			Toast.show({
 				title: "Error Fetching Past Downloads",
 				textBody: error.message,

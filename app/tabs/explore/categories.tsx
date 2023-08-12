@@ -9,6 +9,7 @@ import { CategoryType } from "../../../types/types";
 import BasePage from "../../../components/BasePage";
 import { BASE_URL } from "../../../constants";
 import { Toast } from "react-native-alert-notification";
+import { sentryCapture } from "../../../utils";
 
 export default function Categories() {
 	const [filterQuery, setFilterQuery] = useState("");
@@ -41,10 +42,11 @@ export default function Categories() {
 					ExploreStore.exploreData.set(data);
 				}
 			})
-			.catch((err) => {
+			.catch((error) => {
+				sentryCapture(error);
 				Toast.show({
 					title: "Error Fetching Categories",
-					textBody: err.message,
+					textBody: error.message,
 				});
 			})
 			.finally(() => {

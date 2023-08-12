@@ -11,6 +11,11 @@ import {
 } from "./types/types";
 import { BASE_URL } from "./constants";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
+import * as Sentry from 'sentry-expo';
+
+export function sentryCapture(error: Error) {
+  Sentry.Native.captureException(error)
+}
 
 export async function downloadFile(
   id: number,
@@ -27,6 +32,7 @@ export async function downloadFile(
     try {
       await FileSystem.makeDirectoryAsync(documentDirectory, { intermediates: true });
     } catch (error) {
+      sentryCapture(error)
       Toast.show({ title: 'Error Creating Livre Folder', textBody: error.message });
     }
   } else {
@@ -50,6 +56,7 @@ export async function downloadFile(
     return { uri, id };
   } catch (error) {
     console.error(error);
+    sentryCapture(error)
   }
 }
 
@@ -100,8 +107,9 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
 
         resolve(data.data);
       })
-      .catch((err) => {
-        reject(err);
+      .catch((error) => {
+        sentryCapture(error as Error);
+        reject(error);
       })
   });
 }
@@ -239,6 +247,7 @@ export async function downloadFileAsBase64(fileUrl: string) {
     });
     return data;
   } catch (error) {
+    sentryCapture(error)
     Toast.show({ title: "Failed to download file", textBody: `File: ${fileUrl}` })
     return null;
   }
@@ -282,6 +291,7 @@ export const fetchUtil = async <Data>(
     }
     return { data: responseData, error: null, status: response.status };
   } catch (error) {
+    sentryCapture(error)
     return { data: null, error, status: null };
   }
 };

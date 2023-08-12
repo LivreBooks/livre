@@ -12,6 +12,7 @@ import {
 } from "../../../types/types";
 import {
 	layoutAnimate,
+	sentryCapture,
 	shuffleArray,
 	sortBooksByCompleteness,
 } from "../../../utils";
@@ -101,10 +102,11 @@ export default function Search() {
 			.then((data) => {
 				setRecommendations(shuffleArray(data));
 			})
-			.catch((err) => {
+			.catch((error) => {
+				sentryCapture(error);
 				Toast.show({
 					title: "Error Fetching Recommendations",
-					textBody: err.message,
+					textBody: error.message,
 				});
 			})
 			.finally(() => {

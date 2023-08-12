@@ -3,7 +3,7 @@ import { View, FlatList, Animated } from "react-native";
 import { useSearchParams } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { BookType } from "../../../../../types/types";
-import { sortBooksByCompleteness } from "../../../../../utils";
+import { sentryCapture, sortBooksByCompleteness } from "../../../../../utils";
 import BookCard from "../../../../../components/BookCard";
 import BookCardSkeleton from "../../../../../components/BookCardSkeleton";
 import BasePage from "../../../../../components/BasePage";
@@ -36,8 +36,8 @@ function SubCategory() {
 
 				setBooks(sortBooksByCompleteness(books));
 			})
-			.catch((err) => {
-				//console.log(err);
+			.catch((error) => {
+				sentryCapture(error);
 			})
 			.finally(() => {
 				setLoading(false);

@@ -9,7 +9,7 @@ import BasePage from "../components/BasePage";
 import Box from "../components/Box";
 import Text from "../components/Text";
 import { Account, GoogleUser, NewUser, UserProfile } from "../types/types";
-import { FetchResponse, fetchUtil } from "../utils";
+import { FetchResponse, fetchUtil, sentryCapture } from "../utils";
 import { LiveAppState, UserStore } from "../store/store";
 import { BASE_URL, theme } from "../constants";
 import Button from "../components/Button";
@@ -62,6 +62,8 @@ export default function oauthredirect() {
 			`${BASE_URL}/get_user_profile?user_id=${user_id}`
 		);
 		if (error) {
+			sentryCapture(error);
+
 			Toast.show({
 				title: "Error Fetching Your Profile from Google",
 				textBody: error.message,
@@ -101,6 +103,8 @@ export default function oauthredirect() {
 
 			router.replace("/tabs/search");
 		} catch (error) {
+			sentryCapture(error);
+
 			Toast.show({
 				title: "Error Fetching Your Account from Google",
 				textBody: error.message,
@@ -122,12 +126,6 @@ export default function oauthredirect() {
 					autoClose: false,
 				});
 			}
-		} else {
-			Toast.show({
-				title: "Error: No response Received",
-				type: ALERT_TYPE.DANGER,
-				autoClose: false,
-			});
 		}
 	}, [response]);
 
