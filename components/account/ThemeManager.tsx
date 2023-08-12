@@ -6,14 +6,14 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import CustomBackdrop from "../CustomBackdrop";
 import Text from "../Text";
 import Box from "../Box";
-import Spacer from "../Spacer";
+import { ThemeType } from "../../types/types";
 
 const ThemeManger = ({ close }: { close: () => void }) => {
 	const [theme, setTheme] = useState(SettingsStore.theme.get());
 
 	const bottomSheetRef = useRef<BottomSheet>(null);
 
-	const snapPoints = useMemo(() => ["30%"], []);
+	const snapPoints = useMemo(() => ["22%"], []);
 
 	useEffect(() => {
 		const handle = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -50,10 +50,6 @@ const ThemeManger = ({ close }: { close: () => void }) => {
 				py={5}
 				block
 			>
-				<Text align="center" weight="bold" size={20}>
-					Theme
-				</Text>
-				<Spacer height={10} />
 				<Box
 					pa={20}
 					mb={10}
@@ -70,10 +66,9 @@ const ThemeManger = ({ close }: { close: () => void }) => {
 					</Text>
 					<SegmentedButtons
 						value={theme}
-						onValueChange={(value: "auto" | "light" | "dark") => {
+						onValueChange={(value: ThemeType) => {
 							SettingsStore.theme.set(value);
 							setTheme(value);
-							close();
 						}}
 						theme={LiveAppState.themeValue.get()}
 						buttons={[
@@ -83,8 +78,8 @@ const ThemeManger = ({ close }: { close: () => void }) => {
 								icon: "brightness-7",
 							},
 							{
-								value: "auto",
-								label: "Auto",
+								value: "system",
+								label: "System",
 								icon: "brightness-auto",
 							},
 							{ value: "dark", label: "Dark", icon: "brightness-1" },

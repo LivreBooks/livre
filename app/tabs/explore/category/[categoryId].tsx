@@ -26,8 +26,6 @@ export default function Category() {
 	});
 
 	const H_MAX_HEIGHT = 180;
-	const H_MIN_HEIGHT = 50;
-	const H_SCROLL_DISTANCE = H_MAX_HEIGHT - H_MIN_HEIGHT;
 
 	const scrollOffsetY = useRef(new Animated.Value(0)).current;
 
@@ -58,6 +56,12 @@ export default function Category() {
 		});
 	}, []);
 
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
+
 	return (
 		<BasePage styles={{ paddingTop: 0, paddingHorizontal: 0 }}>
 			<View
@@ -76,11 +80,11 @@ export default function Category() {
 						icon={"filter-outline"}
 						onChangeText={onChangeFilter}
 						value={filterQuery}
-						theme={LiveAppState.themeValue.get()}
+						theme={appTheme}
 						style={{
 							borderRadius: 20,
-							marginHorizontal: 10,
-							backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+							marginHorizontal: 15,
+							backgroundColor: appTheme.colors.surface,
 						}}
 						inputStyle={{
 							fontSize: 16,

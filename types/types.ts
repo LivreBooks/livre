@@ -319,4 +319,4 @@ export type PaypalWebviewMessage =
   | PaypalWebviewFailedMessage
   | PaypalWebviewSuccessMessage;
 
-export type ThemeType = "auto" | "light" | "dark";
+export type ThemeType = "system" | "light" | "dark";

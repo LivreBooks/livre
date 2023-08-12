@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import * as Animatable from "react-native-animatable";
 import Text from "./Text";
 
@@ -8,13 +8,13 @@ const BasePageHeader = ({ title, icon }: { title: string; icon: string }) => {
 		<Animatable.View
 			animation={"fadeInUp"}
 			style={{
-				paddingVertical: 20,
+				padding: 10,
 				alignItems: "center",
 				justifyContent: "center",
 				width: "100%",
 			}}
 		>
-			<Text weight="bold" size={26}>
+			<Text weight="bold" size={24}>
 				{title}
 			</Text>
 		</Animatable.View>

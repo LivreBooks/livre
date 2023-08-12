@@ -12,6 +12,7 @@ import {
   DownloadType,
   FullBookType,
   Purchase,
+  ThemeType,
 } from "../types/types";
 import { darkMode, lightMode } from "../constants";
 import { MD3DarkTheme, MD3LightTheme } from "react-native-paper";
@@ -67,24 +68,15 @@ setTimeout(() => {
 }, 1000);
 
 interface SettingsStoreType {
-  theme: "auto" | "light" | "dark";
+  theme: ThemeType;
   user: Account;
 }
 
 export const SettingsStore = observable<SettingsStoreType>({
-  theme: "dark",
+  theme: "system",
   user: null,
 });
 
-const theme = SettingsStore.theme.get();
-
-if (theme === "dark") {
-  LiveAppState.themeValue.set(darkMode);
-}
-
-if (theme === "light") {
-  LiveAppState.themeValue.set(lightMode);
-}
 
 persistObservable(DownloadsStore, {
   local: "downloads",

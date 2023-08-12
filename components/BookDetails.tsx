@@ -201,7 +201,7 @@ const BookDetails = ({
 						<Box mx={10} py={10} gap={10}>
 							{downloadedFilepath ? (
 								<Button
-									mode="contained-tonal"
+									mode="contained"
 									icon={"book-open-blank-variant"}
 									onPress={openReader}
 								>

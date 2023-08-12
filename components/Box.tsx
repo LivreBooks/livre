@@ -1,5 +1,6 @@
 import { FlexStyle, View, ViewProps, ViewStyle } from "react-native";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
+import { LiveAppState } from "../store/store";
 
 const Box = ({
 	viewProps,
@@ -32,6 +33,16 @@ const Box = ({
 	radius = 0,
 	wrap = "nowrap",
 }: AppStackProps) => {
+	const [reRender, setRerender] = useState(0);
+
+	LiveAppState.themeValue.onChange(() => {
+		setRerender(Math.random());
+	});
+
+	useEffect(() => {
+		// console.log("Box Rerender");
+	}, [reRender]);
+
 	return (
 		<View
 			style={{

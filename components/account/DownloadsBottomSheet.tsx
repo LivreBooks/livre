@@ -26,10 +26,6 @@ const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 		};
 	}, []);
 
-	useEffect(() => {
-		console.log(downloads);
-	}, []);
-
 	return (
 		<BottomSheet
 			ref={bottomSheetRef}

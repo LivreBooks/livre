@@ -1,6 +1,5 @@
-import { StyleSheet, View, Animated } from "react-native";
-import React, { useState } from "react";
-// import Animated,  from 'react-native-reanimated'
+import { StyleSheet, Animated } from "react-native";
+import React from "react";
 import BaseImage from "./BaseImage";
 import { LinearGradient } from "expo-linear-gradient";
 import { Text } from "react-native-paper";

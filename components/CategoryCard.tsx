@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, Dimensions, TouchableNativeFeedback } from "react-native";
-import { Text } from "react-native-paper";
+import Text from "./Text";
 import * as Animatable from "react-native-animatable";
 import { CategoryType, SubCategoryType } from "../types/types";
 import { LiveAppState, SettingsStore } from "../store/store";
@@ -14,13 +14,12 @@ function CategoryCard({
 	selectCategory: (category: CategoryType | SubCategoryType) => void;
 	index: number;
 }) {
-	const [reRender, setRerender] = useState(1);
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
-	SettingsStore.theme.onChange((newTheme) => {
-		setRerender(Math.random());
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
 	});
 
-	useEffect(() => {}, [reRender]);
 	return (
 		<Animatable.View
 			animation={"slideInUp"}
@@ -35,7 +34,7 @@ function CategoryCard({
 					style={{
 						flex: 1,
 						height: 100,
-						backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+						backgroundColor: appTheme.colors.surface,
 						borderRadius: 20,
 						padding: 5,
 						paddingHorizontal: 10,
@@ -43,15 +42,7 @@ function CategoryCard({
 						justifyContent: "center",
 					}}
 				>
-					<Text
-						style={{
-							textAlign: "center",
-							color:
-								SettingsStore.theme.get() === "light" ? "#4C3E66" : "#A090BD",
-							fontWeight: "bold",
-							fontSize: 14,
-						}}
-					>
+					<Text align="center" weight="400" size={12}>
 						{category.name || "Missing"}
 					</Text>
 				</View>

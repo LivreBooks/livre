@@ -120,13 +120,11 @@ export default function Search() {
 		});
 	}, []);
 
-	const [reRender, setRerender] = useState(1);
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
-	SettingsStore.theme.onChange((newTheme) => {
-		setRerender(Math.random());
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
 	});
-
-	useEffect(() => {}, [reRender]);
 
 	return (
 		<>
@@ -144,6 +142,7 @@ export default function Search() {
 						animation={"fadeInUp"}
 						style={{
 							marginBottom: 40,
+							marginTop: 10,
 							alignItems: "center",
 							position: "absolute",
 							top: 0,
@@ -162,7 +161,7 @@ export default function Search() {
 						/>
 						<Animated.Text
 							style={{
-								color: LiveAppState.themeValue.get().colors.primary,
+								color: appTheme.colors.primary,
 								fontWeight: "bold",
 								fontSize: headingSize,
 							}}
@@ -173,12 +172,12 @@ export default function Search() {
 							placeholder="Search a book or author"
 							onChangeText={onChangeSearch}
 							value={searchQuery}
-							theme={LiveAppState.themeValue.get()}
+							theme={appTheme}
 							style={{
 								borderRadius: 20,
 								width: "95%",
 								marginTop: 10,
-								backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+								backgroundColor: appTheme.colors.surface,
 							}}
 							inputStyle={{
 								fontSize: 16,
@@ -273,7 +272,7 @@ export default function Search() {
 									{ useNativeDriver: false }
 								)}
 							>
-								<View style={{ paddingTop: H_MAX_HEIGHT + 10 }}>
+								<View style={{ paddingTop: H_MAX_HEIGHT + 30 }}>
 									<Recommendations
 										categories={recommendations}
 										selectBook={(book) => setSelectedBook(book)}
@@ -282,7 +281,7 @@ export default function Search() {
 							</ScrollView>
 						)}
 					{loadingRecommendations && (
-						<View style={{ paddingTop: 190 }}>
+						<View style={{ paddingTop: H_MAX_HEIGHT + 30, marginLeft: 40 }}>
 							<RecommendationsSkeletonLoader />
 							<RecommendationsSkeletonLoader />
 						</View>

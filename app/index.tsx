@@ -8,7 +8,7 @@ import Button from "../components/Button";
 import Spacer from "../components/Spacer";
 import { Account } from "../types/types";
 import { Redirect, useRouter } from "expo-router";
-import { makeRedirectUri } from "expo-auth-session";
+import BasePage from "../components/BasePage";
 
 const index = () => {
 	const [accountInfo] = useState<Account | null>(UserStore.account.get());
@@ -20,78 +20,63 @@ const index = () => {
 			{accountInfo ? (
 				<Redirect href={"/tabs/library/shelf"} />
 			) : (
-				<Box
-					height={"100%"}
-					pa={20}
-					align="center"
-					justify="center"
-					color={LiveAppState.themeValue.colors.background.get()}
-				>
-					<Animatable.View
-						animation={"fadeInUp"}
-						style={{
-							marginBottom: 40,
-							alignItems: "center",
-							width: "100%",
-						}}
-					>
-						<Animated.Image
-							source={require("../assets/logo.png")}
+				<BasePage>
+					<Box px={20} block justify="center" align="center" height={"100%"}>
+						<Animatable.View
+							animation={"fadeInUp"}
 							style={{
-								width: 150,
-								height: 150,
-							}}
-						/>
-						<Pressable
-							onLongPress={() => {
-								router.replace("/tabs/search");
+								alignItems: "center",
+								width: "100%",
 							}}
 						>
-							<Animated.Text
+							<Animated.Image
+								source={require("../assets/logo.png")}
 								style={{
-									color: LiveAppState.themeValue.get().colors.primary,
-									fontWeight: "900",
-									fontSize: 42,
+									width: 150,
+									height: 150,
+								}}
+							/>
+							<Pressable
+								onLongPress={() => {
+									router.replace("/tabs/search");
 								}}
 							>
-								Livre
-							</Animated.Text>
-						</Pressable>
+								<Animated.Text
+									style={{
+										color: LiveAppState.themeValue.get().colors.primary,
+										fontWeight: "900",
+										fontSize: 42,
+									}}
+								>
+									Livre
+								</Animated.Text>
+							</Pressable>
 
-						<Spacer height={20} />
-						<Box align="center">
-							<Text
-								size={22}
-								align="center"
-								weight="300"
-								color={LiveAppState.themeValue.colors.text.get()}
+							<Spacer height={90} />
+							<Box align="center">
+								<Text size={22} align="center" weight="300">
+									Thousands of Books
+								</Text>
+								<Text size={22} align="center" weight="300">
+									on The Palm of Your Hand
+								</Text>
+							</Box>
+							<Spacer height={20} />
+							<Button
+								mode="contained"
+								onPress={() => {
+									router.push("/oauthredirect");
+									// setCreatingAccount(true);
+									// promptAsync();
+								}}
+								labelStyle={{ fontWeight: "bold" }}
+								style={{ width: "100%" }}
 							>
-								Thousands of Books
-							</Text>
-							<Text
-								size={22}
-								align="center"
-								color={LiveAppState.themeValue.colors.text.get()}
-								weight="300"
-							>
-								on The Palm of Your Hand
-							</Text>
-						</Box>
-						<Spacer height={40} />
-						<Button
-							mode="contained"
-							onPress={() => {
-								router.push("/oauthredirect");
-								// setCreatingAccount(true);
-								// promptAsync();
-							}}
-							labelStyle={{ fontWeight: "bold" }}
-							style={{ width: "100%" }}
-						>
-							Next
-						</Button>
-					</Animatable.View>
-				</Box>
+								Next
+							</Button>
+						</Animatable.View>
+					</Box>
+				</BasePage>
 			)}
 		</>
 	);

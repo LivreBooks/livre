@@ -1,19 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { View, Dimensions, TouchableOpacity } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import { ActivityIndicator, Searchbar } from "react-native-paper";
 import * as Animatable from "react-native-animatable";
 import BaseImage from "../../../components/BaseImage";
-import {
-	DownloadsStore,
-	LiveAppState,
-	SettingsStore,
-} from "../../../store/store";
+import { DownloadsStore, LiveAppState } from "../../../store/store";
 import { DownloadType } from "../../../types/types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import BasePage from "../../../components/BasePage";
-import Text from "../../../components/Text";
 import DownloadViewerBottomSheet from "../../../components/library/DownloadViewerBottomSheet";
+import Text from "../../../components/Text";
 import Box from "../../../components/Box";
 
 const { width: sWidth, height: sHeight } = Dimensions.get("screen");
@@ -39,13 +35,11 @@ export default function Search() {
 		setDownloads(downloads);
 	});
 
-	const [reRender, setRerender] = useState(1);
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
-	SettingsStore.theme.onChange((newTheme) => {
-		setRerender(Math.random());
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
 	});
-
-	useEffect(() => {}, [reRender]);
 
 	return (
 		<>
@@ -58,11 +52,11 @@ export default function Search() {
 								icon={"filter-outline"}
 								onChangeText={onChangeFilter}
 								value={filterQuery}
-								theme={LiveAppState.themeValue.get()}
+								theme={appTheme}
 								style={{
 									borderRadius: 20,
 									marginBottom: 5,
-									backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+									backgroundColor: appTheme.colors.surface,
 									width: "98%",
 									alignSelf: "center",
 								}}
@@ -75,31 +69,29 @@ export default function Search() {
 
 					{downloads === null ||
 						(downloads.length === 0 && (
-							<View
+							<Box
+								block
+								height={"80%"}
+								align="center"
+								justify="center"
 								style={{
-									width: "100%",
-									height: "80%",
-									alignItems: "center",
-									justifyContent: "center",
 									opacity: 0.8,
 								}}
 							>
 								<MaterialCommunityIcons
-									name="package-variant"
+									name="book-alert"
 									size={120}
-									color={LiveAppState.themeValue.get().colors.primary}
+									color={appTheme.colors.text}
 								/>
 								<Text
-									style={{
-										fontSize: 20,
-										marginTop: 10,
-										textAlign: "center",
-										color: LiveAppState.themeValue.get().colors.onBackground,
-									}}
+									size={20}
+									align="center"
+									wrapperProps={{ mt: 10 }}
+									weight="300"
 								>
 									Your library is empty. Go to search and fill it up.
 								</Text>
-							</View>
+							</Box>
 						))}
 
 					{downloads && downloads.length > 0 && (
@@ -107,7 +99,7 @@ export default function Search() {
 							numColumns={2}
 							columnWrapperStyle={{
 								flex: 1,
-								justifyContent: "space-evenly",
+								justifyContent: "space-between",
 								paddingTop: 10,
 								paddingBottom: 10,
 								paddingHorizontal: 5,
@@ -154,9 +146,7 @@ export default function Search() {
 													}}
 												>
 													<ActivityIndicator
-														color={
-															LiveAppState.themeValue.get().colors.onBackground
-														}
+														color={appTheme.colors.onBackground}
 													/>
 													<Text>Downloading...</Text>
 													<Text style={{ fontWeight: "bold" }}>

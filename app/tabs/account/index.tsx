@@ -89,7 +89,7 @@ const account = () => {
 					<Spacer height={10} />
 
 					<BottomSheetOpener
-						label="Who Created Me"
+						label="About"
 						onPress={() => setShowCloutSheet(true)}
 					/>
 				</Animatable.View>

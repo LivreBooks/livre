@@ -6,7 +6,7 @@ import { Bookmark, DownloadType } from "../../types/types";
 import EpubViewer from "./EpubViewer";
 import { Foundation } from "@expo/vector-icons";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Card, ProgressBar, IconButton, TextInput } from "react-native-paper";
+import { ProgressBar, IconButton, TextInput } from "react-native-paper";
 import { animateLayout, layoutAnimate } from "../../utils";
 import { Slider } from "@miblanchard/react-native-slider";
 import { ReaderProvider } from "@epubjs-react-native/core";
@@ -59,7 +59,7 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
 			<View style={{ height: "100%" }}>
 				<View
 					style={{
-						height: "94%",
+						height: "100%",
 						justifyContent: "flex-start",
 						position: "relative",
 						backgroundColor: theme.colors.background,
@@ -149,7 +149,7 @@ const Controls = ({
 	setTotalPages: (value: number) => void;
 }) => {
 	const bottomSheetRef = useRef<BottomSheet>(null);
-	const snapPoints = useMemo(() => ["3.8%", "50%"], []);
+	const snapPoints = useMemo(() => ["4%", "50%"], []);
 
 	const [jumpToPage, setJumpToPage] = useState("");
 
@@ -166,6 +166,10 @@ const Controls = ({
 	);
 
 	const [bookmarks, setBookmarks] = useState(download.readingInfo.bookmarks);
+
+	function close() {
+		bottomSheetRef.current.snapToIndex(0);
+	}
 
 	function triggerJumpTo() {
 		const targetPage = parseInt(jumpToPage);
@@ -235,6 +239,12 @@ const Controls = ({
 		);
 	}, [currentPage]);
 
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
+
 	return (
 		<BottomSheet
 			ref={bottomSheetRef}
@@ -242,16 +252,16 @@ const Controls = ({
 			snapPoints={snapPoints}
 			style={{
 				zIndex: 20,
-				borderRadius: 40,
+				borderRadius: 30,
 				overflow: "hidden",
 			}}
 			backgroundStyle={{
-				backgroundColor: LiveAppState.themeValue.colors.background.get(),
+				backgroundColor: appTheme.colors.background,
 			}}
 			handleIndicatorStyle={{
 				width: "15%",
-				backgroundColor: "white",
-				height: 6,
+				backgroundColor: appTheme.colors.text,
+				height: 8,
 				borderRadius: 10,
 			}}
 			handleHeight={30}
@@ -264,7 +274,7 @@ const Controls = ({
 					direction="row"
 					align="center"
 					justify="space-between"
-					color={LiveAppState.themeValue.colors.surface.get()}
+					color={appTheme.colors.surface}
 					block
 				>
 					<View
@@ -284,7 +294,7 @@ const Controls = ({
 							<Foundation
 								name="page-multiple"
 								size={16}
-								color={LiveAppState.themeValue.colors.get().text}
+								color={appTheme.colors.text}
 								style={{ marginRight: 5 }}
 							/>
 							<Text>
@@ -296,7 +306,7 @@ const Controls = ({
 							style={{ height: 10, borderRadius: 10 }}
 							color={
 								overlayColor === "transparent"
-									? LiveAppState.themeValue.colors.primary.get()
+									? appTheme.colors.primary
 									: overlayColor
 							}
 						/>
@@ -320,15 +330,15 @@ const Controls = ({
 								borderRadius: 20,
 								borderTopLeftRadius: 20,
 								borderTopRightRadius: 20,
-								backgroundColor:
-									LiveAppState.themeValue.colors.background.get(),
+								backgroundColor: appTheme.colors.background,
+								fontSize: 12,
 							}}
 							onChangeText={(value) => setJumpToPage(value)}
 							underlineStyle={{ height: 0, borderRadius: 20 }}
 							outlineStyle={{ borderRadius: 20 }}
 							blurOnSubmit
 							onSubmitEditing={() => triggerJumpTo()}
-							theme={LiveAppState.themeValue.get()}
+							theme={appTheme}
 						/>
 						<IconButton
 							icon={"check"}
@@ -336,17 +346,12 @@ const Controls = ({
 							size={20}
 							disabled={jumpToPage ? false : true}
 							onPress={() => triggerJumpTo()}
-							theme={LiveAppState.themeValue.get()}
+							theme={appTheme}
 						/>
 					</View>
 				</Box>
 				<Spacer height={10} />
-				<Box
-					pa={10}
-					radius={40}
-					block
-					color={LiveAppState.themeValue.colors.surface.get()}
-				>
+				<Box pa={10} radius={40} block color={appTheme.colors.surface}>
 					<Box block justify="space-between" direction="row" align="flex-start">
 						<Box
 							gap={showBookmarks ? 10 : 0}
@@ -358,7 +363,7 @@ const Controls = ({
 							<Button
 								icon={"bookmark-multiple"}
 								mode={showBookmarks ? "contained" : "text"}
-								textColor={LiveAppState.themeValue.colors.text.get()}
+								textColor={appTheme.colors.text}
 								onPress={() => {
 									animateLayout();
 									setShowBookmarks(!showBookmarks);
@@ -385,6 +390,7 @@ const Controls = ({
 											onPress={() => {
 												goToPage(bookmark.page);
 												setShowBookmarks(false);
+												close();
 											}}
 										>
 											{bookmark.page}
@@ -402,8 +408,10 @@ const Controls = ({
 							<Button
 								mode={currentPageBookmark ? "contained" : "text"}
 								icon={"bookmark"}
-								textColor={LiveAppState.themeValue.colors.text.get()}
-								onPress={() => addBookMark()}
+								textColor={appTheme.colors.text}
+								onPress={() => {
+									addBookMark();
+								}}
 							>
 								Bookmark
 							</Button>
@@ -449,7 +457,9 @@ const Controls = ({
 										icon={"check"}
 										size={15}
 										iconColor={
-											color === "transparent" ? theme.text : theme.background
+											color === "transparent"
+												? appTheme.colors.text
+												: theme.background
 										}
 										style={{
 											backgroundColor: color,
@@ -458,7 +468,9 @@ const Controls = ({
 											margin: 0,
 											borderWidth: 1.5,
 											borderColor:
-												color === "transparent" ? theme.text : "transparent",
+												color === "transparent"
+													? appTheme.colors.text
+													: "transparent",
 										}}
 									/>
 								) : (
@@ -473,7 +485,9 @@ const Controls = ({
 												backgroundColor: color,
 												borderWidth: 1.5,
 												borderColor:
-													color === "transparent" ? theme.text : "transparent",
+													color === "transparent"
+														? appTheme.colors.text
+														: "transparent",
 												width: 30,
 												height: 30,
 												borderRadius: 5,
@@ -497,12 +511,12 @@ const Controls = ({
 							trackStyle={{
 								height: "100%",
 								borderRadius: 30,
-								backgroundColor: theme.onSurface,
+								backgroundColor: appTheme.colors.onSurface,
 							}}
 							thumbStyle={{
 								backgroundColor:
 									overlayColor === "transparent" ? theme.primary : overlayColor,
-								borderColor: theme.text,
+								borderColor: appTheme.colors.text,
 								borderWidth: 2,
 							}}
 							minimumTrackStyle={{

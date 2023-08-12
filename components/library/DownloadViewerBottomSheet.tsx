@@ -1,12 +1,10 @@
-import { BackHandler, ScrollView, StyleSheet, View } from "react-native";
-import React, { useEffect, useMemo, useRef } from "react";
-import { Feather, Foundation } from "@expo/vector-icons";
+import { BackHandler, StyleSheet } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
 import { IconButton } from "react-native-paper";
 import { DownloadsStore, LiveAppState } from "../../store/store";
 import { DownloadType } from "../../types/types";
-import { trimText } from "../../utils";
 import BaseImage from "../BaseImage";
 import CustomBackdrop from "../CustomBackdrop";
 import Text from "../Text";
@@ -50,6 +48,12 @@ const DownloadViewerBottomSheet = ({
 		};
 	}, []);
 
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
+
 	return (
 		<BottomSheet
 			ref={bottomSheetRef}
@@ -57,16 +61,10 @@ const DownloadViewerBottomSheet = ({
 			snapPoints={snapPoints}
 			style={{ marginBottom: 20, overflow: "hidden", borderRadius: 20 }}
 			backgroundStyle={{
-				backgroundColor: LiveAppState.themeValue.get().colors.surface,
-			}}
-			handleIndicatorStyle={{
-				width: "12%",
-				backgroundColor: LiveAppState.themeValue.get().colors.background,
-				height: 6,
-				borderRadius: 10,
+				backgroundColor: appTheme.colors.background,
 			}}
 			handleStyle={{
-				position: "absolute",
+				display: "none",
 			}}
 			enablePanDownToClose
 			backdropComponent={CustomBackdrop}
@@ -78,10 +76,9 @@ const DownloadViewerBottomSheet = ({
 				style={{
 					width: "100%",
 					height: "100%",
-					backgroundColor: "yellow",
 				}}
 			>
-				<Box block color={LiveAppState.themeValue.get().colors.background}>
+				<Box block height={"100%"}>
 					<Box>
 						<Box
 							style={{
@@ -102,7 +99,7 @@ const DownloadViewerBottomSheet = ({
 									left: 0,
 									opacity: 0.5,
 								}}
-								blurRadius={5}
+								blurRadius={25}
 								placeholderStyles={{ height: "100%", width: "100%" }}
 							/>
 							<Box block align="center" justify="center" height={"100%"}>

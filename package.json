@@ -1,7 +1,7 @@
 {
 	"scripts": {
 		"start": "expo start --dev-client",
-		"android": "expo run:android",
+		"android": "npx expo run:android",
 		"ios": "expo run:ios",
 		"web": "expo start --web",
 		"build-app": "eas build -p android --profile preview",
@@ -35,6 +35,7 @@
 		"expo-skeleton-loader": "^1.1.3",
 		"expo-splash-screen": "~0.18.2",
 		"expo-status-bar": "~1.4.4",
+		"expo-updates": "~0.16.4",
 		"expo-web-browser": "~12.1.1",
 		"fbjs": "^3.0.2",
 		"htmlparser2": "^8.0.2",

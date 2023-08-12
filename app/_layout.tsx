@@ -8,23 +8,29 @@ import { AlertNotificationRoot, Toast } from "react-native-alert-notification";
 import { BASE_URL, darkMode, lightMode } from "../constants";
 import { Download, ThemeType } from "../types/types";
 import { fetchUtil } from "../utils";
+import Text from "../components/Text";
 
 const _layout = () => {
-	const [reRender, setRerender] = useState(1);
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
+	const systemTheme = useColorScheme();
+
+	// User Changes the theme
 	SettingsStore.theme.onChange((newTheme) => {
 		updateTheme(newTheme);
-		setRerender(Math.random());
 	});
-	const preferredTheme = useColorScheme();
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
 
 	function updateTheme(theme: ThemeType) {
-		if (theme === "auto") {
-			if (preferredTheme === "dark") {
+		if (theme === "system") {
+			if (systemTheme === "dark") {
 				LiveAppState.themeValue.set(darkMode);
 			}
 
-			if (preferredTheme === "light") {
+			if (systemTheme === "light") {
 				LiveAppState.themeValue.set(lightMode);
 			}
 		} else {
@@ -56,16 +62,40 @@ const _layout = () => {
 	}
 
 	useEffect(() => {
-		const theme = SettingsStore.theme.get();
-		updateTheme(theme);
 		fetchUserDownloads();
-	}, [reRender]);
+	}, []);
+
+	useEffect(() => {
+		const settingsTheme = SettingsStore.theme.get();
+		console.log("Settings theme is: " + settingsTheme);
+		console.log("System theme is: " + systemTheme);
+
+		updateTheme(systemTheme);
+	}, [systemTheme]);
 	return (
-		<AlertNotificationRoot theme="light">
-			<PaperProvider theme={LiveAppState.themeValue.get()}>
-				<StatusBar translucent />
+		<AlertNotificationRoot
+			theme={
+				SettingsStore.theme.get() === "system"
+					? systemTheme
+					: SettingsStore.theme.get() === "dark"
+					? "dark"
+					: "light"
+			}
+		>
+			<PaperProvider theme={appTheme}>
+				<StatusBar
+					backgroundColor={LiveAppState.themeValue.colors.background.get()}
+					barStyle={
+						SettingsStore.theme.get() === "dark"
+							? "light-content"
+							: SettingsStore.theme.get() === "light"
+							? "dark-content"
+							: "default"
+					}
+				/>
+
 				<SafeAreaView style={{ flex: 1 }}>
-					<Stack screenOptions={{ headerShown: false }} />
+					<Stack screenOptions={{ headerShown: false, animation: "none" }} />
 				</SafeAreaView>
 			</PaperProvider>
 		</AlertNotificationRoot>

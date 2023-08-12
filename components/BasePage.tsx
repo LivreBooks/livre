@@ -1,60 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { View } from "react-native-animatable";
 import { ViewStyle } from "react-native/types";
 import { LiveAppState, SettingsStore } from "../store/store";
 import BasePageHeader from "./BasePageHeader";
+import Box from "./Box";
 
 function BasePage(props: {
-  styles?: ViewStyle;
-  headerInfo?: {
-    title: string;
-    icon: string;
-  };
-  children:
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | React.ReactFragment
-    | React.ReactPortal;
+	styles?: ViewStyle;
+	headerInfo?: {
+		title: string;
+		icon: string;
+	};
+	children:
+		| React.ReactElement<any, string | React.JSXElementConstructor<any>>
+		| React.ReactFragment
+		| React.ReactPortal;
 }) {
-  const [theme, setTheme] = useState(SettingsStore.theme.get());
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
-  SettingsStore.theme.onChange((newTheme) => {
-    setTheme(newTheme);
-  });
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
 
-  useEffect(() => {}, [theme]);
+	return (
+		<SafeAreaProvider>
+			<Box
+				direction="column"
+				align="center"
+				height={"100%"}
+				block
+				color={appTheme.colors.background}
+				style={{
+					...props.styles,
+				}}
+			>
+				{props.headerInfo && (
+					<BasePageHeader
+						title={props.headerInfo.title}
+						icon={props.headerInfo.icon}
+					/>
+				)}
 
-  return (
-    <SafeAreaProvider>
-      <View
-        style={{
-          flexDirection: "column",
-          alignItems: "center",
-          height: "100%",
-          width: "100%",
-          backgroundColor: LiveAppState.themeValue.get().colors.background,
-          ...props.styles,
-        }}
-      >
-        {props.headerInfo && (
-          <BasePageHeader
-            title={props.headerInfo.title}
-            icon={props.headerInfo.icon}
-          />
-        )}
-
-        <View
-          style={{
-            paddingHorizontal: props.headerInfo ? 10 : 0,
-            width: "100%",
-            alignItems: "center",
-          }}
-        >
-          {props.children}
-        </View>
-      </View>
-    </SafeAreaProvider>
-  );
+				<Box px={props.headerInfo ? 10 : 0} block align="center">
+					{props.children}
+				</Box>
+			</Box>
+		</SafeAreaProvider>
+	);
 }
 
 export default BasePage;

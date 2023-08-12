@@ -49,7 +49,7 @@ function Recommendations({
 						style={{ width: "100%", marginBottom: 20 }}
 						key={category.category}
 					>
-						<Text size={20} weight="bold" wrapperProps={{ ml: 10, mb: 10 }}>
+						<Text size={20} weight="bold" wrapperProps={{ ml: 15, mb: 15 }}>
 							{category.category}
 						</Text>
 						<View
@@ -156,8 +156,8 @@ export function RecommendationsSkeletonLoader() {
 
 const styles = {
 	container: {
-		padding: 5,
 		margin: 10,
+		paddingHorizontal: 20,
 	},
 	thumbnail: {
 		width: card.width,
@@ -167,7 +167,7 @@ const styles = {
 	},
 	title: {
 		height: 30,
-		width: 200,
+		width: 150,
 		marginBottom: 10,
 		borderRadius: 5,
 	},

@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Platform, UIManager, View, useColorScheme } from "react-native";
-import { LiveAppState, SettingsStore, UserStore } from "../../store/store";
+import { Platform, UIManager, View } from "react-native";
+import { LiveAppState } from "../../store/store";
 import {
 	MaterialBottomTabNavigationOptions,
 	createMaterialBottomTabNavigator,
 } from "@react-navigation/material-bottom-tabs";
 import { withLayoutContext } from "expo-router";
 import { Provider as PaperProvider } from "react-native-paper";
-import { darkMode, lightMode, theme } from "../../constants";
-import { ThemeType } from "../../types/types";
+import { theme } from "../../constants";
 
 if (Platform.OS === "android") {
 	if (UIManager.setLayoutAnimationEnabledExperimental) {
@@ -33,25 +32,26 @@ export const Tabs = withLayoutContext<
 >(Navigator);
 
 function AppLayout() {
-	const [reRender, setRerender] = useState(1);
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
-	SettingsStore.theme.onChange((newTheme) => {
-		setRerender(Math.random());
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
 	});
 
-	useEffect(() => {}, [reRender]);
 	return (
 		<PaperProvider theme={modifiedTheme}>
 			<Tabs
 				safeAreaInsets={{ bottom: 0 }}
 				initialRouteName="search"
 				barStyle={{
-					backgroundColor: LiveAppState.themeValue.colors.background.get(),
+					backgroundColor: appTheme.colors.background,
 				}}
-				inactiveColor={LiveAppState.themeValue.colors.text.get()}
-				activeColor={LiveAppState.themeValue.colors.text.get()}
+				inactiveColor={appTheme.colors.text}
+				activeColor={appTheme.colors.text}
 				labeled={false}
-				theme={LiveAppState.themeValue.get()}
+				theme={appTheme}
+				sceneAnimationType="opacity"
+				sceneAnimationEnabled={false}
 			>
 				<Tabs.Screen
 					name="search"
@@ -63,9 +63,7 @@ function AppLayout() {
 									name={focused ? "book-search" : "book-search-outline"}
 									size={24}
 									color={
-										focused
-											? LiveAppState.themeValue.colors.background.get()
-											: LiveAppState.themeValue.colors.text.get()
+										focused ? appTheme.colors.background : appTheme.colors.text
 									}
 								/>
 							);
@@ -82,9 +80,7 @@ function AppLayout() {
 									name={focused ? "compass" : "compass-outline"}
 									size={24}
 									color={
-										focused
-											? LiveAppState.themeValue.colors.background.get()
-											: LiveAppState.themeValue.colors.text.get()
+										focused ? appTheme.colors.background : appTheme.colors.text
 									}
 								/>
 							);
@@ -103,8 +99,8 @@ function AppLayout() {
 										size={24}
 										color={
 											focused
-												? LiveAppState.themeValue.colors.background.get()
-												: LiveAppState.themeValue.colors.text.get()
+												? appTheme.colors.background
+												: appTheme.colors.text
 										}
 									/>
 								</View>
@@ -124,8 +120,8 @@ function AppLayout() {
 										size={24}
 										color={
 											focused
-												? LiveAppState.themeValue.colors.background.get()
-												: LiveAppState.themeValue.colors.text.get()
+												? appTheme.colors.background
+												: appTheme.colors.text
 										}
 									/>
 								</View>
