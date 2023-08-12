@@ -1,5 +1,5 @@
 import { Text as ThemedText } from "react-native-paper";
-import React from "react";
+import React, { useState } from "react";
 import { theme } from "../constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Box from "./Box";
@@ -9,7 +9,7 @@ import { LiveAppState } from "../store/store";
 const Text = ({
 	style,
 	size = 14,
-	color = LiveAppState.themeValue.colors.text.get(),
+	color,
 	weight = "normal",
 	align = "auto",
 	lineHeight,
@@ -37,6 +37,12 @@ const Text = ({
 		/>
 	);
 
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
+
 	return (
 		<Box
 			{...wrapperProps}
@@ -47,7 +53,7 @@ const Text = ({
 			{renderIcon}
 			<ThemedText
 				style={{
-					color,
+					color: color ? color : appTheme.colors.text,
 					fontSize: size,
 					fontWeight: weight,
 					width: "auto",
