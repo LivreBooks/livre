@@ -24,8 +24,10 @@ const _layout = () => {
 		setAppTheme(theme);
 	});
 
-	function updateTheme(theme: ThemeType) {
-		if (theme === "system") {
+	function updateTheme() {
+		const settingsTheme = SettingsStore.theme.get();
+
+		if (settingsTheme === "system") {
 			if (systemTheme === "dark") {
 				LiveAppState.themeValue.set(darkMode);
 			}
@@ -34,11 +36,11 @@ const _layout = () => {
 				LiveAppState.themeValue.set(lightMode);
 			}
 		} else {
-			if (theme === "dark") {
+			if (settingsTheme === "dark") {
 				LiveAppState.themeValue.set(darkMode);
 			}
 
-			if (theme === "light") {
+			if (settingsTheme === "light") {
 				LiveAppState.themeValue.set(lightMode);
 			}
 		}
@@ -67,10 +69,8 @@ const _layout = () => {
 
 	useEffect(() => {
 		const settingsTheme = SettingsStore.theme.get();
-		console.log("Settings theme is: " + settingsTheme);
-		console.log("System theme is: " + systemTheme);
 
-		updateTheme(systemTheme);
+		updateTheme();
 	}, [systemTheme]);
 	return (
 		<AlertNotificationRoot

@@ -31,8 +31,6 @@ const BookDetails = ({
 	const [_fullbook, setFullBook] = useState(fullBook);
 	const [book] = useState(bookPreview || _fullbook);
 
-	const [theme] = useState(LiveAppState.themeValue.colors.get());
-
 	DownloadsStore.downloads.onChange((downloads) => {
 		const found = downloads
 			.filter((download) => (download ? true : false))
@@ -304,14 +302,18 @@ interface BookInfoCardProps {
 }
 
 const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
-	const [theme] = useState(LiveAppState.themeValue.colors.get());
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
 	return (
-		<Box color={theme.surface} radius={10} py={6.5} px={6.5}>
+		<Box color={appTheme.colors.surface} radius={10} py={6.5} px={6.5}>
 			<Box direction="row" align="center" gap={5}>
 				<MaterialCommunityIcons
 					name={icon as any}
 					size={14}
-					color={theme.text}
+					color={appTheme.colors.text}
 				/>
 				<Text
 					style={{
@@ -331,13 +333,16 @@ const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
 };
 
 export const BookDescription = ({ content }: { content: string }) => {
-	const [theme] = useState(LiveAppState.themeValue.colors.get());
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
 	return (
 		<Box
 			style={{
 				padding: 10,
-				backgroundColor: theme.surface,
+				backgroundColor: appTheme.colors.surface,
 				borderRadius: 15,
 			}}
 		>

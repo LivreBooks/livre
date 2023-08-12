@@ -19,6 +19,12 @@ const BottomSheetOpener = ({
 	label: string;
 	onPress: () => void;
 }) => {
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
+
 	return (
 		<TouchableOpacity activeOpacity={0.8} onPress={onPress}>
 			<View
@@ -26,7 +32,7 @@ const BottomSheetOpener = ({
 					padding: 5,
 					paddingLeft: 20,
 					borderRadius: 20,
-					backgroundColor: LiveAppState.themeValue.colors.surface.get(),
+					backgroundColor: appTheme.colors.surface,
 					width: "100%",
 					flexDirection: "row",
 					alignItems: "center",
@@ -34,10 +40,7 @@ const BottomSheetOpener = ({
 				}}
 			>
 				<Text weight="bold">{label}</Text>
-				<IconButton
-					icon={"chevron-up"}
-					iconColor={LiveAppState.themeValue.colors.text.get()}
-				/>
+				<IconButton icon={"chevron-up"} iconColor={appTheme.colors.text} />
 			</View>
 		</TouchableOpacity>
 	);

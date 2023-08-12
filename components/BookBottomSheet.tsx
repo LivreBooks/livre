@@ -1,5 +1,5 @@
 import { BackHandler, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { LiveAppState } from "../store/store";
 import { FullBookType, BookType } from "../types/types";
@@ -30,6 +30,12 @@ function BookBottomSheet({
 		};
 	}, []);
 
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
+
 	return (
 		<BottomSheet
 			ref={bottomSheetRef}
@@ -37,18 +43,13 @@ function BookBottomSheet({
 			snapPoints={snapPoints}
 			style={{ marginBottom: 20, overflow: "hidden", borderRadius: 20 }}
 			backgroundStyle={{
-				backgroundColor: LiveAppState.themeValue.get().colors.background,
+				backgroundColor: appTheme.colors.background,
 				overflow: "hidden",
-				borderRadius: 10,
-			}}
-			handleIndicatorStyle={{
-				width: "12%",
-				backgroundColor: LiveAppState.themeValue.get().colors.surface,
-				height: 6,
 				borderRadius: 10,
 			}}
 			handleStyle={{
 				position: "absolute",
+				display: "none",
 			}}
 			enablePanDownToClose
 			backdropComponent={CustomBackdrop}

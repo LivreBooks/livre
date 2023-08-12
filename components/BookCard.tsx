@@ -1,10 +1,8 @@
-import React from "react";
-import { View } from "react-native";
+import React, { useState } from "react";
 import { TouchableNativeFeedback } from "react-native-gesture-handler";
 import { BookType } from "../types/types";
 import { trimText } from "../utils";
 import BaseImage from "./BaseImage";
-import { useRouter } from "expo-router";
 import { LiveAppState } from "../store/store";
 import Text from "./Text";
 import Box from "./Box";
@@ -17,6 +15,11 @@ function BookCard({
 	book: BookType;
 	onPress: (book: BookType) => void;
 }) {
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
 	return (
 		<Box
 			my={5}
