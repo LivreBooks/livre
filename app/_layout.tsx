@@ -9,13 +9,6 @@ import { BASE_URL, darkMode, lightMode } from "../constants";
 import { Download } from "../types/types";
 import { fetchUtil, sentryCapture } from "../utils";
 
-import * as Sentry from "sentry-expo";
-
-Sentry.init({
-	dsn: "https://a618675a21c40982b73484129bb15fa5@o4505693037395968.ingest.sentry.io/4505693040410624",
-	enableInExpoDevelopment: true,
-});
-
 const _layout = () => {
 	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
