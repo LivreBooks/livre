@@ -11,9 +11,14 @@ import { Redirect, useRouter } from "expo-router";
 import BasePage from "../components/BasePage";
 
 const index = () => {
-	const [accountInfo] = useState<Account | null>(UserStore.account.get());
-
+	const [accountInfo, setAccountInfo] = useState<Account | null>(
+		UserStore.account.get()
+	);
 	const router = useRouter();
+
+	UserStore.account.onChange((newValue) => {
+		setAccountInfo(newValue);
+	});
 
 	return (
 		<>
