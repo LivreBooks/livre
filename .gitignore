@@ -68,8 +68,8 @@ web-build/
 *.apk
 
 
-android/
+android/*
 
-ios/
+ios/*
 
 .env
