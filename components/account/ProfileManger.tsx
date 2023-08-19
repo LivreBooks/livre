@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, View } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Menu } from "react-native-paper";
 import { LiveAppState, SettingsStore, UserStore } from "../../store/store";
 import { Account } from "../../types/types";
@@ -22,17 +22,23 @@ const ProfileManger = () => {
 
 	function signOut() {
 		console.log("Signing Out");
-		router.replace("/");
 		SettingsStore.user.set(null);
 		UserStore.account.set(null);
 		setAccountInfo(null);
+		router.replace("/oauthredirect");
 	}
+
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
 
 	return (
 		<>
 			{accountInfo && (
 				<Box
-					color={LiveAppState.themeValue.colors.surface.get()}
+					color={appTheme.colors.surface}
 					pa={20}
 					radius={20}
 					align="stretch"
@@ -42,7 +48,7 @@ const ProfileManger = () => {
 						visible={visible}
 						onDismiss={closeMenu}
 						anchorPosition="bottom"
-						theme={LiveAppState.themeValue.get()}
+						theme={appTheme}
 						anchor={
 							<Pressable onPress={openMenu}>
 								<Box direction="row" block>
@@ -54,13 +60,7 @@ const ProfileManger = () => {
 											marginLeft: 10,
 										}}
 									>
-										<Text
-											style={{
-												fontSize: 20,
-												fontWeight: "bold",
-												marginBottom: 5,
-											}}
-										>
+										<Text size={20} weight="bold" wrapperProps={{ mb: 5 }}>
 											{accountInfo.fullname}
 										</Text>
 										<Text>{accountInfo.email}</Text>
@@ -69,7 +69,7 @@ const ProfileManger = () => {
 							</Pressable>
 						}
 					>
-						<Menu.Item onPress={signOut} title="Sign Out" />
+						<Menu.Item onPress={signOut} title="Sign Out" theme={appTheme} />
 					</Menu>
 				</Box>
 			)}
