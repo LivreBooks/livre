@@ -54,10 +54,6 @@ const DownloadsBottomSheet = ({ close }: { close: () => void }) => {
 					alignItems: "center",
 				}}
 			>
-				<Text weight="bold" size={22} align="center">
-					Downloads
-				</Text>
-
 				<Spacer height={10} />
 
 				{downloads.map((download) => (
@@ -98,15 +94,15 @@ const DownloadCard = ({ download }: { download: Download }) => {
 				}}
 			>
 				<View>
-					<Text style={{ fontWeight: "bold", fontSize: 16 }}>
-						{download.book_name}
-					</Text>
-					<Text style={{ marginBottom: 20, opacity: 0.8 }}>
+					<Text>{download.book_name}</Text>
+					<Text weight="300" style={{ opacity: 0.8 }}>
 						{download.book_author}
 					</Text>
 				</View>
 				<View>
-					<Text style={{ fontSize: 12 }}>Downloaded On</Text>
+					<Text size={10} weight="300">
+						Downloaded On
+					</Text>
 					<Text>{new Date(download.read_on).toDateString()}</Text>
 				</View>
 			</View>
