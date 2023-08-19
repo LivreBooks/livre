@@ -1,8 +1,6 @@
-import { useRouter, useSearchParams } from "expo-router";
-import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator } from "react-native-paper";
-import * as Animatable from "react-native-animatable";
-import { Animated } from "react-native";
+import { useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import { View, Image } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import BasePage from "../components/BasePage";
@@ -11,7 +9,7 @@ import Text from "../components/Text";
 import { Account, GoogleUser, NewUser, UserProfile } from "../types/types";
 import { FetchResponse, fetchUtil, sentryCapture } from "../utils";
 import { LiveAppState, UserStore } from "../store/store";
-import { BASE_URL, theme } from "../constants";
+import { BASE_URL } from "../constants";
 import Button from "../components/Button";
 import Spacer from "../components/Spacer";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
@@ -114,6 +112,12 @@ export default function oauthredirect() {
 		}
 	};
 
+	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+
+	LiveAppState.themeValue.onChange((theme) => {
+		setAppTheme(theme);
+	});
+
 	useEffect(() => {
 		if (response) {
 			if (response?.type === "success") {
@@ -139,50 +143,43 @@ export default function oauthredirect() {
 				align="center"
 				justify="center"
 			>
-				<Animatable.View
-					animation={"fadeInUp"}
-					style={{
-						marginBottom: 40,
-						alignItems: "center",
-						width: "100%",
-					}}
-				>
-					<Animated.Image
+				<Box mb={40} align="center" block>
+					<Image
 						source={require("../assets/logo.png")}
 						style={{
 							width: 150,
 							height: 150,
 						}}
 					/>
-					<Animated.Text
+					<Text
 						style={{
-							color: LiveAppState.themeValue.get().colors.primary,
+							color: appTheme.colors.primary,
 							fontWeight: "900",
 							fontSize: 42,
 						}}
 					>
 						Livre
-					</Animated.Text>
+					</Text>
 					<Spacer height={20} />
 					<Box align="center">
 						<Text
 							size={22}
 							align="center"
 							weight="300"
-							color={LiveAppState.themeValue.colors.text.get()}
+							color={appTheme.colors.text}
 						>
 							Adventure awaits!
 						</Text>
 						<Text
 							size={22}
 							align="center"
-							color={LiveAppState.themeValue.colors.text.get()}
+							color={appTheme.colors.text}
 							weight="300"
 						>
 							Embrace the magic of reading
 						</Text>
 					</Box>
-				</Animatable.View>
+				</Box>
 				<Box block>
 					<Button
 						mode="contained"
