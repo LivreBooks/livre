@@ -25,6 +25,7 @@ interface AppStateType {
   selectedBookPreInfo: BookType;
   selectedBookRecommendation: FullBookType;
   themeValue: typeof MD3DarkTheme | typeof MD3LightTheme;
+  downloadProvider: "IPFS.io" | "Cloudflare" | "Pinata";
 }
 
 interface UserStore {
@@ -45,6 +46,7 @@ export const LiveAppState = observable<AppStateType>({
   selectedBookPreInfo: null,
   selectedBookRecommendation: null,
   themeValue: darkMode,
+  downloadProvider: "Pinata",
 });
 
 export const UserStore = observable<UserStore>({

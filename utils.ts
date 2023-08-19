@@ -1,17 +1,18 @@
 import * as FileSystem from "expo-file-system";
 import { LayoutAnimation, PermissionsAndroid } from "react-native";
 
-import { DownloadsStore, SettingsStore, UserStore } from "./store/store";
+import { DownloadsStore, LiveAppState, SettingsStore, UserStore } from "./store/store";
 import {
   BookType,
   Download,
-  DownloadLink,
+  DownloadLink as ProviderInfo,
   DownloadType,
   FullBookType,
 } from "./types/types";
 import { BASE_URL } from "./constants";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import * as Sentry from 'sentry-expo';
+import hasValidSsl from "./utils/sslChecker";
 
 export function sentryCapture(error: Error) {
   Sentry.Native.captureException(error)
@@ -24,7 +25,6 @@ export async function downloadFile(
   fileType: string,
   onProgress: (id: number, progress: number) => void
 ) {
-  console.log({ url });
   const documentDirectory = FileSystem.documentDirectory + 'livre';
 
   const folderExists = await FileSystem.getInfoAsync(documentDirectory);
@@ -36,8 +36,6 @@ export async function downloadFile(
       sentryCapture(error)
       Toast.show({ title: 'Error Creating Livre Folder', textBody: error.message });
     }
-  } else {
-    console.log('Folder exists');
   }
 
   const fileUri = `${documentDirectory}/${fileName}.${fileType}`;
@@ -117,19 +115,23 @@ function recordDownload(record: DownloadRecord): Promise<DownloadRecord> {
 
 export async function downloadBook(
   fullBook: FullBookType,
-  links: DownloadLink[]
+  downloadProviders: ProviderInfo[]
 ) {
-  if (!fullBook || links.length === 0) {
+  if (!fullBook || downloadProviders.length === 0) {
     Toast.show({ title: "Error Downloading Book", textBody: "Missing Data" })
     return
   }
   const downloadId = Math.floor(Math.random() * 1000);
 
+
+  const selectedProvider = downloadProviders.find(providerInfo => providerInfo.provider === LiveAppState.downloadProvider.get());
+
+
   const newDownload: DownloadType = {
     downloadId,
     progress: 0,
     book: fullBook,
-    link: links[0],
+    link: selectedProvider,
     filepath: null,
     readingInfo: {
       currentPage: 1,
@@ -327,3 +329,31 @@ export const animateLayout = (config = {}) => {
     ...config,
   });
 };
+
+
+async function findProviderWithValidSsl() {
+  const providers = [
+    {
+      id: 'Pinata',
+      domain: 'pinata.cloud'
+    },
+    {
+      id: 'IPFS.io',
+      domain: 'ipfs.io'
+    },
+    {
+      id: 'Cloudflare',
+      domain: 'cloudflare-ipfs.com'
+    },
+  ] as const;
+
+  for (const provider of providers) {
+    const res = await hasValidSsl(provider.domain)
+    if (res) {
+      LiveAppState.downloadProvider.set(provider.id)
+      return provider
+    }
+  }
+}
+
+findProviderWithValidSsl()
