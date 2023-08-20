@@ -1,46 +1,46 @@
 {
-	"expo": {
-		"scheme": "livre",
-		"name": "Livre",
-		"slug": "livre",
-		"plugins": [
-			"@config-plugins/react-native-blob-util",
-			"@config-plugins/react-native-pdf",
-			"sentry-expo"
-		],
-		"android": {
-			"icon": "./assets/icons/mipmap-xxxhdpi/ic_launcher.png",
-			"adaptiveIcons": {
-				"foregroundImage": "./assets/icons/mipmap-xxxhdpi/ic_launcher.png",
-				"background": "white"
-			},
-			"splash": {
-				"image": "./assets/splash.png",
-				"backgroundColor": "#060011",
-				"resizeMode": "contain"
-			},
-			"permissions": [
-				"android.permission.READ_EXTERNAL_STORAGE",
-				"android.permission.WRITE_EXTERNAL_STORAGE",
-				"android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
-				"android.permission.ACCESS_NETWORK_STATE"
-			],
-			"package": "com.justpatrick.livre",
-			"versionCode": 3
-		},
-		"extra": {
-			"eas": {
-				"projectId": "c73b5d63-8046-4ea9-b732-c6d9419fa7be"
-			}
-		},
-		"ios": {
-			"bundleIdentifier": "com.justpatrick.livre"
-		},
-		"runtimeVersion": {
-			"policy": "sdkVersion"
-		},
-		"updates": {
-			"url": "https://u.expo.dev/c73b5d63-8046-4ea9-b732-c6d9419fa7be"
-		}
-	}
+  "expo": {
+    "scheme": "livre",
+    "name": "Livre",
+    "slug": "livre",
+    "plugins": [
+      "@config-plugins/react-native-blob-util",
+      "@config-plugins/react-native-pdf",
+      "sentry-expo"
+    ],
+    "android": {
+      "icon": "./assets/icons/mipmap-xxxhdpi/ic_launcher.png",
+      "adaptiveIcons": {
+        "foregroundImage": "./assets/icons/mipmap-xxxhdpi/ic_launcher.png",
+        "background": "white"
+      },
+      "splash": {
+        "image": "./assets/splash.png",
+        "backgroundColor": "#060011",
+        "resizeMode": "contain"
+      },
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.DOWNLOAD_WITHOUT_NOTIFICATION",
+        "android.permission.ACCESS_NETWORK_STATE"
+      ],
+      "package": "com.justpatrick.livre",
+      "versionCode": 4
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c73b5d63-8046-4ea9-b732-c6d9419fa7be"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.justpatrick.livre"
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c73b5d63-8046-4ea9-b732-c6d9419fa7be"
+    }
+  }
 }
