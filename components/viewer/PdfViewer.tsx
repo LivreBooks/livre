@@ -36,6 +36,7 @@ const PdfViewer = React.forwardRef(
 		useEffect(() => {
 			FileSystem.getInfoAsync(fileUri)
 				.then((fileinfo) => {
+					console.log(fileinfo);
 					if (fileinfo.exists === false) {
 						Toast.show({ title: "File Not Found", type: ALERT_TYPE.DANGER });
 					} else {
@@ -68,6 +69,10 @@ const PdfViewer = React.forwardRef(
 						setCurrentpage(page);
 					}}
 					onError={(error) => {
+						Toast.show({
+							title: "Error Loading PDF",
+							textBody: error?.message || "",
+						});
 						sentryCapture(error as Error);
 					}}
 					onPressLink={(uri) => {
