@@ -153,7 +153,7 @@ export async function downloadBook(
   const { uri, id } = await downloadFile(
     downloadId,
     newDownload.link.link,
-    fullBook.title.replace(/\s/g, "_").replace(/[^\w\s]/g, ""),
+    fullBook.title.replace(/\s/g, "_").replace(/[^\w\s]|_/g, ""),
     fullBook.extension,
     (downloadId, progress) => {
       const targetDownloadIndex = DownloadsStore.downloads
