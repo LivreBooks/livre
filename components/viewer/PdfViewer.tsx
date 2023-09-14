@@ -8,7 +8,11 @@ import ViewerLoading from "./ViewerLoading";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import { sentryCapture } from "../../utils";
 
-const PdfViewer = React.forwardRef(
+export interface ExposedMethods {
+	jumpToPage: (page: number) => void;
+}
+
+const PdfViewer = React.forwardRef<ExposedMethods, {}>(
 	(
 		{
 			fileUri,

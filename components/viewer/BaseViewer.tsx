@@ -1,7 +1,7 @@
 import { Alert, Keyboard, Pressable, View } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { overlayColors, theme } from "../../constants";
-import PdfViewer from "./PdfViewer";
+import PdfViewer, { ExposedMethods } from "./PdfViewer";
 import { Bookmark, DownloadType } from "../../types/types";
 import EpubViewer from "./EpubViewer";
 import { Foundation } from "@expo/vector-icons";
@@ -28,7 +28,7 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
 
 	const [viewerDetails, setViewerDetails] = useState(null);
 
-	const pdfViewerRef = useRef();
+	const pdfViewerRef = useRef<ExposedMethods | null>();
 
 	function goToPage(page: number) {
 		if (download.book.extension === "pdf") {
