@@ -21,10 +21,22 @@ configureObservablePersistence({
   persistLocal: ObservablePersistMMKV,
 });
 
+type ThemeModes = typeof MD3DarkTheme | typeof MD3LightTheme
+
+type Colors = ThemeModes['colors']
+
+interface WithText extends Colors {
+  text: string
+}
+
+interface Theme extends ThemeModes {
+  colors: WithText
+}
+
 interface AppStateType {
   selectedBookPreInfo: BookType;
   selectedBookRecommendation: FullBookType;
-  themeValue: typeof MD3DarkTheme | typeof MD3LightTheme;
+  themeValue: Theme;
   downloadProvider: "IPFS.io" | "Cloudflare" | "Pinata";
 }
 
