@@ -8,15 +8,12 @@ import { ExploreStore, LiveAppState } from "../../../../store/store";
 import BasePage from "../../../../components/BasePage";
 import CollapsiblePageHeader from "../../../../components/CollapsiblePageHeader";
 
-const { width: screenWidth } = Dimensions.get("screen");
-
 export default function Category() {
 	const router = useRouter();
 
 	const [filterQuery, setFilterQuery] = useState("");
-	const [isLoading, setIsLoading] = useState(false);
 
-	const [params, setParams] = useState(useSearchParams());
+	const [params] = useState(useSearchParams());
 
 	const onChangeFilter = (query: string) => setFilterQuery(query);
 

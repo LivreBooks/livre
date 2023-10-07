@@ -80,10 +80,10 @@ const BaseViewer = ({ download }: { download: DownloadType }) => {
 					/>
 					{download.book.extension === "pdf" && (
 						<PdfViewer
-							bookCover={download.book.base64Cover}
+							bookCover={download.book.base64Cover as string}
 							fileUri={download.filepath}
 							setPages={(totalPages: number) => setTotalPages(totalPages)}
-							setCurrentpage={(currentPage: number) => {
+							setCurrentPage={(currentPage: number) => {
 								setCurrentPage(currentPage);
 								updateCurrentPage(currentPage);
 							}}

@@ -1,14 +1,12 @@
-import { BackHandler, Pressable, View } from "react-native";
+import { BackHandler, Pressable } from "react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { LiveAppState, SettingsStore } from "../../store/store";
+import { LiveAppState } from "../../store/store";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import CustomBackdrop from "../CustomBackdrop";
 import Text from "../Text";
 import Box from "../Box";
-import Spacer from "../Spacer";
-import Button from "../Button";
 import * as Linking from "expo-linking";
-import { MD3Theme, ThemeBase } from "react-native-paper";
+import { MD3Theme } from "react-native-paper";
 
 const CloutBottomSheet = ({ close }: { close: () => void }) => {
 	const bottomSheetRef = useRef<BottomSheet>(null);

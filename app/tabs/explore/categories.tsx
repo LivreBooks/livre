@@ -12,11 +12,8 @@ import { Toast } from "react-native-alert-notification";
 import { sentryCapture } from "../../../utils";
 
 export default function Categories() {
-	const [filterQuery, setFilterQuery] = useState("");
 	const skeletons = Array.from({ length: 10 }, (_, i) => i);
 	const [loading, setLoading] = useState(false);
-
-	const onChangeFilter = (query: string) => setFilterQuery(query);
 
 	const [exploreData, setExploreData] = useState<CategoryType[]>([]);
 
@@ -78,9 +75,7 @@ export default function Categories() {
 					<FlatList
 						numColumns={2}
 						columnWrapperStyle={{ flex: 1, justifyContent: "space-evenly" }}
-						data={exploreData.filter((category) =>
-							category.name.includes(filterQuery)
-						)}
+						data={exploreData}
 						keyExtractor={(item: CategoryType) => item.id}
 						refreshControl={
 							<RefreshControl

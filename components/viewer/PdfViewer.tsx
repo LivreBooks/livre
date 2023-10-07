@@ -55,6 +55,7 @@ const PdfViewer = React.forwardRef<ExposedMethods, PdfProps>(function PdfViewer(
 						textBody: error?.message || "",
 					});
 					sentryCapture(error as Error);
+					console.log(error);
 				}}
 				onPressLink={(uri) => {
 					Linking.openURL(uri);

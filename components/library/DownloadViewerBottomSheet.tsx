@@ -1,24 +1,24 @@
-import { BackHandler, StyleSheet } from "react-native";
-import React, { useEffect, useMemo, useRef, useState } from "react";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { useRouter } from "expo-router";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { BackHandler } from "react-native";
 import { IconButton } from "react-native-paper";
+import { theme } from "../../constants";
 import { DownloadsStore, LiveAppState } from "../../store/store";
 import { DownloadType } from "../../types/types";
 import BaseImage from "../BaseImage";
+import { BookDescription, BookInfo } from "../BookDetails";
+import Box from "../Box";
+import Button from "../Button";
 import CustomBackdrop from "../CustomBackdrop";
 import Text from "../Text";
-import Button from "../Button";
-import Box from "../Box";
-import { BookDescription, BookInfo } from "../BookDetails";
-import { theme } from "../../constants";
 
 const DownloadViewerBottomSheet = ({
 	download,
 	setSelectedDownload,
 }: {
 	download: DownloadType;
-	setSelectedDownload: (value: any) => void;
+	setSelectedDownload: (value: null | DownloadType) => void;
 }) => {
 	const router = useRouter();
 	const bottomSheetRef = useRef<BottomSheet>(null);
@@ -159,5 +159,3 @@ const DownloadViewerBottomSheet = ({
 };
 
 export default DownloadViewerBottomSheet;
-
-const styles = StyleSheet.create({});

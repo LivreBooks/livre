@@ -1,4 +1,4 @@
-import { BackHandler, StyleSheet, Text, View } from "react-native";
+import { BackHandler, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import BaseViewer from "../../../components/viewer/BaseViewer";
 import { DownloadsStore } from "../../../store/store";

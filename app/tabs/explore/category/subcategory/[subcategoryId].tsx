@@ -22,7 +22,7 @@ function SubCategory() {
 
 	const scrollOffsetY = useRef(new Animated.Value(0)).current;
 
-	const [subcategory, setSubcategory] = useState(useSearchParams());
+	const [subcategory] = useState(useSearchParams());
 
 	function fetchBooks() {
 		setLoading(true);

@@ -1,5 +1,5 @@
 import * as Animatable from "react-native-animatable";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Box from "../components/Box";
 import Text from "../components/Text";
 import { Animated, Pressable } from "react-native";
@@ -12,7 +12,7 @@ import BasePage from "../components/BasePage";
 
 const index = () => {
 	const [accountInfo, setAccountInfo] = useState<Account | null>(
-		UserStore.account.get()
+		UserStore.account.get(),
 	);
 	const router = useRouter();
 
@@ -71,8 +71,6 @@ const index = () => {
 								mode="contained"
 								onPress={() => {
 									router.push("/oauthredirect");
-									// setCreatingAccount(true);
-									// promptAsync();
 								}}
 								labelStyle={{ fontWeight: "bold" }}
 								style={{ width: "100%" }}

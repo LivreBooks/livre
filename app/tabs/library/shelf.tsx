@@ -12,7 +12,7 @@ import DownloadViewerBottomSheet from "../../../components/library/DownloadViewe
 import Text from "../../../components/Text";
 import Box from "../../../components/Box";
 
-const { width: sWidth, height: sHeight } = Dimensions.get("screen");
+const { width: sWidth } = Dimensions.get("screen");
 const coverWidth = sWidth / 2 - 40;
 const coverHeight = coverWidth * 1.4 + 10;
 
@@ -137,7 +137,7 @@ export default function Search() {
 														position: "absolute",
 														alignItems: "center",
 														justifyContent: "center",
-														backgroundColor: "rgba(0,0,0,0.5)",
+														backgroundColor: appTheme.colors.backdrop,
 														top: 0,
 														left: 0,
 														width: coverWidth,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { View, ViewProps, ViewStyle } from "react-native";
-import { Image, ImageProps, ImageStyle } from "expo-image";
+import { View, ViewStyle } from "react-native";
+import { Image, ImageProps } from "expo-image";
 import { LiveAppState } from "../store/store";
 
 type CustomImageProps = {

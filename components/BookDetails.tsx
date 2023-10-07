@@ -1,10 +1,10 @@
-import { View, Dimensions, ToastAndroid } from "react-native";
+import { View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { BASE_URL, theme } from "../constants";
-import { ActivityIndicator, Card, ProgressBar } from "react-native-paper";
+import { BASE_URL } from "../constants";
+import { ActivityIndicator, ProgressBar } from "react-native-paper";
 import { DownloadsStore, LiveAppState } from "../store/store";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { downloadBook, sentryCapture, trimText } from "../utils";
+import { downloadBook, sentryCapture } from "../utils";
 import { BookType, FullBookType } from "../types/types";
 import { useRouter } from "expo-router";
 import BaseImage from "./BaseImage";
@@ -14,7 +14,6 @@ import Box from "./Box";
 import Text from "./Text";
 import { ALERT_TYPE, Toast } from "react-native-alert-notification";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import Spacer from "./Spacer";
 
 const BookDetails = ({
 	bookPreview = null,
@@ -25,7 +24,7 @@ const BookDetails = ({
 }) => {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
-	const [fetchinDownloadLinks, setFetchingDownloadLinks] = useState(false);
+	const [fetchingDownloadLinks, setFetchingDownloadLinks] = useState(false);
 	const [downloadedFilepath, setDownloadedFilepath] = useState(null);
 	const [downloadProgress, setDownloadProgress] = useState(null);
 	const [_fullbook, setFullBook] = useState(fullBook);
@@ -41,6 +40,16 @@ const BookDetails = ({
 		}
 	});
 
+	function deleteFailedDownload() {
+		const updated = DownloadsStore.downloads
+			.get()
+			.filter(
+				(download) =>
+					download.book.id !== _fullbook.id && download.progress !== 0
+			);
+		DownloadsStore.downloads.set(updated);
+	}
+
 	function checkIfDownloaded() {
 		const found = DownloadsStore.downloads.find(
 			(download) => download.book.id === book.id
@@ -55,7 +64,6 @@ const BookDetails = ({
 		getBook(bookPreview.id)
 			.then((data) => {
 				data.coverurl = bookPreview.cover;
-				console.log("Setting Fullbook");
 				setFullBook(data);
 			})
 			.catch((error) => {
@@ -79,7 +87,7 @@ const BookDetails = ({
 			.then((data) => {
 				console.log(data);
 				downloadBook(_fullbook, data)
-					.then((result) => {
+					.then(() => {
 						Toast.show({
 							title: "Download Complete",
 							textBody: _fullbook.title,
@@ -97,6 +105,7 @@ const BookDetails = ({
 							textBody: error?.message,
 							autoClose: false,
 						});
+						deleteFailedDownload();
 					});
 			})
 			.catch((error) => {
@@ -120,7 +129,7 @@ const BookDetails = ({
 		if (downloadId) {
 			router.push(`/tabs/library/reader?downloadId=${downloadId}`);
 		} else {
-			ToastAndroid.show("Book Not Found", ToastAndroid.SHORT);
+			Toast.show({ title: "Book Not Found", type: ALERT_TYPE.DANGER });
 		}
 	}
 	useEffect(() => {
@@ -198,53 +207,61 @@ const BookDetails = ({
 						</Box>
 					</Box>
 
-					{_fullbook ? (
+					{_fullbook && (
 						<Box mx={10} py={10} gap={10}>
-							{downloadedFilepath ? (
+							{downloadedFilepath && (
 								<Button
 									mode="contained"
 									icon={"book-open-blank-variant"}
 									onPress={openReader}
+									// eslint-disable-next-line react-native/no-raw-text
 								>
 									Read
 								</Button>
-							) : downloadProgress === null ? (
+							)}
+
+							{downloadProgress === null && downloadedFilepath === null && (
 								<Button
 									mode="contained"
-									loading={fetchinDownloadLinks}
+									loading={fetchingDownloadLinks}
 									onPress={fetchDownloadLinks}
+									// eslint-disable-next-line react-native/no-raw-text
 								>
 									Download
 								</Button>
-							) : (
-								<Box
-									pa={5}
-									radius={10}
-									color={LiveAppState.themeValue.colors.surface.get()}
-								>
-									<Text
-										style={{
-											fontWeight: "bold",
-											textAlign: "center",
-											width: "100%",
-										}}
-									>
-										Downloading...
-									</Text>
-									<ProgressBar
-										progress={downloadProgress}
-										style={{
-											height: 35,
-											marginHorizontal: 5,
-											marginVertical: 5,
-											borderRadius: 20,
-										}}
-									/>
-								</Box>
 							)}
+							{downloadProgress &&
+								downloadProgress >= 0 &&
+								downloadProgress < 100 && (
+									<Box
+										pa={5}
+										radius={10}
+										color={LiveAppState.themeValue.colors.surface.get()}
+									>
+										<Text
+											style={{
+												fontWeight: "bold",
+												textAlign: "center",
+												width: "100%",
+											}}
+										>
+											Downloading...
+										</Text>
+										<ProgressBar
+											progress={downloadProgress}
+											style={{
+												height: 35,
+												marginHorizontal: 5,
+												marginVertical: 5,
+												borderRadius: 20,
+											}}
+										/>
+									</Box>
+								)}
 							<BookDescription content={_fullbook.descr} />
 						</Box>
-					) : (
+					)}
+					{loading && (
 						<View>
 							<ActivityIndicator size={"small"} />
 						</View>
@@ -314,7 +331,7 @@ const BookInfoCard = ({ label, value, icon }: BookInfoCardProps) => {
 		<Box color={appTheme.colors.surface} radius={10} py={6.5} px={6.5}>
 			<Box direction="row" align="center" gap={5}>
 				<MaterialCommunityIcons
-					name={icon as any}
+					name={icon}
 					size={14}
 					color={appTheme.colors.text}
 				/>

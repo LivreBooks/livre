@@ -74,8 +74,8 @@ export interface FullBookType {
   identifierwodash: string;
   tags: string;
   pagesinfile: string;
-  descr: any;
-  toc: any;
+  descr: string;
+  toc: string;
   sha1: string;
   sha256: string;
   crc32: string;
@@ -125,7 +125,7 @@ export interface Account {
   fullname: string;
   email: string;
   created_at: string;
-  phone_number?: any;
+  phone_number?: string;
   avatar_url: string;
   tokens: number;
 }
@@ -183,8 +183,8 @@ export interface WebviewReturnType {
   order: {
     orderID: string;
     payerID: string;
-    paymentID?: any;
-    billingToken?: any;
+    paymentID?: string;
+    billingToken?: string;
     facilitatorAccessToken: string;
     paymentSource: string;
   };
@@ -292,8 +292,8 @@ export interface PaypalWebviewSuccessMessage {
   order: {
     orderID: string;
     payerID: string;
-    paymentID?: any;
-    billingToken?: any;
+    paymentID?: string;
+    billingToken?: string;
     facilitatorAccessToken: string;
     paymentSource: string;
   };

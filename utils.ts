@@ -25,6 +25,7 @@ export async function downloadFile(
   fileType: string,
   onProgress: (id: number, progress: number) => void
 ) {
+  console.log("Using URL: ", url);
   const documentDirectory = FileSystem.documentDirectory + 'livre';
 
   const folderExists = await FileSystem.getInfoAsync(documentDirectory);

@@ -10,97 +10,95 @@ import { Download } from "../types/types";
 import { fetchUtil, sentryCapture } from "../utils";
 
 const _layout = () => {
-	const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
+  const [appTheme, setAppTheme] = useState(LiveAppState.themeValue.get());
 
-	const systemTheme = useColorScheme();
+  const systemTheme = useColorScheme();
 
-	// User Changes the theme
-	SettingsStore.theme.onChange((newTheme) => {
-		updateTheme();
-	});
+  // User Changes the theme
+  SettingsStore.theme.onChange(() => {
+    updateTheme();
+  });
 
-	LiveAppState.themeValue.onChange((theme) => {
-		setAppTheme(theme);
-	});
+  LiveAppState.themeValue.onChange((theme) => {
+    setAppTheme(theme);
+  });
 
-	function updateTheme() {
-		const settingsTheme = SettingsStore.theme.get();
+  function updateTheme() {
+    const settingsTheme = SettingsStore.theme.get();
 
-		if (settingsTheme === "system") {
-			if (systemTheme === "dark") {
-				LiveAppState.themeValue.set(darkMode);
-			}
+    if (settingsTheme === "system") {
+      if (systemTheme === "dark") {
+        LiveAppState.themeValue.set(darkMode);
+      }
 
-			if (systemTheme === "light") {
-				LiveAppState.themeValue.set(lightMode);
-			}
-		} else {
-			if (settingsTheme === "dark") {
-				LiveAppState.themeValue.set(darkMode);
-			}
+      if (systemTheme === "light") {
+        LiveAppState.themeValue.set(lightMode);
+      }
+    } else {
+      if (settingsTheme === "dark") {
+        LiveAppState.themeValue.set(darkMode);
+      }
 
-			if (settingsTheme === "light") {
-				LiveAppState.themeValue.set(lightMode);
-			}
-		}
-	}
+      if (settingsTheme === "light") {
+        LiveAppState.themeValue.set(lightMode);
+      }
+    }
+  }
 
-	async function fetchUserDownloads() {
-		const { data, error, status } = await fetchUtil<{ downloads: Download[] }>(
-			`${BASE_URL}/get_downloads?user_id=${UserStore.account.id.get()}`
-		);
+  async function fetchUserDownloads() {
+    const { data, error } = await fetchUtil<{ downloads: Download[] }>(
+      `${BASE_URL}/get_downloads?user_id=${UserStore.account.id.get()}`,
+    );
 
-		if (data && data.downloads) {
-			UserStore.downloads.set(data.downloads);
-		}
+    if (data && data.downloads) {
+      UserStore.downloads.set(data.downloads);
+    }
 
-		if (error) {
-			sentryCapture(error);
+    if (error) {
+      sentryCapture(error);
 
-			Toast.show({
-				title: "Error Fetching Past Downloads",
-				textBody: error.message,
-			});
-		}
-	}
+      Toast.show({
+        title: "Error Fetching Past Downloads",
+        textBody: error.message,
+      });
+    }
+  }
 
-	useEffect(() => {
-		fetchUserDownloads();
-	}, []);
+  useEffect(() => {
+    fetchUserDownloads();
+  }, []);
 
-	useEffect(() => {
-		const settingsTheme = SettingsStore.theme.get();
+  useEffect(() => {
+    updateTheme();
+  }, [systemTheme]);
+  return (
+    <AlertNotificationRoot
+      theme={
+        SettingsStore.theme.get() === "system"
+          ? systemTheme
+          : SettingsStore.theme.get() === "dark"
+            ? "dark"
+            : "light"
+      }
+    >
+      <PaperProvider theme={appTheme}>
+        <StatusBar
+          backgroundColor={LiveAppState.themeValue.colors.background.get()}
+          barStyle={
+            SettingsStore.theme.get() === "dark"
+              ? "light-content"
+              : SettingsStore.theme.get() === "light"
+                ? "dark-content"
+                : "default"
+          }
+        />
 
-		updateTheme();
-	}, [systemTheme]);
-	return (
-		<AlertNotificationRoot
-			theme={
-				SettingsStore.theme.get() === "system"
-					? systemTheme
-					: SettingsStore.theme.get() === "dark"
-					? "dark"
-					: "light"
-			}
-		>
-			<PaperProvider theme={appTheme}>
-				<StatusBar
-					backgroundColor={LiveAppState.themeValue.colors.background.get()}
-					barStyle={
-						SettingsStore.theme.get() === "dark"
-							? "light-content"
-							: SettingsStore.theme.get() === "light"
-							? "dark-content"
-							: "default"
-					}
-				/>
-
-				<SafeAreaView style={{ flex: 1 }}>
-					<Stack screenOptions={{ headerShown: false, animation: "none" }} />
-				</SafeAreaView>
-			</PaperProvider>
-		</AlertNotificationRoot>
-	);
+        <SafeAreaView style={{ flex: 1 }}>
+          <Stack screenOptions={{ headerShown: false, animation: "none" }} />
+        </SafeAreaView>
+      </PaperProvider>
+    </AlertNotificationRoot>
+  );
 };
 
 export default _layout;

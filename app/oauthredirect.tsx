@@ -1,6 +1,7 @@
+import React from "react";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { View, Image } from "react-native";
+import { Image } from "react-native";
 import * as Google from "expo-auth-session/providers/google";
 import * as WebBrowser from "expo-web-browser";
 import BasePage from "../components/BasePage";
@@ -56,7 +57,7 @@ export default function oauthredirect() {
 		if (!user_id) {
 			return;
 		}
-		const { data, error, status } = await fetchUtil<UserProfile>(
+		const { data, error } = await fetchUtil<UserProfile>(
 			`${BASE_URL}/get_user_profile?user_id=${user_id}`
 		);
 		if (error) {
@@ -129,6 +130,11 @@ export default function oauthredirect() {
 					type: ALERT_TYPE.DANGER,
 					autoClose: false,
 				});
+				sentryCapture(
+					new Error("Access Token Error", {
+						cause: `Response is "${response.type}"`,
+					})
+				);
 			}
 		}
 	}, [response]);
